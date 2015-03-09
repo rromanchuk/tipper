@@ -1,7 +1,7 @@
 require 'bitcon_client'
 class B
   def client
-    @client ||= BitcoinClient::Client.new(ENV["RPC_USERNAME"], ENV["RPC_PASSWORD"])
+    @client ||= Bitcoin::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"])
   end
 
   def balance
