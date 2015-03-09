@@ -1,3 +1,4 @@
+
 module Api
   class MeController < Api::BaseController
 
@@ -22,4 +23,3 @@ module Api
 
   end
 end
-
