@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+  namespace :api, path: '/', defaults: { format: 'json' } do
+     resource :me,                  only: [:show], controller: 'me'
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
