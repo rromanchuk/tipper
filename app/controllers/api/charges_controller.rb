@@ -18,7 +18,7 @@ module Api
         :currency    => 'usd'
       )
 
-      respond_with charge
+      render json: charge
 
     rescue Stripe::CardError => e
       flash[:error] = e.message
