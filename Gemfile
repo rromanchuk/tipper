@@ -28,6 +28,7 @@ gem 'responders', github: "plataformatec/responders"
 gem 'bootstrap-sass', '~> 3.3.3'
 gem 'bitcoin-client'
 gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
+gem "slim-rails"
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
