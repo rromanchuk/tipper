@@ -1,10 +1,18 @@
-require 'bitcon_client'
+#require 'bitcon_client'
 class B
-  def client
-    @client ||= Bitcoin::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"])
+  def self.client
+    @client ||= Bitcoin::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {port: 18333})
   end
 
-  def balance
-    client.balance
+  def self.balance(username)
+    client.balance(username)
+  end
+
+  def self.addressForTwitterUsername(username)
+    client.getaccountaddress(username)
+  end
+
+  def self.tipUser(fromAccount, toAccount, amount)
+    client.move(fromAccount, toAccount, amount)
   end
 end
