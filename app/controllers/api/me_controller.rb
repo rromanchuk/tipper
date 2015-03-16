@@ -36,7 +36,7 @@ module Api
 
     def generateUser(token)
       resp = db.put_item(
-        table_name: "TipperUsers",
+        table_name: "TipperTokens",
         item: {
           "TwiterUserID" => twitterId, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
           "token" => token

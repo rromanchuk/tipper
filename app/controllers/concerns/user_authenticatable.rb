@@ -12,7 +12,7 @@ module UserAuthenticatable
     Rails.logger.info login_params.inspect
     resp = db.get_item(
       # required
-      table_name: "TipperUsers",
+      table_name: "TipperTokens",
       # required
       key: {
         "token" => login_params, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
