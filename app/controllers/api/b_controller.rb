@@ -11,7 +11,7 @@ module Api
     end
 
     def accounts
-      accounts = B.listaccounts
+      accounts = B.client.listaccounts
       render json: {accounts: accounts}
     end
 
