@@ -4,10 +4,8 @@ module Api
   class BaseController < ActionController::Base
     include UserAuthenticatable
 
-
+    skip_before_action :verify_authenticity_token
     self.responder = ApplicationResponder
     respond_to :json
-
-    protect_from_forgery with: :null_session
   end
 end
