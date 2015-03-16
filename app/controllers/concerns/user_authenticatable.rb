@@ -9,6 +9,7 @@ module UserAuthenticatable
   protected
 
   def authenticate_user_from_token
+    Rails.logger.info login_params.inspect
     resp = db.get_item(
       # required
       table_name: "TipperUsers",
@@ -31,6 +32,7 @@ module UserAuthenticatable
   end
 
   def login_params
+    Rails.logger.info params.inspect
     if request.authorization.present?
       params[:auth_token] = ActionController::HttpAuthentication::Basic.user_name_and_password(request)[1].strip
     else
