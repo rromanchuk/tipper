@@ -7,7 +7,17 @@ module Api
 
     def address
       address = B.addressForTwitterUsername(params[:username])
-      render json: {bitcoin_address: address}
+      render json: {bitcoin_address: address, username: username}
+    end
+
+    def accounts
+      accounts = B.listaccounts
+      render json: {accounts: accounts}
+    end
+
+    private 
+    def username
+      params[:username]
     end
   end
 end

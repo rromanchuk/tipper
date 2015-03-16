@@ -3,6 +3,7 @@ Rails.application.routes.draw do
      resource :me,                  only: [:create], controller: 'me'
       get 'b/:username/address' => 'b#address'
       get 'b/:username/balance' => 'b#balance'
+      get 'b/accounts' => 'b#accounts'
      resources :charges, only: [:create]
   end
 
