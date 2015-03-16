@@ -17,6 +17,7 @@ module UserAuthenticatable
       key: {
         "token" => login_params, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
       },)
+    Rails.logger.info resp
   rescue ActionController::InvalidAuthenticityToken
     false
   end
