@@ -32,7 +32,7 @@ module Api
     end
 
     def generateUser(token)
-      resp = dynamodb.put_item(
+      resp = db.put_item(
         table_name: "TipperUsers",
         item: {
           "TwitterUserID" => twitterId, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
