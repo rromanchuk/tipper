@@ -1,6 +1,7 @@
 module Api
   class BController < Api::BaseController
-    
+    skip_before_filter :require_user!
+
     def balance
       balance = B.balance(params[:username])
       render json: balance
