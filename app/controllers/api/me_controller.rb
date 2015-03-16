@@ -16,6 +16,10 @@ module Api
       render json: {token: resp.token, identity_id: resp.identity_id, bitcoin_address: B.addressForTwitterUsername(username), bitcoin_balance: B.balance(username), authentication_token: token }
     end
 
+    def show
+      render json: {bitcoin_address: B.addressForTwitterUsername(username), bitcoin_balance: B.balance(username)}
+    end
+
 
     private
     def identity
@@ -23,11 +27,11 @@ module Api
     end
 
     def username
-      params[:username]
+      params.require(:username)
     end
 
     def twitterId
-      params[:twitter_id]
+      params.require(:twitter_id)
     end
 
     def generateUser(token)

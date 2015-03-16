@@ -33,8 +33,9 @@ module UserAuthenticatable
   def login_params
     if request.authorization.present?
       params[:auth_token] = ActionController::HttpAuthentication::Basic.user_name_and_password(request)[1].strip
+    else
+      raise ActionController::InvalidAuthenticityToken
     end
-    params
   end
 
   def db
