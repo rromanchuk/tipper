@@ -11,13 +11,13 @@ module UserAuthenticatable
   def authenticate_user_from_token
     Rails.logger.info login_params.inspect
     resp = db.get_item(
-      # required
       table_name: "TipperTokens",
-      # required
       key: {
         "token" => login_params, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
       },)
     Rails.logger.info resp.item
+    params[:username] = rest.item["TwitterUsername"]
+    resp
   rescue ActionController::InvalidAuthenticityToken
     false
   end

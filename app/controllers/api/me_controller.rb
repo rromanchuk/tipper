@@ -39,7 +39,8 @@ module Api
         table_name: "TipperTokens",
         item: {
           "TwiterUserID" => twitterId, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
-          "token" => token
+          "token" => token, 
+          "TwitterUsername" => username
         })
     end
 
