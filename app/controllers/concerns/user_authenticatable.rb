@@ -15,7 +15,7 @@ module UserAuthenticatable
       table_name: "TipperUsers",
       # required
       key: {
-        "token" => login_params[:auth_token], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+        "token" => login_params, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
       },)
   rescue ActionController::InvalidAuthenticityToken
     false
