@@ -1,8 +1,9 @@
 module Api
   class BController < Api::BaseController
+    
     def balance
       balance = B.balance(params[:username])
-      render json: {balance: balance}
+      render json: balance
     end
 
     def address
