@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   namespace :api, path: '/', defaults: { format: 'json' } do
-     resource :me,                  only: [:create], controller: 'me'
+     resource :me,                  only: [:create, :index], controller: 'me'
       get 'b/:username/address' => 'b#address'
       get 'b/:username/balance' => 'b#balance'
       get 'b/accounts' => 'b#accounts'

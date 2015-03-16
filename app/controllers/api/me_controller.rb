@@ -4,7 +4,6 @@ module Api
     skip_before_filter :require_user!, only: [:create]
 
     def create
-
       resp = identity.get_open_id_token_for_developer_identity(
         # required
         identity_pool_id: "us-east-1:71450ec4-894b-4e51-bfbb-35a012b5b514",
@@ -35,7 +34,7 @@ module Api
       resp = db.put_item(
         table_name: "TipperUsers",
         item: {
-          "TwitterUserID" => twitterId, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          "TwiterUserID" => twitterId, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
           "token" => token
         })
     end
