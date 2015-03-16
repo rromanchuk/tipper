@@ -19,7 +19,7 @@ module Api
 
     private 
     def username
-      params[:username]
+      params.require(:username)
     end
   end
 end
