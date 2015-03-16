@@ -16,7 +16,7 @@ module UserAuthenticatable
         "token" => login_params, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
       },)
     Rails.logger.info resp.item
-    params[:username] = rest.item["TwitterUsername"]
+    params[:username] = resp.item["TwitterUsername"]
     resp
   rescue ActionController::InvalidAuthenticityToken
     false
