@@ -10,10 +10,10 @@ module Api
         identity_id:  params[:identity_id],
         # required
         logins: { "com.ryanromanchuk.tipper" => username },
-        token_duration: 1,)
+        token_duration: 1)
 
-      render json: {token: resp.token, 
-        identity_id: resp.identity_id, 
+      render json: {token: resp.token,
+        identity_id: resp.identity_id,
         bitcoin_address: B.addressForTwitterUsername(username),
         bitcoin_balance: B.balance(username) }
 
