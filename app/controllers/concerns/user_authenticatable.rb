@@ -1,0 +1,44 @@
+module UserAuthenticatable
+  extend ActiveSupport::Concern
+
+  included do
+    before_filter :require_user!
+    helper_method :current_user
+  end
+
+  protected
+
+  def authenticate_user_from_token
+    resp = db.get_item(
+      # required
+      table_name: "TipperUsers",
+      # required
+      key: {
+        "TipperUserID" => login_params[:auth_token], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+      },)
+  rescue ActionController::InvalidAuthenticityToken
+    false
+  end
+
+  def require_user!
+    unless current_user
+      return render json: {error: "Invalid credentials"}, status: 401
+    end
+  end
+
+  def current_user
+    @current_user ||= authenticate_user_from_token
+  end
+
+  def login_params
+    if request.authorization.present?
+      params[:auth_token] = ActionController::HttpAuthentication::Basic.user_name_and_password(request)[1].strip
+    end
+    params
+  end
+
+  def db
+    @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+
+end
