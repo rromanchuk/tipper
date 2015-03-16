@@ -1,7 +1,7 @@
 module Api
   class BController < Api::BaseController
     def balance
-      balance = B.client.balance(params[:username])
+      balance = B.balance(params[:username])
       render json: {balance: balance}
     end
 
