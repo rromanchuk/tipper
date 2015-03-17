@@ -74,6 +74,8 @@ GEM
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
     buftok (0.2.0)
+    bugsnag (2.8.1)
+      multi_json (~> 1.0)
     builder (3.2.2)
     byebug (3.5.1)
       columnize (~> 0.8)
@@ -227,6 +229,7 @@ DEPENDENCIES
   aws-sdk
   bitcoin-client
   bootstrap-sass (~> 3.3.3)
+  bugsnag
   byebug
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
