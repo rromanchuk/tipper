@@ -32,6 +32,7 @@ gem "slim-rails"
 gem "twitter"
 gem "satoshi-unit"
 gem "bugsnag"
+gem 'newrelic_rpm'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
