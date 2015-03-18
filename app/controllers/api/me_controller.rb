@@ -43,7 +43,7 @@ module Api
       resp = db.put_item(
         table_name: "TipperBitcoinAccounts",
         item: {
-          "TwiterUserID" => twitterId,
+          "TwitterUserID" => twitterId,
           "token" => token,
           "TwitterUsername" => username,
           "BitcoinAddress" => bitcoin_address,
