@@ -4,14 +4,14 @@ class B
     @client ||= Bitcoin::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {port: ENV["RPC_PORT"]})
   end
 
-  def self.balance(username)
-    balance = client.balance(username)
+  def self.balance(address)
+    balance = client.getreceivedbyaddress(address)
     s = Satoshi.new(balance)
     {satoshi: s.to_i, mbtc: s.to_mbtc, btc: s.to_btc}
   end
 
-  def self.addressForTwitterUsername(username)
-    client.getaccountaddress(username)
+  def self.getNewUserAddress
+    client.getaccountaddress("tipper_users")
   end
 
   def self.tipUser(fromAccount, toAccount, amount)

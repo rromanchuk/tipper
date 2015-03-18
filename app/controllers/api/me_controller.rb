@@ -9,15 +9,16 @@ module Api
         identity_pool_id: "us-east-1:71450ec4-894b-4e51-bfbb-35a012b5b514",
         identity_id:  params[:identity_id],
         # required
-        logins: { "com.ryanromanchuk.tipper" => username },
+        logins: { "com.ryanromanchuk.tipper" => twitterId },
         token_duration: 1)
       token = SecureRandom.urlsafe_base64(30)
-      generateUser(token)
-      render json: {token: resp.token, identity_id: resp.identity_id, bitcoin_address: B.addressForTwitterUsername(username), bitcoin_balance: B.balance(username), authentication_token: token }
+      bitcoin_address = B.client.getNewUserAddress
+      generateUser(token, bitcoin_address, resp.identity_id)
+      render json: {token: resp.token, identity_id: resp.identity_id, bitcoin_address: bitcoin_address, bitcoin_balance: B.balance(bitcoin_address), authentication_token: token }
     end
 
     def show
-      render json: {bitcoin_address: B.addressForTwitterUsername(username), bitcoin_balance: B.balance(username)}
+      render json: {bitcoin_address: params[:bitcoin_address], bitcoin_balance: B.balance(params[:bitcoin_address])}
     end
 
 
@@ -34,18 +35,29 @@ module Api
       params.require(:twitter_id)
     end
 
-    def generateUser(token)
+    def updateProfileData
+
+    end
+
+    def generateUser(token, bitcoin_address, cognito_identity)
       resp = db.put_item(
-        table_name: "TipperTokens",
+        table_name: "TipperBitcoinAccounts",
         item: {
-          "TwiterUserID" => twitterId, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
-          "token" => token, 
-          "TwitterUsername" => username
+          "TwiterUserID" => twitterId,
+          "token" => token,
+          "TwitterUsername" => username,
+          "BitcoinAddress" => bitcoin_address,
+          "TwitterUsername" => username,
+          "CognityIdentity" => cognito_identity,
         })
     end
 
     def db
       @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+    end
+
+    def sync
+      @sync ||=  Aws::CognitoSync::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
     end
 
   end
