@@ -14,7 +14,8 @@ module UserAuthenticatable
     resp = db.get_item(
       table_name: "TipperBitcoinAccounts",
       key: {
-        "TwitterUserID" => login_params[:twitter_id],
+        "TwitterUserID" => login_params[:twitter_id]
+        })
     Rails.logger.info resp.item
     params[:bitcoin_address] = 
     raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["token"]
