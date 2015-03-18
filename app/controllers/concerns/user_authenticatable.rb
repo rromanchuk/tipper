@@ -9,14 +9,15 @@ module UserAuthenticatable
   protected
 
   def authenticate_user_from_token
+    
     Rails.logger.info login_params.inspect
     resp = db.get_item(
-      table_name: "TipperTokens",
+      table_name: "TipperBitcoinAccounts",
       key: {
-        "token" => login_params, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
-      },)
+        "TwitterUserID" => login_params[:twitter_id],
     Rails.logger.info resp.item
-    params[:username] = resp.item["TwitterUsername"]
+    params[:bitcoin_address] = 
+    raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["token"]
     resp
   rescue ActionController::InvalidAuthenticityToken
     false
@@ -33,11 +34,14 @@ module UserAuthenticatable
   end
 
   def login_params
-    Rails.logger.info params.inspect
-    if request.authorization.present?
-      params[:auth_token] = ActionController::HttpAuthentication::Basic.user_name_and_password(request)[1].strip
-    else
-      raise ActionController::InvalidAuthenticityToken
+    @login_params ||= begin
+      if request.authorization.present?
+        params[:twitter_id] = ActionController::HttpAuthentication::Basic.user_name_and_password(request)[0].strip
+        params[:auth_token] = ActionController::HttpAuthentication::Basic.user_name_and_password(request)[1].strip
+        params
+      else
+        raise ActionController::InvalidAuthenticityToken
+      end
     end
   end
 

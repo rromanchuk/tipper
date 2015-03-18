@@ -3,13 +3,8 @@ module Api
     skip_before_filter :require_user!
 
     def balance
-      balance = B.balance(params[:username])
+      balance = B.client.client
       render json: balance
-    end
-
-    def address
-      address = B.addressForTwitterUsername(params[:username])
-      render json: {bitcoin_address: address, username: username}
     end
 
     def accounts
