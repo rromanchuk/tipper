@@ -17,8 +17,8 @@ module UserAuthenticatable
         "TwitterUserID" => login_params[:twitter_id]
         })
     Rails.logger.info resp.item
-    params[:bitcoin_address] = 
-    raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["token"]
+    params[:bitcoin_address] = resp.item["BitcoinAddress"]
+    raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["auth_token"]
     resp
   rescue ActionController::InvalidAuthenticityToken
     false
