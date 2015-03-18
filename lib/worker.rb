@@ -11,7 +11,7 @@ def cognito
 end
 
 def sync
-  @sync ||=  Aws::CognitoSync::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  @sync ||= Aws::CognitoSync::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
 end
 
 def identityPool
@@ -27,14 +27,20 @@ def process
   )
   puts identity
 
+  
   resp = sync.list_records(
     identity_pool_id: identityPool,
     identity_id: identity.identity_id,
     max_results: 1,
     dataset_name: "Profile",
   )
+  
+  hash = {}
+  resp.records.each do |record|
+    hash[record.key] = record.value
+  end
 
-  puts resp.inspect
+  puts hash.inspect
   resp
 end
 

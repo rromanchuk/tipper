@@ -12,7 +12,7 @@ module Api
         logins: { "com.ryanromanchuk.tipper" => twitterId },
         token_duration: 1)
       token = SecureRandom.urlsafe_base64(30)
-      bitcoin_address = B.client.getNewUserAddress
+      bitcoin_address = B.getNewUserAddress
       generateUser(token, bitcoin_address, resp.identity_id)
       render json: {token: resp.token, identity_id: resp.identity_id, bitcoin_address: bitcoin_address, bitcoin_balance: B.balance(bitcoin_address), authentication_token: token }
     end
