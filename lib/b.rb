@@ -27,4 +27,9 @@ class B
     client.listtransactions("", 20)
   end
 
+
+  def self.fundUser(address)
+    client.sendfrom("rromanchuk", address, 0.0002)
+  end
+
 end
