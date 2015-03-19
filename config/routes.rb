@@ -9,6 +9,14 @@ Rails.application.routes.draw do
      resources :charges, only: [:create]
   end
 
+
+  namespace :admin do
+    resources :users,  only: [:index]
+    resources :posts,  only: [:index]
+    resources :events, only: [:index]
+    resources :webhooks, only: [:index, :show]
+  end
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
