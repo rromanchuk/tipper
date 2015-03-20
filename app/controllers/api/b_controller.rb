@@ -13,7 +13,7 @@ module Api
     end
 
     def address_balance
-      balance B.balance(params[:address])
+      balance B.balance(address)
       render json: balance
     end
 
@@ -30,6 +30,10 @@ module Api
     private 
     def username
       params.require(:username)
+    end
+
+    def address
+      params[:address]
     end
   end
 end
