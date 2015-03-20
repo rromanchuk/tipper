@@ -29,8 +29,7 @@ module UserAuthenticatable
         "BitcoinBalanceBTC" => {
           value: balance[:btc],
           action: "PUT",
-        },
-      return_values: "ALL_NEW"},)
+        },)
   end
 
   def authenticate_user_from_token
