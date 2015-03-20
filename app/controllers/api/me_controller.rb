@@ -34,11 +34,6 @@ module Api
       render json: current_user
     end
 
-    def balance
-      
-    end
-
-
     private
     def identity
       @cognitoidentity ||= Aws::CognitoIdentity::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
