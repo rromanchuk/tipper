@@ -13,8 +13,7 @@ module Api
     end
 
     def address_balance
-      balance B.balance(address)
-      render json: balance
+      render json: B.balance(address)
     end
 
     def accounts
