@@ -27,7 +27,7 @@ module Api
       }
 
       user = generateUser(item)
-      render json: user
+      render json: item
     end
 
     def show
@@ -63,7 +63,6 @@ module Api
     def generateUser(item)
       resp = db.put_item(
         table_name: "TipperBitcoinAccounts",
-        return_values: "ALL_NEW",
         item: item )
       resp.attributes
     end
