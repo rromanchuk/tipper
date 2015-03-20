@@ -34,6 +34,10 @@ module Api
       render json: current_user
     end
 
+    def balance
+      
+    end
+
 
     private
     def identity

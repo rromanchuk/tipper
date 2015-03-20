@@ -19,31 +19,28 @@ module UserAuthenticatable
       table_name: "TipperBitcoinAccounts",
       # required
       key: {
-        "TwitterUserID" => "value", #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+        "TwitterUserID" => twitter_id,
       },
       attribute_updates: {
         "BitcoinBalanceSatoshi" => {
-          value: balance[:satoshi], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          value: balance[:satoshi],
           action: "PUT",
         },
         "BitcoinBalanceMBTC" => {
-          value: balance[:mbtc], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          value: balance[:mbtc],
           action: "PUT",
         },
         "BitcoinBalanceBTC" => {
-          value: balance[:btc], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          value: balance[:btc],
           action: "PUT",
         },
-      },)
+      return_values: "ALL_NEW"},)
   end
 
   def authenticate_user_from_token
     Rails.logger.info login_params.inspect
-    resp = db.get_item(
-      table_name: "TipperBitcoinAccounts",
-      key: {
-        "TwitterUserID" => login_params[:twitter_id]
-        })
+    user = User.find(twitter_id)
+
     Rails.logger.info resp.item
     params[:bitcoin_address] = resp.item["BitcoinAddress"]
     raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["auth_token"]
@@ -73,6 +70,10 @@ module UserAuthenticatable
         raise ActionController::InvalidAuthenticityToken
       end
     end
+  end
+
+  def twitter_id
+    params.require(:twitter_id)
   end
 
   def db
