@@ -79,7 +79,7 @@ module UserAuthenticatable
   end
 
   def bitcoin_address
-    user.require("BitcoinAddress")
+    user["BitcoinAddress"]
   end
 
   def auth_token
