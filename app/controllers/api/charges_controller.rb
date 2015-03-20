@@ -26,9 +26,6 @@ module Api
     end
 
     private
-    def bitcoin_address
-      params.require(:bitcoin_address)
-    end
 
     def send_bitcoin
       B.fundUser(bitcoin_address)
