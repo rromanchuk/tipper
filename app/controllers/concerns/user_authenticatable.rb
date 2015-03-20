@@ -8,8 +8,36 @@ module UserAuthenticatable
 
   protected
 
+  def bitcoin_address
+    params.require(:bitcoin_address)
+  end
+
+  def update_balance
+    balance = B.balance(bitcoin_address)
+    resp = dynamodb.update_item(
+      # required
+      table_name: "TipperBitcoinAccounts",
+      # required
+      key: {
+        "TwitterUserID" => "value", #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+      },
+      attribute_updates: {
+        "BitcoinBalanceSatoshi" => {
+          value: balance[:satoshi], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          action: "PUT",
+        },
+        "BitcoinBalanceMBTC" => {
+          value: balance[:mbtc], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          action: "PUT",
+        },
+        "BitcoinBalanceBTC" => {
+          value: balance[:btc], #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          action: "PUT",
+        },
+      },)
+  end
+
   def authenticate_user_from_token
-    
     Rails.logger.info login_params.inspect
     resp = db.get_item(
       table_name: "TipperBitcoinAccounts",
@@ -19,6 +47,7 @@ module UserAuthenticatable
     Rails.logger.info resp.item
     params[:bitcoin_address] = resp.item["BitcoinAddress"]
     raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["auth_token"]
+    update_balance
     resp.item
   rescue ActionController::InvalidAuthenticityToken
     false
