@@ -47,7 +47,7 @@ class User
         key: {
           "TwitterUserID" => twitter_id,
         },
-      )
+      ).item
   end
 
   def self.userExists?(twitter_id)
