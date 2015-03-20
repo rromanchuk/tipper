@@ -11,10 +11,23 @@ module Api
         # required
         logins: { "com.ryanromanchuk.tipper" => twitterId },
         token_duration: 1)
-      token = SecureRandom.urlsafe_base64(30)
-      bitcoin_address = B.getNewUserAddress
-      generateUser(token, bitcoin_address, resp.identity_id)
-      render json: {token: resp.token, identity_id: resp.identity_id, bitcoin_address: bitcoin_address, bitcoin_balance: B.balance(bitcoin_address), authentication_token: token }
+
+      balance = B.balance(bitcoin_address)
+
+      item ={ token: token,
+        "TwitterUserID" => twitterId,
+        "TwitterUsername" => username,
+        "BitcoinAddress": bitcoin_address,
+        "CognityIdentity": resp.identity_id,
+        "CognitoToken": resp.token,
+        "BitcoinBalanceSatoshi": balance[:satoshi],
+        "BitcoinBalanceMBTC": balance[:mbtc],
+        "BitcoinBalanceBTC": balance[:btc],
+        "token": token
+      }
+
+      user = generateUser(item)
+      render json: user
     end
 
     def show
@@ -35,21 +48,24 @@ module Api
       params.require(:twitter_id)
     end
 
+    def bitcoin_address
+      @bitcoin_address ||= B.getNewUserAddress
+    end
+
+    def token
+      @token ||= SecureRandom.urlsafe_base64(30)
+    end
+
     def updateProfileData
 
     end
 
-    def generateUser(token, bitcoin_address, cognito_identity)
+    def generateUser(item)
       resp = db.put_item(
         table_name: "TipperBitcoinAccounts",
-        item: {
-          "TwitterUserID" => twitterId,
-          "token" => token,
-          "TwitterUsername" => username,
-          "BitcoinAddress" => bitcoin_address,
-          "TwitterUsername" => username,
-          "CognityIdentity" => cognito_identity,
-        })
+        return_values: "ALL_NEW",
+        item: item )
+      resp.attributes
     end
 
     def db
