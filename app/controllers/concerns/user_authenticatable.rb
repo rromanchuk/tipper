@@ -14,7 +14,7 @@ module UserAuthenticatable
 
   def update_balance
     balance = B.balance(bitcoin_address)
-    resp = dynamodb.update_item(
+    resp = db.update_item(
       # required
       table_name: "TipperBitcoinAccounts",
       # required
