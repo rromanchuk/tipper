@@ -8,12 +8,9 @@ module UserAuthenticatable
 
   protected
 
-  def bitcoin_address
-    params.require(:bitcoin_address)
-  end
+  
 
   def update_balance
-    balance = B.balance(bitcoin_address)
     resp = db.update_item(
       # required
       table_name: "TipperBitcoinAccounts",
@@ -38,14 +35,10 @@ module UserAuthenticatable
   end
 
   def authenticate_user_from_token
-    Rails.logger.info login_params.inspect
-    user = User.find(twitter_id)
-
-    Rails.logger.info resp.item
-    params[:bitcoin_address] = resp.item["BitcoinAddress"]
-    raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["auth_token"]
+    Rails.logger.info user
+    raise ActionController::InvalidAuthenticityToken if params[:token] != auth_token
     update_balance
-    resp.item
+    user
   rescue ActionController::InvalidAuthenticityToken
     false
   end
@@ -71,9 +64,25 @@ module UserAuthenticatable
       end
     end
   end
+  
+  def balance
+    @balance ||= B.balance(bitcoin_address)
+  end
+  
+  def user
+    @user = User.find(twitter_id)
+  end
 
   def twitter_id
-    params.require(:twitter_id)
+    login_params.require(:twitter_id)
+  end
+
+  def bitcoin_address
+    user.require("BitcoinAddress")
+  end
+
+  def auth_token
+    login_params.require(:auth_token)
   end
 
   def db
