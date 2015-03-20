@@ -12,6 +12,11 @@ module Api
       render json: addresses
     end
 
+    def address_balance
+      balance B.balance(params[:address])
+      render json: balance
+    end
+
     def accounts
       accounts = B.client.listaccounts
       render json: {accounts: accounts}
