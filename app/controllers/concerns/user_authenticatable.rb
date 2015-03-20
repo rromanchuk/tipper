@@ -11,7 +11,7 @@ module UserAuthenticatable
   
 
   def update_balance
-    Rails.logger.info "balance is #{balance}"
+    Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
     resp = db.update_item(
       # required
       table_name: "TipperBitcoinAccounts",
