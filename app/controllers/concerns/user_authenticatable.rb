@@ -19,7 +19,7 @@ module UserAuthenticatable
     Rails.logger.info resp.item
     params[:bitcoin_address] = resp.item["BitcoinAddress"]
     raise ActionController::InvalidAuthenticityToken if params[:token] != resp.item["auth_token"]
-    resp
+    resp.item
   rescue ActionController::InvalidAuthenticityToken
     false
   end

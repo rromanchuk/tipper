@@ -18,7 +18,7 @@ module Api
     end
 
     def show
-      render json: {bitcoin_address: params[:bitcoin_address], bitcoin_balance: B.balance(params[:bitcoin_address])}
+      render json: current_user
     end
 
 
