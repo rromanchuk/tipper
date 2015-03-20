@@ -11,6 +11,7 @@ module UserAuthenticatable
   
 
   def update_balance
+    Rails.logger.info "balance is #{balance}"
     resp = db.update_item(
       # required
       table_name: "TipperBitcoinAccounts",
@@ -36,9 +37,8 @@ module UserAuthenticatable
 
   def authenticate_user_from_token
     Rails.logger.info "authenticate_user_from_token #{user}"
-    Rails.logger.info "#{user[:token]} != #{auth_token}"
 
-    raise ActionController::InvalidAuthenticityToken if user[:token] != auth_token
+    raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token
     update_balance
     user
   rescue ActionController::InvalidAuthenticityToken
