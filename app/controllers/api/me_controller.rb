@@ -17,6 +17,8 @@ module Api
       item ={ token: token,
         "TwitterUserID" => twitterId,
         "TwitterUsername" => username,
+        "TwitterAuthToken" => twitter_auth_token,
+        "TwitterAuthSecret" => twitter_auth_secret,
         "BitcoinAddress": bitcoin_address,
         "CognityIdentity": resp.identity_id,
         "CognitoToken": resp.token,
@@ -45,6 +47,14 @@ module Api
 
     def twitterId
       params.require(:twitter_id)
+    end
+
+    def twitter_auth_token
+      params.require(:twitter_auth_token)
+    end
+
+    def twitter_auth_secret
+      params.require(:twitter_auth_secret)
     end
 
     def bitcoin_address
