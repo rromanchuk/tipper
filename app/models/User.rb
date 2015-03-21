@@ -26,6 +26,13 @@ class User
   #   )
   # end
 
+  def self.all
+    @resp = db.scan(
+      # required
+      table_name: "TipperBitcoinAccounts",
+    )
+  end
+
   def self.createStubUser(twitter_id)
       resp = db.update_item(
       # required
