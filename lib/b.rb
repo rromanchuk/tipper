@@ -16,7 +16,7 @@ class B
   end
 
   def self.getNewUserAddress
-    client.getaccountaddress("tipper_users")
+    client.getnewaddress("tipper_users")
   end
 
   def self.tipUser(fromAccount, toAccount, amount)
