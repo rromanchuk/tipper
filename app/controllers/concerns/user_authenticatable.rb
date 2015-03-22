@@ -33,6 +33,8 @@ module UserAuthenticatable
       })
   end
 
+
+
   def authenticate_user_from_token
     Rails.logger.info "authenticate_user_from_token #{user}"
 
@@ -79,6 +81,10 @@ module UserAuthenticatable
 
   def bitcoin_address
     user["BitcoinAddress"]
+  end
+
+  def cognito_identity
+    user["CognityIdentity"]
   end
 
   def auth_token
