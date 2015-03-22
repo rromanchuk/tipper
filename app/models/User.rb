@@ -33,24 +33,13 @@ class User
     )
   end
 
-  def self.createStubUser(twitter_id)
-      resp = db.update_item(
-      # required
-      table_name: "TipperBitcoinAccounts",
-      # required
-      key: {
-        "TwitterUserID" => twitter_id,
-        "BitcoinAddress" => B.getNewUserAddress
-      },
-      return_values: "NONE|ALL_OLD|UPDATED_OLD|ALL_NEW|UPDATED_NEW",
-    )
+  def self.syncBalance(twitter_id)
+    user = User.find()
   end
 
   def self.find(twitter_id)
       db.get_item(
-        # required
         table_name: "TipperBitcoinAccounts",
-        # required
         key: {
           "TwitterUserID" => twitter_id,
         },
