@@ -1,7 +1,7 @@
 #require 'bitcon_client'
 class B
   def self.client
-    @client ||= Bitcoin::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {port: ENV["RPC_PORT"], :ssl => ENV["RPC_SHOULD_USE_SSL"] })
+    @client ||= Bitcoin::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {:host => ENV["RPC_HOST"], port: ENV["RPC_PORT"], :ssl => ENV["RPC_SHOULD_USE_SSL"] })
   end
 
   def self.totalBalance
