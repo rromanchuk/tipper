@@ -7,6 +7,7 @@ Rails.application.routes.draw do
       get 'b/accounts' => 'b#accounts'
       get 'b/recent' => 'b#recent'
      resources :charges, only: [:create]
+     resources :cognito, only: [:create]
   end
 
 
