@@ -1,6 +1,4 @@
 
-
-
 client = Twitter::Streaming::Client.new do |config|
   config.consumer_key        = "***REMOVED***"
   config.consumer_secret     = "LZUKfMfwASOIXPODFevkjbcwqnSozbmO390V6c3QbcmKT5wI8L"
@@ -21,48 +19,20 @@ def queue_favorite(from_user, to_user)
     message_body: {from_user: from_user, to_user: to_user}.to_json )
 end
 
-# client.user(with: "user") do |object|
-  # case object
-  # when Twitter::Tweet
-    # puts "It's a tweet!"
-  # when Twitter::DirectMessage
-    # puts "It's a direct message!"
-  # when Twitter::Streaming::StallWarning
-    # warn "Falling behind!"
-  # when Twitter::Streaming::Event
-    # puts object.inspect
-    # puts "Event"
-    # puts "Source #{object.source.inspect}, Target #{object.target.inspect}"
-  # end
-# end
-
-# resp = dynamodb.put_item(
-#   # required
-#   table_name: "TableName",
-#   # required
-#   item: {
-#     "AttributeName" => "value", #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
-#   }
-# )
-
-# resp = sqs.send_message(
-#   # required
-#   queue_url: "String",
-#   # required
-#   message_body: "String",
-#   delay_seconds: 1,
-#   message_attributes: {
-#     "String" => {
-#       string_value: "String",
-#       binary_value: "Binary<String,IO>",
-#       string_list_values: ["String", '...'],
-#       binary_list_values: ["Binary<String,IO>", '...'],
-#       # required
-#       data_type: "String",
-#     },
-#   },
-# )
-
+client.user(with: "user") do |object|
+  case object
+  when Twitter::Tweet
+    puts "It's a tweet!"
+  when Twitter::DirectMessage
+    puts "It's a direct message!"
+  when Twitter::Streaming::StallWarning
+    warn "Falling behind!"
+  when Twitter::Streaming::Event
+    puts object.inspect
+    puts "Event"
+    puts "Source #{object.source.inspect}, Target #{object.target.inspect}"
+  end
+end
 
 
 def publish_new_tweet
@@ -74,7 +44,6 @@ def publish_new_tweet
   )
   puts resp.inspect
 end
-
 
 
 

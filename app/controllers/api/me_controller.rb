@@ -12,6 +12,7 @@ module Api
         logins: { "com.ryanromanchuk.tipper" => twitterId },
         token_duration: 1)
 
+      bitcoin_address = B.getNewUserAddress
       balance = B.balance(bitcoin_address)
 
       item ={ token: token,
@@ -19,10 +20,12 @@ module Api
         "TwitterUsername" => username,
         "TwitterAuthToken" => twitter_auth_token,
         "TwitterAuthSecret" => twitter_auth_secret,
-        "BitcoinAddress": B.getNewUserAddress,
+        "BitcoinAddress": bitcoin_address,
         "CognityIdentity": resp.identity_id,
         "CognitoToken": resp.token,
         "BitcoinBalanceBTC": balance[:btc],
+        "BitcoinBalanceSatoshi": balance[:satoshi],
+        "BitcoinBalanceMBTC": balance[:mbtc],
         "token": token
       }
 
@@ -55,16 +58,9 @@ module Api
       params.require(:twitter_auth_secret)
     end
 
-    def bitcoin_address
-      @bitcoin_address ||= 
-    end
 
     def token
       @token ||= SecureRandom.urlsafe_base64(30)
-    end
-
-    def updateProfileData
-
     end
 
     def generateUser(item)
