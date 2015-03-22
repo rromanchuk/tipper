@@ -24,9 +24,8 @@ class B
   end
 
   def self.recent
-    client.listtransactions("", 20)
+    client.listtransactions("*", 20)
   end
-
 
   def self.fundUser(address)
     client.sendfrom("rromanchuk", address, 0.0002)
