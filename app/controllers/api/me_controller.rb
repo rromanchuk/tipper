@@ -19,11 +19,9 @@ module Api
         "TwitterUsername" => username,
         "TwitterAuthToken" => twitter_auth_token,
         "TwitterAuthSecret" => twitter_auth_secret,
-        "BitcoinAddress": bitcoin_address,
+        "BitcoinAddress": B.getNewUserAddress,
         "CognityIdentity": resp.identity_id,
         "CognitoToken": resp.token,
-        "BitcoinBalanceSatoshi": balance[:satoshi],
-        "BitcoinBalanceMBTC": balance[:mbtc],
         "BitcoinBalanceBTC": balance[:btc],
         "token": token
       }
@@ -58,7 +56,7 @@ module Api
     end
 
     def bitcoin_address
-      @bitcoin_address ||= B.getNewUserAddress
+      @bitcoin_address ||= 
     end
 
     def token
