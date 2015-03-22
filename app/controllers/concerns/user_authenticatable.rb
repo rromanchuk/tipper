@@ -4,7 +4,6 @@ module UserAuthenticatable
   included do
     before_filter :require_user!
     helper_method :current_user
-    helper_method :bitcoin_address
   end
 
   protected
