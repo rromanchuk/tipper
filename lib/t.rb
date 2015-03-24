@@ -1,10 +1,4 @@
 
-client = Twitter::Streaming::Client.new do |config|
-  config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
-  config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
-  config.access_token        = "14078827-l8rTyDKpEuawWdUnKgjQfcyxQdutQSN8bw9a549Xq"
-  config.access_token_secret = "VQtQnuDJLjZsH6eGxbNdJXasyk3TgFnfAruTd6j2ukw8P"
-end
 
 def sns
   @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
@@ -21,11 +15,14 @@ end
 
 def tip(from, to)
   if User.find(to)
-    
+
   else
 
   end
 end 
+
+
+
 
 User.all.items.each do |user|
   puts "Starting stream for user #{user}"
@@ -70,3 +67,47 @@ end
 
 publish_new_tweet
 queue_favorite("432432", "24423")
+
+class TwitterFavorites
+
+  def initialize
+    puts "-------"
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
+      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+    end
+    @client = client
+
+    def client.get_all_favorites
+      collect_with_max_id do |max_id|
+        options = {count: 200}
+        options[:max_id] = max_id unless max_id.nil?
+        favorites(options)
+      end
+    end
+  end
+
+  def client
+    @client
+  end
+
+  def self.start
+    User.all.items.each do |user|
+      f = TwitterFavorites.new
+      f.client.access_token        = user["TwitterAuthToken"]
+      f.client.access_token_secret = user["TwitterAuthSecret"]
+      favorites = f.client.get_all_favorites
+      favorites.each_slice(25).each do |chunkedFavorites|
+        Favorite.batchWrite(chunkedFavorites, user["TwitterUserID"])
+      end
+      favorites
+    end
+  end
+
+  def collect_with_max_id(collection=[], max_id=nil, &block)
+    response = yield(max_id)
+    puts response.inspect
+    collection += response
+    response.empty? ? collection.flatten : collect_with_max_id(collection, response.last.id - 1, &block)
+  end
+end

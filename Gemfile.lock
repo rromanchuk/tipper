@@ -6,6 +6,13 @@ GIT
       railties (>= 4.2.0, < 5)
 
 GIT
+  remote: git://github.com/rromanchuk/bitcoin-client.git
+  revision: bb7c607b54711a03425014a6582ea860e50ccf22
+  specs:
+    bitcoin-client (0.0.3)
+      rest-client
+
+GIT
   remote: https://github.com/stripe/stripe-ruby
   revision: 403e92fc8877d2dc1a5b9c17485dac8d3937989a
   specs:
@@ -68,8 +75,6 @@ GEM
       aws-sdk-core (= 2.0.30)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bitcoin-client (0.0.3)
-      rest-client
     bootstrap-sass (3.3.4)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
@@ -224,7 +229,7 @@ PLATFORMS
 
 DEPENDENCIES
   aws-sdk
-  bitcoin-client
+  bitcoin-client!
   bootstrap-sass (~> 3.3.3)
   bugsnag
   byebug

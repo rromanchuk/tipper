@@ -19,6 +19,7 @@ module Api
     def identity
       @cognitoidentity ||= Aws::CognitoIdentity::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
     end
+    
     def update_cognito
       resp = db.update_item(
         # required
