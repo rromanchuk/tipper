@@ -26,7 +26,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'aws-sdk'
 gem 'responders', github: "plataformatec/responders"
 gem 'bootstrap-sass', '~> 3.3.3'
-gem 'bitcoin-client'
+gem 'bitcoin-client', github: "rromanchuk/bitcoin-client"
 gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
 gem "slim-rails"
 gem "twitter"
