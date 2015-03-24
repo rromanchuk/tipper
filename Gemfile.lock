@@ -1,13 +1,13 @@
 GIT
   remote: git://github.com/plataformatec/responders.git
-  revision: 79e49601791edbafa26fa2bda77b205f0ea07d7a
+  revision: 62504cefee234f77a73d31f13d683521ba4f250c
   specs:
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
 
 GIT
   remote: git://github.com/rromanchuk/bitcoin-client.git
-  revision: bb7c607b54711a03425014a6582ea860e50ccf22
+  revision: 17e64f69f9dc7b6bf686028fe17bf477919b4c3c
   specs:
     bitcoin-client (0.0.3)
       rest-client
@@ -61,28 +61,28 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.7)
     arel (6.0.0)
-    autoprefixer-rails (5.1.7)
+    autoprefixer-rails (5.1.7.1)
       execjs
       json
-    aws-sdk (2.0.30)
-      aws-sdk-resources (= 2.0.30)
-    aws-sdk-core (2.0.30)
+    aws-sdk (2.0.31)
+      aws-sdk-resources (= 2.0.31)
+    aws-sdk-core (2.0.31)
       builder (~> 3.0)
       jmespath (~> 1.0)
       multi_json (~> 1.0)
       multi_xml (~> 0.5)
-    aws-sdk-resources (2.0.30)
-      aws-sdk-core (= 2.0.30)
+    aws-sdk-resources (2.0.31)
+      aws-sdk-core (= 2.0.31)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bootstrap-sass (3.3.4)
+    bootstrap-sass (3.3.4.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
     buftok (0.2.0)
     bugsnag (2.8.1)
       multi_json (~> 1.0)
     builder (3.2.2)
-    byebug (4.0.2)
+    byebug (4.0.3)
       columnize (= 0.9.0)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
@@ -93,7 +93,9 @@ GEM
     coffee-script-source (1.9.1)
     columnize (0.9.0)
     debug_inspector (0.0.2)
-    equalizer (0.0.9)
+    domain_name (0.5.23)
+      unf (>= 0.0.5, < 1.0.0)
+    equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.0.7)
     execjs (2.4.0)
@@ -104,9 +106,11 @@ GEM
     hike (1.2.3)
     http (0.6.3)
       http_parser.rb (~> 0.6.0)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     http_parser.rb (0.6.0)
     i18n (0.7.0)
-    jbuilder (2.2.11)
+    jbuilder (2.2.12)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
     jmespath (1.0.2)
@@ -130,7 +134,7 @@ GEM
     multipart-post (2.0.0)
     naught (1.0.0)
     netrc (0.10.3)
-    newrelic_rpm (3.10.0.279)
+    newrelic_rpm (3.11.1.284)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
     rack (1.6.0)
@@ -162,7 +166,9 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
-    rest-client (1.7.3)
+      json (~> 1.4)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     sass (3.4.13)
@@ -218,6 +224,9 @@ GEM
     uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.6)
     web-console (2.1.2)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
