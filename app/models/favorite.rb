@@ -13,7 +13,6 @@ class Favorite
     )
   end
 
-
   def self.db
     @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end

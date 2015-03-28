@@ -4,7 +4,7 @@ module Api
     skip_before_filter :require_user!, only: [:create]
 
     def create
-      resp = identity.get_open_id_token_for_developer_identity(
+      @resp = identity.get_open_id_token_for_developer_identity(
         # required
         identity_pool_id: "us-east-1:71450ec4-894b-4e51-bfbb-35a012b5b514",
         identity_id:  params[:identity_id],
@@ -12,26 +12,17 @@ module Api
         logins: { "com.ryanromanchuk.tipper" => twitterId },
         token_duration: 1)
 
-      bitcoin_address = B.getNewUserAddress
-      balance = B.balance(bitcoin_address)
 
-      item ={ token: token,
-        "TwitterUserID" => twitterId,
-        "TwitterUsername" => username,
-        "TwitterAuthToken" => twitter_auth_token,
-        "TwitterAuthSecret" => twitter_auth_secret,
-        "BitcoinAddress": bitcoin_address,
-        "CognityIdentity": resp.identity_id,
-        "CognitoToken": resp.token,
-        "BitcoinBalanceBTC": balance[:btc],
-        "BitcoinBalanceSatoshi": balance[:satoshi],
-        "BitcoinBalanceMBTC": balance[:mbtc],
-        "token": token
-      }
+      unless User.find(twitterId)
+         User.create_user(twitterId)
+      end
 
-      user = generateUser(item)
+      item = User.update_user(twitterId, attributes_to_update)
+      fetch_favorites
+
       render json: item
     end
+
 
     def show
       render json: current_user
@@ -63,11 +54,28 @@ module Api
       @token ||= SecureRandom.urlsafe_base64(30)
     end
 
-    def generateUser(item)
-      resp = db.put_item(
-        table_name: "TipperBitcoinAccounts",
-        item: item )
-      resp.attributes
+    def attributes_to_update
+      {
+        "token" => {
+          value: token
+        },
+        "TwitterAuthToken" => {
+          value: twitter_auth_token
+        },
+        "TwitterAuthSecret" => {
+          value: twitter_auth_secret
+        },
+        "CognityIdentity" => {
+          value: @resp.identity_id
+        },
+        "CognitoToken" => {
+          value: @resp.token
+        }
+      }
+    end
+
+    def fetch_favorites
+      sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId }.to_json )
     end
 
     def db
@@ -76,6 +84,10 @@ module Api
 
     def sync
       @sync ||=  Aws::CognitoSync::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+    end
+
+    def sqs
+      @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
     end
 
   end

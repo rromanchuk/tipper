@@ -19,8 +19,26 @@ class B
     client.getnewaddress("tipper_users")
   end
 
-  def self.tipUser(fromAccount, toAccount, amount)
-    client.move(fromAccount, toAccount, amount)
+  def self.unspent(address)
+    client.listunspent(1, 99999, [address])
+  end
+
+  def self.tip_user(fromAddress, toAddress)
+    unspents = client.listunspent(1, 9999999, [fromAddress])
+    puts "unspents: #{unspents}"
+    amounts_array = unspents.map {|a| a["amount"] }
+    puts "amounts_array: #{amounts_array}"
+    senderBTCBalance = amounts_array.inject(:+)
+    puts "senderBTCBalance: #{senderBTCBalance}"
+    amount_to_send_to_other_user = 0.001
+    transaction_fee = 0.0001
+    amount_to_send_back_to_self = senderBTCBalance - amount_to_send_to_other_user - transaction_fee
+
+    rawtx = client.createrawtransaction(unspents, {fromAddress=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
+    puts "rawtx:#{rawtx}"
+    signedTx = client.signrawtransaction(rawtx, unspents)
+    puts "signedTx: #{signedTx}"
+    return client.sendrawtransaction(signedTx["hex"])
   end
 
   def self.recent

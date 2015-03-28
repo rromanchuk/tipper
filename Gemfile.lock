@@ -1,22 +1,22 @@
 GIT
   remote: git://github.com/plataformatec/responders.git
-  revision: 62504cefee234f77a73d31f13d683521ba4f250c
+  revision: e4da9c86255e5e085b9ac683e1253c451a3163e2
   specs:
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
 
 GIT
   remote: git://github.com/rromanchuk/bitcoin-client.git
-  revision: 17e64f69f9dc7b6bf686028fe17bf477919b4c3c
+  revision: edd708c30c71850662c1b2ed10d1cb5e0997c4aa
   specs:
     bitcoin-client (0.0.3)
       rest-client
 
 GIT
   remote: https://github.com/stripe/stripe-ruby
-  revision: 403e92fc8877d2dc1a5b9c17485dac8d3937989a
+  revision: a980110740490b25bd2d60b33967306991348f70
   specs:
-    stripe (1.20.3)
+    stripe (1.20.4)
       json (~> 1.8.1)
       mime-types (>= 1.25, < 3.0)
       rest-client (~> 1.4)
@@ -59,20 +59,20 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
-    addressable (2.3.7)
+    addressable (2.3.8)
     arel (6.0.0)
-    autoprefixer-rails (5.1.7.1)
+    autoprefixer-rails (5.1.8)
       execjs
       json
-    aws-sdk (2.0.31)
-      aws-sdk-resources (= 2.0.31)
-    aws-sdk-core (2.0.31)
+    aws-sdk (2.0.33)
+      aws-sdk-resources (= 2.0.33)
+    aws-sdk-core (2.0.33)
       builder (~> 3.0)
       jmespath (~> 1.0)
       multi_json (~> 1.0)
       multi_xml (~> 0.5)
-    aws-sdk-resources (2.0.31)
-      aws-sdk-core (= 2.0.31)
+    aws-sdk-resources (2.0.33)
+      aws-sdk-core (= 2.0.33)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.3.4.1)
@@ -82,7 +82,7 @@ GEM
     bugsnag (2.8.1)
       multi_json (~> 1.0)
     builder (3.2.2)
-    byebug (4.0.3)
+    byebug (4.0.4)
       columnize (= 0.9.0)
     coffee-rails (4.1.0)
       coffee-script (>= 2.2.0)
@@ -92,6 +92,7 @@ GEM
       execjs
     coffee-script-source (1.9.1)
     columnize (0.9.0)
+    daemons (1.2.2)
     debug_inspector (0.0.2)
     domain_name (0.5.23)
       unf (>= 0.0.5, < 1.0.0)
@@ -101,10 +102,12 @@ GEM
     execjs (2.4.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    foreman (0.78.0)
+      thor (~> 0.19.1)
     globalid (0.3.3)
       activesupport (>= 4.1.0)
     hike (1.2.3)
-    http (0.6.3)
+    http (0.6.4)
       http_parser.rb (~> 0.6.0)
     http-cookie (1.0.2)
       domain_name (~> 0.5)
@@ -243,7 +246,9 @@ DEPENDENCIES
   bugsnag
   byebug
   coffee-rails (~> 4.1.0)
+  daemons
   eventmachine
+  foreman
   jbuilder (~> 2.0)
   jquery-rails
   newrelic_rpm

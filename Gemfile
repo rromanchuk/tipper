@@ -34,7 +34,8 @@ gem "satoshi-unit"
 gem "bugsnag"
 gem 'newrelic_rpm'
 gem 'eventmachine'
-
+gem 'daemons'
+gem 'foreman'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

@@ -1,40 +1,10 @@
 class User
 
-  # def self.updateCognitoSync()
-  #     resp = cognitosync.update_records(
-  #       # required
-  #       identity_pool_id: "IdentityPoolId",
-  #       # required
-  #       identity_id: "IdentityId",
-  #       dataset_name: "Profile",
-  #       device_id: "DeviceId",
-  #       record_patches: [
-  #         {
-  #           # required
-  #           op: "replace",
-  #           # required
-  #           key: "RecordKey",
-  #           value: "RecordValue",
-  #           # required
-  #           sync_count: 1,
-  #           device_last_modified_date: Time.now,
-  #         },
-  #       ],
-  #       # required
-  #       sync_session_token: "SyncSessionToken",
-  #       client_context: "ClientContext",
-  #   )
-  # end
-
   def self.all
     @resp = db.scan(
       # required
       table_name: "TipperBitcoinAccounts",
     )
-  end
-
-  def self.syncBalance(twitter_id)
-    user = User.find()
   end
 
   def self.find(twitter_id)
@@ -44,6 +14,34 @@ class User
           "TwitterUserID" => twitter_id,
         },
       ).item
+  end
+
+  def self.create_user(twitter_id)
+    resp = db.update_item(
+      table_name: "TipperBitcoinAccounts",
+      key: {
+        "TwitterUserID" => twitter_id,
+      },
+      attribute_updates: {
+        "BitcoinAddress" => {
+          value: B.getNewUserAddress
+        }
+      },
+      return_values: "ALL_NEW"
+    )
+    resp.attributes
+  end
+
+  def update_user(twitter_id, attribute_updates)
+    resp = db.update_item(
+      table_name: "TipperBitcoinAccounts",
+      key: {
+        "TwitterUserID" => twitter_id,
+      },
+      attribute_updates: attribute_updates,
+      return_values: "ALL_NEW"
+    )
+    resp.attributes
   end
 
   def self.userExists?(twitter_id)
