@@ -46,7 +46,7 @@ class B
   end
 
   def self.fundUser(address)
-    client.sendfrom("rromanchuk", address, 0.0002)
+    client.sendfrom("rromanchuk", address, 0.02)
   end
 
 end

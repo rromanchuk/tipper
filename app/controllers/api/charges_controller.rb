@@ -5,7 +5,7 @@ module Api
 
     def create
       # Amount in cents
-      @amount = 100
+      @amount = amount
 
       customer = Stripe::Customer.create(
         :card  => params[:stripeToken]
@@ -29,6 +29,10 @@ module Api
 
     def send_bitcoin
       B.fundUser(bitcoin_address)
+    end
+
+    def amount
+      params.require(:amount)
     end
 
 
