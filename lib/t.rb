@@ -12,10 +12,10 @@ def queue_tip(from, to)
   
 end 
 
-def publish_new_tweet
+def publish_new_tweet(user)
   apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
   resp = sns.publish(
-    topic_arn: "arn:aws:sns:us-east-1:080383581145:NewTipperFavorite",
+    target_arn: user["EndpointArn"],
     message_structure: "json",
     message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
   )
@@ -46,7 +46,7 @@ EventMachine.run {
         puts "Event"
         puts "Source #{object.source.inspect}, Target #{object.target.inspect}"
         publish_new_tweet
-        sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id, "FromTwitterUserID": object.source.id, "ToTwitterUserID": object.target.id }.to_json )
+        sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id, "FromTwitterID": object.source.id, "ToTwitterID": object.target.id }.to_json )
       end
     end
     }

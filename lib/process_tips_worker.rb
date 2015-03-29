@@ -1,7 +1,8 @@
 
 class ProcessTipWorker
    def initialize
-    puts "Starting event machine for FetchFavorites"
+    puts "Starting event machine for ProcessTipWorker"
+    test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
         puts "Ready to process tasks.."
@@ -13,7 +14,7 @@ class ProcessTipWorker
   end
 
   def test_event
-    sqs.send_message(queue_url: queue, message_body: { "TwitterUserID": "***REMOVED***" }.to_json )
+    sqs.send_message(queue_url: queue, message_body: { "FromTwitterID": "***REMOVED***", "ToTwitterID": "***REMOVED***", "TweetID": "***REMOVED***" }.to_json )
   end
 
   def sqs
@@ -43,8 +44,19 @@ class ProcessTipWorker
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
       json = message[:message]
-      fromUser = User.find(json["FromTwitterUserID"])
-      
+      puts "process_messages: #{json}"
+      fromUser = User.find(json["FromTwitterID"])
+      toUser = User.find(json["ToTwitterID"])
+
+      puts "fromUser: #{fromUser}"
+      unless toUser
+        toUser = User.create_user(json["ToTwitterUserID"])
+      end
+      puts "toUser: #{toUser}"
+
+      txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
+      Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)
+
       delete(receipt_handle)
     end
   end
@@ -52,5 +64,5 @@ class ProcessTipWorker
   def delete(handle)
     resp = sqs.delete_message( queue_url: queue, receipt_handle: handle )
   end
-
 end
+ProcessTipWorker.new

@@ -1,10 +1,11 @@
 class Tip
   
-  def self.new_tip(tweetId, from, to)
+  def self.new_tip(tweetId, from, to, txid)
+    puts "new_tip tweetId:#{tweetId}, from:#{from}, to:#{to}, txid:#{txid}"
     resp = db.update_item(
       table_name: "TipperTips",
       key: {
-        "TweetID" => from,
+        "TweetID" => tweetId,
       },
       attribute_updates: {
         "ToTwitterID" => {
@@ -13,6 +14,9 @@ class Tip
         "FromTwitterID" => {
           value: from
         },
+        "txid" => {
+          value: txid
+        }
         "CreatedAt" => {
           value: tweet.created_at.to_i
         }
