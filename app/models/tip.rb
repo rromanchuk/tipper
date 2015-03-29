@@ -16,7 +16,7 @@ class Tip
         },
         "txid" => {
           value: txid
-        }
+        },
         "CreatedAt" => {
           value: tweet.created_at.to_i
         }
