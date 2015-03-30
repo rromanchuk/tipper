@@ -24,6 +24,7 @@ class B
   end
 
   def self.tip_user(fromAddress, toAddress)
+    puts "tip_user  from #{fromAddress} -> #{toAddress}"
     # Get the total avail inputs from the snders address with at least 1 confirmation
     unspents = client.listunspent(1, 9999999, [fromAddress])
     puts "unspents: #{unspents}"
