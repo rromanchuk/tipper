@@ -35,6 +35,9 @@ class B
     puts "amounts_array: #{amounts_array}"
     senderBTCBalance = amounts_array.inject(:+)
     puts "senderBTCBalance: #{senderBTCBalance}"
+    unless senderBTCBalance
+      return nil
+    end
 
     # The amount of btc to send to the receiving user
     amount_to_send_to_other_user = 0.001
