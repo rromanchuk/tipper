@@ -2,7 +2,7 @@
 class ProcessTipWorker
    def initialize
     puts "Starting event machine for ProcessTipWorker"
-    test_event
+    #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
         puts "Ready to process tasks.."
@@ -19,6 +19,10 @@ class ProcessTipWorker
 
   def sqs
     @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+
+  def sns
+    @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end
 
   def queue
@@ -40,6 +44,16 @@ class ProcessTipWorker
     end
   end
 
+  def publish(user)
+    apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
+    resp = sns.publish(
+      target_arn: user["EndpointArn"],
+      message_structure: "json",
+      message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
+    )
+    puts resp.inspect
+  end
+
   def process_messages(messages)
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
@@ -57,6 +71,7 @@ class ProcessTipWorker
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
       Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)
 
+      publish(fromUser)
       delete(receipt_handle)
     end
   end

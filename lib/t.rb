@@ -8,10 +8,6 @@ def sqs
   sqs = Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
 end
 
-def queue_tip(from, to)
-  
-end 
-
 def publish_new_tweet(user)
   apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
   resp = sns.publish(
