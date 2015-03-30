@@ -39,9 +39,8 @@ EventMachine.run {
         puts "Falling behind!"
       when Twitter::Streaming::Event
         puts object.inspect
-        puts "Event"
-        puts "Source #{object.source.inspect}, Target #{object.target.inspect}"
-        publish_new_tweet
+        puts "Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
+        publish_new_tweet(user)
         sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id, "FromTwitterID": object.source.id, "ToTwitterID": object.target.id }.to_json )
       end
     end
