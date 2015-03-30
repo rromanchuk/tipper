@@ -44,12 +44,23 @@ class ProcessTipWorker
     end
   end
 
-  def publish(user)
-    apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
+  def publish_to(user)
+
+    apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from another twitter user.", "badge" => 1 } }.to_json
     resp = sns.publish(
       target_arn: user["EndpointArn"],
       message_structure: "json",
-      message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
+      message: {"default" => "You just received 0.002BTC from another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
+    )
+    puts resp.inspect
+  end
+
+  def publish_from(user)
+    apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to another twitter user.", "badge" => 1 } }.to_json
+    resp = sns.publish(
+      target_arn: user["EndpointArn"],
+      message_structure: "json",
+      message: {"default" => "You just sent 0.002BTC to another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
     )
     puts resp.inspect
   end
@@ -71,7 +82,8 @@ class ProcessTipWorker
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
       Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)
 
-      publish(fromUser)
+      publish_to(toUser)
+      publish_from(fromUser)
       delete(receipt_handle)
     end
   end
