@@ -68,6 +68,7 @@ class ProcessTipWorker
       receipt_handle = message[:receipt_handle]
       json = message[:message]
       puts "process_messages: #{json}"
+
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
