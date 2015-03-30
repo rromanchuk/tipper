@@ -97,6 +97,7 @@ class ProcessTipWorker
         delete(receipt_handle)
       else
         publish_from_problem(fromUser)
+        delete(receipt_handle)
       end
     end
   end
