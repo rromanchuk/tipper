@@ -8,6 +8,7 @@ class User
   end
 
   def self.find(twitter_id)
+    puts "User#find #{twitter_id}"
       db.get_item(
         table_name: "TipperBitcoinAccounts",
         key: {
