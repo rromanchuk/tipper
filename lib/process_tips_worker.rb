@@ -52,7 +52,6 @@ class ProcessTipWorker
       message_structure: "json",
       message: {"default" => "You just received 0.002BTC from another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
     )
-    puts resp.inspect
   end
 
   def publish_from(user)
@@ -62,7 +61,6 @@ class ProcessTipWorker
       message_structure: "json",
       message: {"default" => "You just sent 0.002BTC to another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
     )
-    puts resp.inspect
   end
 
   def process_messages(messages)
@@ -73,11 +71,13 @@ class ProcessTipWorker
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
-      puts "fromUser: #{fromUser}"
+      puts "fromUser:"
+      puts fromUser.to_yaml
       unless toUser
         toUser = User.create_user(json["ToTwitterUserID"])
       end
-      puts "toUser: #{toUser}"
+      puts "toUser:"
+      puts toUser.to_yaml
 
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
       Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)

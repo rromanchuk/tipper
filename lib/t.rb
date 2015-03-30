@@ -15,7 +15,6 @@ def publish_new_tweet(user)
     message_structure: "json",
     message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
   )
-  puts resp.inspect
 end
 
 EventMachine.run {
@@ -38,7 +37,7 @@ EventMachine.run {
       when Twitter::Streaming::StallWarning
         puts "Falling behind!"
       when Twitter::Streaming::Event
-        puts object.inspect
+        puts "Found a favorite event..."
         puts "Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
         publish_new_tweet(user)
         sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id, "FromTwitterID": object.source.id, "ToTwitterID": object.target.id }.to_json )
