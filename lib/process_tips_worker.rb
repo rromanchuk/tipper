@@ -63,6 +63,15 @@ class ProcessTipWorker
     )
   end
 
+  def publish_from_problem(user)
+    apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 } }.to_json
+    resp = sns.publish(
+      target_arn: user["EndpointArn"],
+      message_structure: "json",
+      message: {"default" => "Opps, we weren't able to send the tip. Low balance?", "APNS_SANDBOX": apns_payload }.to_json
+    )
+  end
+
   def process_messages(messages)
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
@@ -81,11 +90,14 @@ class ProcessTipWorker
       puts toUser.to_yaml
 
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
-      Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)
-
-      publish_to(toUser)
-      publish_from(fromUser)
-      delete(receipt_handle)
+      if txid
+        Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)
+        publish_to(toUser)
+        publish_from(fromUser)
+        delete(receipt_handle)
+      else
+        publish_from_problem(fromUser)
+      end
     end
   end
 
