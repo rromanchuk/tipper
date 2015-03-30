@@ -18,7 +18,7 @@ class Tip
           value: txid
         },
         "CreatedAt" => {
-          value: tweet.created_at.to_i
+          value: Time.now.to_i
         }
       },
     )
