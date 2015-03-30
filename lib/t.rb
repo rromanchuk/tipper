@@ -38,10 +38,12 @@ EventMachine.run {
         puts "Falling behind!"
       when Twitter::Streaming::Event
         puts "Found a favorite event..."
-        puts "Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
+        puts "currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
         if object.source.id == user["TwitterUserID"]
           publish_new_tweet(user)
           sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id, "FromTwitterID": object.source.id, "ToTwitterID": object.target.id }.to_json )
+        else
+          puts "Skipping..."
         end
       end
     end
