@@ -10,7 +10,8 @@ class B
   end
 
   def self.balance(address)
-    balance = client.getreceivedbyaddress(address, 0)
+    amounts_array = unspent(address).map {|a| a["amount"] }
+    balance = amounts_array.inject(:+)
     s = Satoshi.new(balance)
     {satoshi: s.to_i, mbtc: s.to_mbtc, btc: s.to_btc}
   end
@@ -20,7 +21,7 @@ class B
   end
 
   def self.unspent(address)
-    client.listunspent(1, 99999, [address])
+    client.listunspent(0, 99999, [address])
   end
 
   def self.tip_user(fromAddress, toAddress)
