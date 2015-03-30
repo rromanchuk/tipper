@@ -74,7 +74,7 @@ class ProcessTipWorker
       puts "fromUser:"
       puts fromUser.to_yaml
       unless toUser
-        toUser = User.create_user(json["ToTwitterUserID"])
+        toUser = User.create_user(json["ToTwitterID"])
       end
       puts "toUser:"
       puts toUser.to_yaml
