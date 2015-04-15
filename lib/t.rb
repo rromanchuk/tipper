@@ -37,7 +37,7 @@ EventMachine.run {
       when Twitter::Streaming::StallWarning
         puts "Falling behind!"
       when Twitter::Streaming::Event
-        puts "Found a favorite event..."
+        puts "Found a favorite event... #{object}"
         puts "currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
         if object.source.id.to_s == user["TwitterUserID"]
           publish_new_tweet(user)
