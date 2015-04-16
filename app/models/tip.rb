@@ -1,5 +1,12 @@
 class Tip
   
+  def self.all
+    @resp = db.scan(
+      # required
+      table_name: "TipperTips",
+    )
+  end
+
   def self.new_tip(tweetId, from, to, txid)
     puts "new_tip tweetId:#{tweetId}, from:#{from}, to:#{to}, txid:#{txid}"
     resp = db.update_item(
