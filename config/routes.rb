@@ -13,9 +13,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :users,  only: [:index]
-    resources :posts,  only: [:index]
-    resources :events, only: [:index]
-    resources :webhooks, only: [:index, :show]
+    resources :tips,  only: [:index]
   end
 
   # The priority is based upon order of creation: first created -> highest priority.
