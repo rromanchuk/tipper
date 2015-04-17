@@ -33,7 +33,7 @@ class User
     resp.attributes
   end
 
-  def update_user(twitter_id, attribute_updates)
+  def self.update_user(twitter_id, attribute_updates)
     resp = db.update_item(
       table_name: "TipperBitcoinAccounts",
       key: {
