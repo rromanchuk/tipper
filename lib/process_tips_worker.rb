@@ -56,6 +56,7 @@ class ProcessTipWorker
   end
 
   def publish_to(user)
+    return unless user["EndpointArn"]
     begin
       apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from another twitter user.", "badge" => 1 } }.to_json
       resp = sns.publish(
@@ -69,6 +70,7 @@ class ProcessTipWorker
   end
 
   def publish_from(user)
+    return unless user["EndpointArn"]
     begin
       apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to another twitter user.", "badge" => 1 } }.to_json
       resp = sns.publish(
@@ -82,6 +84,7 @@ class ProcessTipWorker
   end
 
   def publish_from_problem(user)
+    return unless user["EndpointArn"]
     begin
       apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 } }.to_json
       resp = sns.publish(
