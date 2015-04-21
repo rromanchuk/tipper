@@ -19,13 +19,15 @@ end
 
 EventMachine.run {
   User.all.items.reverse.each do |user|
-  puts "Starting stream for user #{user}"
-  client = Twitter::Streaming::Client.new do |config|
-    config.consumer_key        = "***REMOVED***"
-    config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
-    config.access_token        = user["TwitterAuthToken"]
-    config.access_token_secret = user["TwitterAuthSecret"]
-  end
+    puts "Starting stream for user #{user}"
+    next unless user["isActive"]
+
+    client = Twitter::Streaming::Client.new do |config|
+      config.consumer_key        = "***REMOVED***"
+      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+      config.access_token        = user["TwitterAuthToken"]
+      config.access_token_secret = user["TwitterAuthSecret"]
+    end
 
   EventMachine.defer {
     client.user(with: "user") do |object|
