@@ -11,7 +11,7 @@ class Tip
     resp = db.update_item(
       table_name: "TipperTwitterFavorites",
       key: {
-        "TweetID" => tweet.id.to_s,
+        "TweetID" => "#{fromUser["TwitterUserID"]}-#{tweet.id}",
       },
       attribute_updates: {
         "TipperUserID" => {

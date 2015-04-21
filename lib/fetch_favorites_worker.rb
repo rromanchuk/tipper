@@ -58,7 +58,7 @@ end
 
 class FetchFavoritesWorker
   def initialize
-    #test_event
+    test_event
     puts "Starting event machine for FetchFavorites"
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
@@ -72,6 +72,8 @@ class FetchFavoritesWorker
 
   def test_event
     sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": "14078827" }.to_json )
+    sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": "14764725" }.to_json )
+    sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": "11916702" }.to_json )
   end
 
   def sqs
