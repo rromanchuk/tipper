@@ -7,7 +7,7 @@ class Tip
     )
   end
   def self.new_tip(tweet, fromUser, toUser, txid)
-    puts "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{to}, txid:#{txid}"
+    puts "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
     resp = db.update_item(
       table_name: "TipperTwitterFavorites",
       key: {
