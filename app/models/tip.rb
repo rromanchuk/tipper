@@ -3,11 +3,11 @@ class Tip
   def self.all
     @resp = db.scan(
       # required
-      table_name: "TipperTips",
+      table_name: "TipperTwitterFavorites",
     )
   end
   def self.new_tip(tweet, fromUser, toUser, txid)
-    puts "new_tip tweetId:#{tweetId}, from:#{from}, to:#{to}, txid:#{txid}"
+    puts "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{to}, txid:#{txid}"
     resp = db.update_item(
       table_name: "TipperTwitterFavorites",
       key: {
@@ -19,6 +19,9 @@ class Tip
         },
         "ToTwitterID": {
           value: toUser["TwitterUserID"]
+        },
+        "ToTwitterUsername" => {
+          value: toUser["TwitterUsername"]
         },
         "FromTwitterID": {
           value: fromUser["TwitterUserID"]
@@ -37,30 +40,6 @@ class Tip
         },
         "DidLeaveTip" => {
           value: true
-        }
-      },
-    )
-
-    resp = db.update_item(
-      table_name: "TipperTips",
-      key: {
-        "TweetID" => tweetId,
-      },
-      attribute_updates: {
-        "ToTwitterID" => {
-          value: to
-        },
-        "FromTwitterID" => {
-          value: from
-        },
-        "txid" => {
-          value: txid
-        },
-        "CreatedAt" => {
-          value: Time.now.to_i
-        },
-        "TweetJSON" => {
-          value: tweetJSON
         }
       },
     )
