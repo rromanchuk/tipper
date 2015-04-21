@@ -29,6 +29,17 @@ class ProcessTipWorker
     @queue ||= SQSQueues.new_tip
   end
 
+  def restClient
+    @restClient ||= Twitter::REST::Client.new do |config|
+      config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
+      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+    end
+  end
+
+  def tweetObject(tweetId)
+    restClient.status(tweetId)
+  end
+
   def receive
     begin
       resp = sqs.receive_message(
@@ -91,7 +102,8 @@ class ProcessTipWorker
 
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
       if txid
-        Tip.new_tip(json["TweetID"], json["FromTwitterID"], json["ToTwitterID"], txid)
+        tweet = tweetObject(json["TweetID"])
+        Tip.new_tip(tweet, fromUser, toUser, txid)
         publish_to(toUser)
         publish_from(fromUser)
         delete(receipt_handle)

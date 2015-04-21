@@ -1,9 +1,15 @@
 class Favorite
 
-  def self.batchWrite(collection, tipperUserID)
+  def self.batchWrite(collection, currentUser)
     putRequests = []
     collection.each do |tweet|
-      putRequests << { put_request: { item: { "TweetID": tweet.id.to_s, "TweetJSON": tweet.to_json, "CreatedAt": tweet.created_at.to_i, "TipperUserID": tipperUserID} } }
+      putRequests << { put_request: { item: { "TweetID": tweet.id.to_s, 
+        "TweetJSON": tweet.to_json, 
+        "CreatedAt": tweet.created_at.to_i, 
+        "TipperUserID": currentUser["TwitterUserID"],
+        "FromTwitterID": currentUser["TwitterUserID"],
+        "ToTwitterID": tweet.user.id.to_s,
+        "ToTwitterUsername": tweet.user.screen_name } } }
     end
     resp = db.batch_write_item(
       # required

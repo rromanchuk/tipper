@@ -2,7 +2,6 @@ $stdout.sync = true
 class TwitterFavorites
 
   def initialize
-    puts "-------"
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
       config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
@@ -42,7 +41,7 @@ class TwitterFavorites
     f.client.access_token_secret = user["TwitterAuthSecret"]
     favorites = f.client.get_all_favorites
       favorites.each_slice(25).each do |chunkedFavorites|
-        Favorite.batchWrite(chunkedFavorites, user["TwitterUserID"])
+        Favorite.batchWrite(chunkedFavorites, user)
       end
     favorites
   end
@@ -59,6 +58,7 @@ end
 
 class FetchFavoritesWorker
   def initialize
+    #test_event
     puts "Starting event machine for FetchFavorites"
     EventMachine.run do
       EM.add_periodic_timer(25.0) do

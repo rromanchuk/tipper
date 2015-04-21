@@ -1,7 +1,7 @@
 class Admin::TipsController < Admin::BaseController
 
   def index
-    @paginated_users = User.all
+    @paginated_tips = Tip.all
   end
 
   protected
