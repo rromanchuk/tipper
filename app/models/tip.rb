@@ -25,7 +25,7 @@ class Tip
         },
         "FromTwitterUsername": {
           value: fromUser["TwitterUsername"]
-        }
+        },
         "txid" => {
           value: txid
         },
