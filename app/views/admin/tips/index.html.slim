@@ -1,0 +1,13 @@
+table.table
+  thead
+    tr
+      th TweetID
+      th FromTwitterID
+      th ToTwitterID
+      th txid
+  - @paginated_tips.items.each do |item|
+    tr
+      td = item["TweetID"]
+      td = item["FromTwitterID"]
+      td = item["ToTwitterID"]
+      td = item["txid"]
