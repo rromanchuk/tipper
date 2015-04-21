@@ -3,7 +3,7 @@ class Favorite
   def self.batchWrite(collection, currentUser)
     putRequests = []
     collection.each do |tweet|
-      putRequests << { put_request: { item: { "TweetID": tweet.id.to_s, 
+      putRequests << { put_request: { item: { "TweetID": "#{currentUser["TwitterUserID"]}-#{tweet.id.to_s}", 
         "TweetJSON": tweet.to_json, 
         "CreatedAt": tweet.created_at.to_i, 
         "TipperUserID": currentUser["TwitterUserID"],
