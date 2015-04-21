@@ -58,7 +58,7 @@ end
 
 class FetchFavoritesWorker
   def initialize
-    test_event
+    #test_event
     puts "Starting event machine for FetchFavorites"
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
