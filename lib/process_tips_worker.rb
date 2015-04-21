@@ -56,31 +56,42 @@ class ProcessTipWorker
   end
 
   def publish_to(user)
-
-    apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from another twitter user.", "badge" => 1 } }.to_json
-    resp = sns.publish(
-      target_arn: user["EndpointArn"],
-      message_structure: "json",
-      message: {"default" => "You just received 0.002BTC from another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
-    )
+    begin
+      apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from another twitter user.", "badge" => 1 } }.to_json
+      resp = sns.publish(
+        target_arn: user["EndpointArn"],
+        message_structure: "json",
+        message: {"default" => "You just received 0.002BTC from another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
+      )
+    rescue Aws::SNS::Errors::EndpointDisabled
+      puts "Aws::SNS::Errors::EndpointDisabled"
+    end
   end
 
   def publish_from(user)
-    apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to another twitter user.", "badge" => 1 } }.to_json
-    resp = sns.publish(
-      target_arn: user["EndpointArn"],
-      message_structure: "json",
-      message: {"default" => "You just sent 0.002BTC to another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
-    )
+    begin
+      apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to another twitter user.", "badge" => 1 } }.to_json
+      resp = sns.publish(
+        target_arn: user["EndpointArn"],
+        message_structure: "json",
+        message: {"default" => "You just sent 0.002BTC to another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
+      )
+    rescue Aws::SNS::Errors::EndpointDisabled
+      puts "Aws::SNS::Errors::EndpointDisabled"
+    end
   end
 
   def publish_from_problem(user)
-    apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 } }.to_json
-    resp = sns.publish(
-      target_arn: user["EndpointArn"],
-      message_structure: "json",
-      message: {"default" => "Opps, we weren't able to send the tip. Low balance?", "APNS_SANDBOX": apns_payload }.to_json
-    )
+    begin
+      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 } }.to_json
+      resp = sns.publish(
+        target_arn: user["EndpointArn"],
+        message_structure: "json",
+        message: {"default" => "Opps, we weren't able to send the tip. Low balance?", "APNS_SANDBOX": apns_payload }.to_json
+      )
+    rescue Aws::SNS::Errors::EndpointDisabled
+      puts "Aws::SNS::Errors::EndpointDisabled"
+    end
   end
 
   def process_messages(messages)
