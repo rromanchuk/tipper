@@ -49,16 +49,8 @@ module Api
       params.require(:twitter_auth_secret)
     end
 
-
-    def token
-      @token ||= SecureRandom.urlsafe_base64(30)
-    end
-
     def attributes_to_update
       {
-        "token" => {
-          value: token
-        },
         "TwitterAuthToken" => {
           value: twitter_auth_token
         },
