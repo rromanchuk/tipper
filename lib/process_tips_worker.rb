@@ -92,17 +92,19 @@ class ProcessTipWorker
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
+      tweet = tweetObject(json["TweetID"])
+
       puts "fromUser:"
       puts fromUser.to_yaml
       unless toUser
-        toUser = User.create_user(json["ToTwitterID"])
+        toUser = User.create_user(json["ToTwitterID"], tweet.user.screen_name)
       end
       puts "toUser:"
       puts toUser.to_yaml
 
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
       if txid
-        tweet = tweetObject(json["TweetID"])
+        
         Tip.new_tip(tweet, fromUser, toUser, txid)
         publish_to(toUser)
         publish_from(fromUser)

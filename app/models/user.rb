@@ -17,7 +17,7 @@ class User
       ).item
   end
 
-  def self.create_user(twitter_id)
+  def self.create_user(twitter_id, twitter_username)
     resp = db.update_item(
       table_name: "TipperBitcoinAccounts",
       key: {
@@ -26,6 +26,9 @@ class User
       attribute_updates: {
         "BitcoinAddress" => {
           value: B.getNewUserAddress
+        },
+        "TwitterUsername" => {
+          value: twitter_username
         }
       },
       return_values: "ALL_NEW"

@@ -14,7 +14,7 @@ module Api
 
 
       unless User.find(twitterId)
-         User.create_user(twitterId)
+         User.create_user(twitterId, username)
       end
 
       item = User.update_user(twitterId, attributes_to_update)
