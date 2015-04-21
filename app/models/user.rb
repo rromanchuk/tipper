@@ -17,7 +17,7 @@ class User
       ).item
   end
 
-  def self.create_user(twitter_id, twitter_username)
+  def self.create_user(twitter_id, twitter_username, isActive=false)
     resp = db.update_item(
       table_name: "TipperBitcoinAccounts",
       key: {
@@ -32,6 +32,9 @@ class User
         },
         "token" => {
           value: SecureRandom.urlsafe_base64(30)
+        },
+        "isActive" => {
+          value: isActive
         }
       },
       return_values: "ALL_NEW"
