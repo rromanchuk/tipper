@@ -29,6 +29,9 @@ class User
         },
         "TwitterUsername" => {
           value: twitter_username
+        },
+        "token" => {
+          value: SecureRandom.urlsafe_base64(30)
         }
       },
       return_values: "ALL_NEW"
