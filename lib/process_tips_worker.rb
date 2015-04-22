@@ -55,28 +55,28 @@ class ProcessTipWorker
     end
   end
 
-  def publish_to(user)
-    return unless user["EndpointArn"]
+  def notify_receiver(fromUser, toUser)
+    return unless toUser["EndpointArn"]
     begin
-      apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from another twitter user.", "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from #{fromUser["TwitterUsername"]}.", "badge" => 1 } }.to_json
       resp = sns.publish(
-        target_arn: user["EndpointArn"],
+        target_arn: toUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => "You just received 0.002BTC from another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => "You just received 0.002BTC from #{fromUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"
     end
   end
 
-  def publish_from(user)
-    return unless user["EndpointArn"]
+  def notify_sender(fromUser, toUser)
+    return unless fromUser["EndpointArn"]
     begin
-      apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to another twitter user.", "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to #{toUser["TwitterUsername"]}.", "badge" => 1 } }.to_json
       resp = sns.publish(
-        target_arn: user["EndpointArn"],
+        target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => "You just sent 0.002BTC to another twitter user.", "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => "You just sent 0.002BTC to #{toUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"
@@ -126,8 +126,8 @@ class ProcessTipWorker
         puts resp.to_yaml
 
         # Send success notifications
-        publish_to(toUser)
-        publish_from(fromUser)
+        notify_sender(fromUser, toUser)
+        notify_receiver(fromUser, toUser)
         delete(receipt_handle)
       else
         # Send failure notifications
