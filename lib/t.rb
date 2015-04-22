@@ -9,12 +9,18 @@ def sqs
 end
 
 def publish_new_tweet(user)
-  apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
-  resp = sns.publish(
-    target_arn: user["EndpointArn"],
-    message_structure: "json",
-    message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
-  )
+  return unless user["EndpointArn"]
+
+  begin
+    apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
+    resp = sns.publish(
+      target_arn: user["EndpointArn"],
+      message_structure: "json",
+      message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
+    )
+  rescue Aws::SNS::Errors::EndpointDisabled
+    puts "Aws::SNS::Errors::EndpointDisabled"
+  end
 end
 
 EventMachine.run {
