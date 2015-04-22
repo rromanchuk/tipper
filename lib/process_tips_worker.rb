@@ -110,20 +110,27 @@ class ProcessTipWorker
 
       puts "fromUser:"
       puts fromUser.to_yaml
-      unless toUser
+      unless toUser # If the user doesn't exist create a stub account
         toUser = User.create_user(json["ToTwitterID"], tweet.user.screen_name)
       end
       puts "toUser:"
       puts toUser.to_yaml
 
+      # Publish the actual tip action to the bitcoind node
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
+
+
       if txid
-        
-        Tip.new_tip(tweet, fromUser, toUser, txid)
+        resp = Tip.new_tip(tweet, fromUser, toUser, txid)
+        puts "Tip#new_tip response:"
+        puts resp.to_yaml
+
+        # Send success notifications
         publish_to(toUser)
         publish_from(fromUser)
         delete(receipt_handle)
       else
+        # Send failure notifications
         publish_from_problem(fromUser)
         delete(receipt_handle)
       end
