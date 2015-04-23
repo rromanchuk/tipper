@@ -61,7 +61,7 @@ class B
   end
 
   def self.recent
-    client.listtransactions("*", 20)
+    client.listtransactions("*", 100)
   end
 
   def self.fundUser(address)
