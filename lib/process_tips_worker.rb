@@ -66,6 +66,8 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"
+    rescue Aws::SNS::Errors::InvalidParameter
+      puts "Aws::SNS::Errors::InvalidParameter"
     end
   end
 
@@ -80,6 +82,8 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"
+    rescue Aws::SNS::Errors::InvalidParameter
+      puts "Aws::SNS::Errors::InvalidParameter"
     end
   end
 
@@ -94,6 +98,8 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"
+    rescue Aws::SNS::Errors::InvalidParameter
+      puts "Aws::SNS::Errors::InvalidParameter"
     end
   end
 
