@@ -25,7 +25,7 @@ end
 
 EventMachine.run {
   User.all.items.reverse.each do |user|
-    next unless user["isActive"]
+    next unless user["IsActive"] == "X"
     puts "Starting stream for user #{user}"
     
     client = Twitter::Streaming::Client.new do |config|

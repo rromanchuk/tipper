@@ -18,12 +18,8 @@ class User
   end
 
   def self.create_user(twitter_id, twitter_username, isActive=false)
-    resp = db.update_item(
-      table_name: "TipperBitcoinAccounts",
-      key: {
-        "TwitterUserID" => twitter_id,
-      },
-      attribute_updates: {
+
+    attributes = {
         "BitcoinAddress" => {
           value: B.getNewUserAddress
         },
@@ -32,15 +28,24 @@ class User
         },
         "token" => {
           value: SecureRandom.urlsafe_base64(30)
-        },
-        "isActive" => {
-          value: isActive
         }
+      }
+
+    if isActive
+      attributes["IsActive"] = { value: "X" }
+    end
+
+    resp = db.update_item(
+      table_name: "TipperBitcoinAccounts",
+      key: {
+        "TwitterUserID" => twitter_id,
       },
+      attribute_updates: attributes,
       return_values: "ALL_NEW"
     )
     resp.attributes
   end
+
 
   def self.update_user(twitter_id, attribute_updates)
     resp = db.update_item(
