@@ -1,16 +1,16 @@
 class Tip
-  
+
   def self.all
     @resp = db.scan(
       # required
-      table_name: "TipperTwitterFavoritesTest",
+      table_name: "TipperTwitterFavorites",
     )
   end
 
   def self.new_tip(tweet, fromUser, toUser, txid)
     puts "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
     resp = db.update_item(
-      table_name: "TipperTwitterFavoritesTest",
+      table_name: "TipperTwitterFavorites",
       key: {
         "TweetID" => tweet.id.to_s,
         "FromTwitterID" => fromUser["TwitterUserID"]

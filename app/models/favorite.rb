@@ -19,7 +19,7 @@ class Favorite
     resp = db.batch_write_item(
       # required
       request_items: {
-        "TipperTwitterFavoritesTest" => putRequests
+        "TipperTwitterFavorites" => putRequests
       },
     )
   end
