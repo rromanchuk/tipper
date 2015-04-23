@@ -35,7 +35,7 @@ class Tip
           value: tweet.to_json
         },
         "DidLeaveTip" => {
-          value: true
+          value: "X"  # sparse index for nosql, X == true, nil == false
         }
       },
     )

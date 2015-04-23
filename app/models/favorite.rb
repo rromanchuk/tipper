@@ -8,7 +8,6 @@ class Favorite
           { "TweetID": tweet.id.to_s,
             "TweetJSON": tweet.to_json, 
             "CreatedAt": tweet.created_at.to_i, 
-            "TipperUserID": currentUser["TwitterUserID"],
             "FromTwitterID": currentUser["TwitterUserID"],
             "FromTwitterUsername": currentUser["TwitterUsername"],
             "ToTwitterID": tweet.user.id.to_s,
