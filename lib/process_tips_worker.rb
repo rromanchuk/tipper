@@ -128,8 +128,6 @@ class ProcessTipWorker
 
       if txid
         resp = Tip.new_tip(tweet, fromUser, toUser, txid)
-        puts "Tip#new_tip response:"
-        puts resp.to_yaml
 
         # Send success notifications
         notify_sender(fromUser, toUser)
