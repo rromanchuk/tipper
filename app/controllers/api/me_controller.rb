@@ -63,8 +63,8 @@ module Api
         "CognitoToken" => {
           value: @resp.token
         },
-        "isActive" => {
-          value: true
+        "IsActive" => {
+          value: "X"
         }
       }
     end

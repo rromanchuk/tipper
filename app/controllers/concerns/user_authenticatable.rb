@@ -30,8 +30,8 @@ module UserAuthenticatable
           value: balance[:btc],
           action: "PUT",
         },
-        "isActive" => {
-          value: true,
+        "IsActive" => {
+          value: "X",
           action: "PUT"
         }
       })
