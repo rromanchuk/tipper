@@ -9,6 +9,8 @@ set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 set :deploy_to, "/home/ec2-user/apps/tipper"
 
+set :puma_conf, "#{current_path}/config/puma.rb"
+
 # Default value for :format is :pretty
 # set :format, :pretty
 
