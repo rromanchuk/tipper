@@ -1,16 +1,17 @@
 class User
-
+  TABLE_NAME = "TipperBitcoinAccounts"
+  
   def self.all
     @resp = db.scan(
       # required
-      table_name: "TipperBitcoinAccounts",
+      table_name: TABLE_NAME,
     )
   end
 
   def self.find(twitter_id)
     puts "User#find #{twitter_id}"
       db.get_item(
-        table_name: "TipperBitcoinAccounts",
+        table_name: TABLE_NAME,
         key: {
           "TwitterUserID" => twitter_id,
         },
@@ -36,7 +37,7 @@ class User
     end
 
     resp = db.update_item(
-      table_name: "TipperBitcoinAccounts",
+      table_name: TABLE_NAME,
       key: {
         "TwitterUserID" => twitter_id,
       },
@@ -49,7 +50,7 @@ class User
 
   def self.update_user(twitter_id, attribute_updates)
     resp = db.update_item(
-      table_name: "TipperBitcoinAccounts",
+      table_name: TABLE_NAME,
       key: {
         "TwitterUserID" => twitter_id,
       },

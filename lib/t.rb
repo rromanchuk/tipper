@@ -12,7 +12,7 @@ def publish_new_tweet(user)
   return unless user["EndpointArn"]
 
   begin
-    apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 } }.to_json
+    apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 }, "tipper" => { } }.to_json
     resp = sns.publish(
       target_arn: user["EndpointArn"],
       message_structure: "json",
