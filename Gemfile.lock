@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/plataformatec/responders.git
-  revision: e4da9c86255e5e085b9ac683e1253c451a3163e2
+  revision: 9af837b13adaf7d481126ac54d1f8037be4d05ea
   specs:
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/stripe/stripe-ruby
-  revision: 782a596c8f01060d22b44151e9dbd60a8ef138d6
+  revision: 97b3f397fc7b77900882b1db1487e1f9d95ca8e8
   specs:
     stripe (1.21.0)
       json (~> 1.8.1)
@@ -60,24 +60,24 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.8)
     arel (6.0.0)
-    autoprefixer-rails (5.1.9)
+    autoprefixer-rails (5.1.11)
       execjs
       json
-    aws-sdk (2.0.39)
-      aws-sdk-resources (= 2.0.39)
-    aws-sdk-core (2.0.39)
+    aws-sdk (2.0.41)
+      aws-sdk-resources (= 2.0.41)
+    aws-sdk-core (2.0.41)
       builder (~> 3.0)
       jmespath (~> 1.0)
       multi_json (~> 1.0)
-    aws-sdk-resources (2.0.39)
-      aws-sdk-core (= 2.0.39)
+    aws-sdk-resources (2.0.41)
+      aws-sdk-core (= 2.0.41)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.3.4.1)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
     buftok (0.2.0)
-    bugsnag (2.8.4)
+    bugsnag (2.8.5)
       multi_json (~> 1.0)
     builder (3.2.2)
     byebug (4.0.5)
@@ -142,9 +142,9 @@ GEM
       mime-types (>= 1.16, < 3)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
-    mime-types (2.4.3)
+    mime-types (2.5)
     mini_portile (0.6.2)
-    minitest (5.6.0)
+    minitest (5.6.1)
     monetize (1.2.0)
       money (~> 6.5.0)
     money (6.5.1)
@@ -190,7 +190,6 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     rdoc (4.2.0)
-      json (~> 1.4)
     rest-client (1.8.0)
       http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
@@ -216,7 +215,7 @@ GEM
       activesupport (>= 3.1, < 5.0)
       railties (>= 3.1, < 5.0)
       slim (~> 3.0)
-    sprockets (3.0.1)
+    sprockets (3.0.3)
       rack (~> 1.0)
     sprockets-rails (2.2.4)
       actionpack (>= 3.0)
@@ -250,7 +249,7 @@ GEM
       json (>= 1.8.0)
     unf (0.1.4)
       unf_ext
-    unf_ext (0.0.6)
+    unf_ext (0.0.7.1)
     web-console (2.1.2)
       activemodel (>= 4.0)
       binding_of_caller (>= 0.7.2)
