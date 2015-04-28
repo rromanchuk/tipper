@@ -1,3 +1,3 @@
-== Deploy
+## Deploy
 
 `bin/cap production deploy`
