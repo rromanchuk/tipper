@@ -46,8 +46,8 @@ EventMachine.run {
         puts "Falling behind!"
       when Twitter::Streaming::Event
         puts "Found event: #{object.name}"
-        puts "name: #{object.name}, currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
         if object.name == :favorite
+          puts "name: #{object.name}, currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
           if object.source.id.to_s == user["TwitterUserID"]
             publish_new_tweet(user)
             sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id.to_s, "FromTwitterID": object.source.id.to_s, "ToTwitterID": object.target.id.to_s }.to_json )
