@@ -2,9 +2,26 @@ class Tip
   TABLE_NAME = "TipperTwitterFavorites"
 
   def self.all
-    @resp = db.scan(
+    resp = db.scan(
       # required
       table_name: TABLE_NAME,
+    )
+  end
+
+  def self.active
+    resp = db.query(
+      # required
+      table_name: TABLE_NAME,
+      index_name: "DidLeaveTip-index-copy",
+      key_conditions: {
+        "DidLeaveTip" => {
+          attribute_value_list: [
+            "X", #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          ],
+        # required
+          comparison_operator: "EQ",
+        },
+      },
     )
   end
 

@@ -12,8 +12,20 @@ Rails.application.routes.draw do
 
 
   namespace :admin do
-    resources :users,  only: [:index]
+    resources :users,  only: [:index, :show]
     resources :tips,  only: [:index]
+    resources :bitcoin_accounts do 
+      collection do 
+        get 'index'
+        get 'recent'
+        get 'addresses'
+        get 'network'
+      end
+
+      member do 
+        get 'unspent'
+      end
+    end
   end
 
   # The priority is based upon order of creation: first created -> highest priority.

@@ -1,0 +1,11 @@
+h2 listaccounts
+table.table
+  caption Lists accounts and their balances.
+  thead
+    tr
+      th Account Name
+      th BTC Balance
+  - @accounts.each_pair do |key, value|
+    tr
+      td = key
+      td = value

@@ -1,13 +1,11 @@
 table.table
   thead
     tr
-      th TweetID
-      th FromTwitterID
-      th ToTwitterID
+      th FromTwitterUsername
+      th ToTwitterUsername
       th txid
   - @paginated_tips.items.each do |item|
     tr
-      td = item["TweetID"]
-      td = item["FromTwitterID"]
-      td = item["ToTwitterID"]
-      td = item["txid"]
+      td = link_to item["FromTwitterUsername"],  admin_user_path(id: item["FromTwitterID"])
+      td = link_to item["ToTwitterUsername"], admin_user_path(id: item["ToTwitterID"])
+      td = link_to item["txid"], "https://blockchain.info/tx/#{item["txid"]}"
