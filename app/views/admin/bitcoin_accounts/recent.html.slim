@@ -1,0 +1,19 @@
+h2 listtransactions
+table.table
+  caption The listtransactions RPC returns the most recent transactions that affect the wallet.
+  thead
+    tr
+      th Account Name
+      th Address
+      th Category
+      th Amount
+      th vout
+      th Confirmations
+  - @transactions.each do |tx|
+    tr
+      td = tx["account"]
+      td = tx["address"]
+      td = tx["category"]
+      td = tx["amount"]
+      td = tx["vout"]
+      td = tx["confirmations"]

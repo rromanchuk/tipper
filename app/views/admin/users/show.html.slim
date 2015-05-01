@@ -1,0 +1,12 @@
+table.table
+  thead
+    tr
+      th TwitterUserID
+      th TwitterUsername
+      th Bitcoin Address
+      th BTC
+    tr
+      td = @item["TwitterUserID"]
+      td = @item["TwitterUsername"]
+      td = link_to @item["BitcoinAddress"], "https://blockchain.info/address/#{@item["BitcoinAddress"]}"
+      td = @item["BitcoinBalanceBTC"]

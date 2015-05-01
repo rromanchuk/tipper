@@ -1,7 +1,11 @@
 class Admin::TipsController < Admin::BaseController
 
   def index
-    @paginated_tips = Tip.all
+    if params[:filter] == "active"
+      @paginated_tips = Tip.active
+    else
+      @paginated_tips = Tip.all
+    end
   end
 
   protected

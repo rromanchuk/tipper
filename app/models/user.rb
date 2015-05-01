@@ -8,6 +8,23 @@ class User
     )
   end
 
+  def self.find_active
+    resp = db.query(
+      # required
+      table_name: TABLE_NAME,
+      index_name: "IsActive-index",
+      key_conditions: {
+        "IsActive" => {
+          attribute_value_list: [
+            "X", #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          ],
+        # required
+          comparison_operator: "EQ",
+        },
+      },
+    )
+  end
+
   def self.find(twitter_id)
     puts "User#find #{twitter_id}"
       db.get_item(

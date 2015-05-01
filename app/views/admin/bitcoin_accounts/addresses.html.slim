@@ -1,0 +1,17 @@
+h2 listreceivedbyaddress
+table.table
+  caption ListReceivedByAddress: lists the total number of bitcoins received by each address. Updated in 0.10.0
+  thead
+    tr
+      th Address
+      th Account
+      th Amount
+      th Confirmations
+      th txids
+  - @addresses.each do |tx|
+    tr
+      td = link_to tx["address"], unspent_admin_bitcoin_account_path(id: tx["address"])
+      td = tx["account"]
+      td = tx["amount"]
+      td = tx["confirmations"]
+      td = tx["txids"]

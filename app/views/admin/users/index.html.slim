@@ -1,13 +1,11 @@
 table.table
   thead
     tr
-      th TwitterUserID
       th TwitterUsername
       th Bitcoin Address
       th BTC
   - @paginated_users.items.each do |item|
     tr
-      td = item["TwitterUserID"]
-      td = item["TwitterUsername"]
-      td = item["BitcoinAddress"]
+      td = link_to item["TwitterUsername"], admin_user_path(id: item["TwitterUserID"])
+      td = link_to item["BitcoinAddress"], "https://blockchain.info/address/#{item["BitcoinAddress"]}"
       td = item["BitcoinBalanceBTC"]
