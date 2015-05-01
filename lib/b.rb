@@ -45,6 +45,12 @@ class B
     # The transaction fee to include for the transaction
     transaction_fee = 0.0001
 
+    # Does the user have enough money? 
+    if senderBTCBalance < (transaction_fee + amount_to_send_to_other_user)
+      puts "User does not have a large enough balance to perform this transaction"
+      return nil
+    end
+
     # Calculate the amount that needs to be sent back to the sender after using avail inputs
     amount_to_send_back_to_self = senderBTCBalance - amount_to_send_to_other_user - transaction_fee
 
