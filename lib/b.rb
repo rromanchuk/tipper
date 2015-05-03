@@ -41,7 +41,7 @@ class B
 
     # Transaction fees
     numInputs = unspents.length
-    bytes = (numInputs * 148) + (2 * 34)
+    bytes = 148 * numInputs + 34 * 2 + 10
     transaction_fee = (bytes / 1000) * 0.0001
     puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
@@ -56,6 +56,7 @@ class B
 
     # Calculate the amount that needs to be sent back to the sender after using avail inputs
     amount_to_send_back_to_self = senderBTCBalance - amount_to_send_to_other_user - transaction_fee
+    puts "senderBTCBalance: #{senderBTCBalance}, amount_to_send_to_other_user: #{amount_to_send_to_other_user}, transaction_fee: #{transaction_fee}"
 
     # Generate the transaction
     rawtx = client.createrawtransaction(unspents, {fromAddress=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
