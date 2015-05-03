@@ -27,12 +27,21 @@ class User
 
   def self.find(twitter_id)
     puts "User#find #{twitter_id}"
-      db.get_item(
-        table_name: TABLE_NAME,
-        key: {
-          "TwitterUserID" => twitter_id,
-        },
-      ).item
+    db.get_item(
+      table_name: TABLE_NAME,
+      key: {
+        "TwitterUserID" => twitter_id,
+      },
+    ).item
+  end
+
+  def self.find_tipper_bot
+    db.get_item(
+      table_name: TABLE_NAME,
+      key: {
+        "TwitterUserID" => "3178504262",
+      },
+    ).item
   end
 
   def self.create_user(twitter_id, twitter_username, isActive=false)
