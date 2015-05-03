@@ -39,11 +39,14 @@ class B
       return nil
     end
 
+    # Transaction fees
+    numInputs = unspents.length
+    bytes = (numInputs * 148) + (2 * 34)
+    transaction_fee = (bytes / 1000) * 0.0001
+    puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
+
     # The amount of btc to send to the receiving user
     amount_to_send_to_other_user = 0.001
-
-    # The transaction fee to include for the transaction
-    transaction_fee = 0.0001
 
     # Does the user have enough money? 
     if senderBTCBalance < (transaction_fee + amount_to_send_to_other_user)
