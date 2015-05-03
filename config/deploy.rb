@@ -1,5 +1,4 @@
 # config valid only for current version of Capistrano
-require 'capistrano/foreman'
 
 lock '3.4.0'
 
@@ -53,15 +52,6 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-# Default settings
-set :foreman_use_sudo, :rbenv # Set to :rbenv for rbenv sudo, :rvm for rvmsudo or true for normal sudo
-set :foreman_roles, :all
-set :foreman_template, 'upstart'
-set :foreman_export_path, File.join(Dir.home, '.init')
-set :foreman_options, {
-  app: 'tipper',
-  log: File.join(shared_path, 'log')
-}
 
 namespace :deploy do
 
