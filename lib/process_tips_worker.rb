@@ -36,6 +36,16 @@ class ProcessTipWorker
     end
   end
 
+  def tipper_bot_client
+    tipper_bot = User.find_tipper_bot
+    @tipper_bot_client ||= Twitter::REST::Client.new do |config|
+      config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
+      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+      config.access_token        = tipper_bot["TwitterAuthToken"]
+      config.access_token_secret = tipper_bot["TwitterAuthSecret"]
+    end
+  end
+
   def tweetObject(tweetId)
     restClient.status(tweetId)
   end
@@ -103,6 +113,11 @@ class ProcessTipWorker
     end
   end
 
+  def post_on_twitter(fromUser, toUser)
+    message = "#{fromUser["TwitterUsername"]} just sent #{toUser["TwitterUsername"]} 0.002BTC"
+    tipper_bot_client.update(message)
+  end
+
   def process_messages(messages)
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
@@ -133,6 +148,7 @@ class ProcessTipWorker
         notify_sender(fromUser, toUser)
         notify_receiver(fromUser, toUser)
         delete(receipt_handle)
+        post_on_twitter(fromUser, toUser)
       else
         # Send failure notifications
         publish_from_problem(fromUser)
