@@ -55,6 +55,18 @@ set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', '
 
 namespace :deploy do
 
+  # task :start do
+  #   run "eye start all"
+  # end
+
+  # task :stop do
+  #   run "eye stop all"
+  # end
+
+  # task :restart do
+  #   run "eye restart all"
+  # end
+
   # after :restart, :clear_cache do
   #   on roles(:web), in: :groups, limit: 3, wait: 10 do
   #     # Here we can do anything such as:
