@@ -81,8 +81,11 @@ class Tip
         }
       },
     )
+    User.update_balance(fromUser)
+    User.update_balance(toUser)
     resp.attributes
   end
+
 
    def self.find(tweet_id, from_id)
     puts "User#find #{twitter_id}"
