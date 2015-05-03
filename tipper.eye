@@ -4,21 +4,21 @@ Eye.application "tipper" do
   #working_dir "/home/ec2-user/apps/tipper/shared/processes"
 
   process "favorite_stream" do
-    pid_file "/home/ec2-user/apps/tipper/shared/processes/favorite_stream.pid"
+    pid_file "/home/ec2-user/apps/tipper/shared/tmp/pids/favorite_stream.pid"
     start_command "rails r /home/ec2-user/apps/tipper/current/lib/t.rb"
     daemonize true
     stdall "/home/ec2-user/apps/tipper/shared/processes/favorite_stream.log"
   end
 
   process "fetch_favorites" do
-    pid_file "/home/ec2-user/apps/tipper/shared/processes/fetch_favorites.pid"
+    pid_file "/home/ec2-user/apps/tipper/shared/tmp/pids/fetch_favorites.pid"
     start_command "rails r /home/ec2-user/apps/tipper/current/lib/fetch_favorites_worker.rb"
     daemonize true
     stdall "/home/ec2-user/apps/tipper/shared/processes/fetch_favorites.log"
   end
 
   process "process_tips_worker" do
-    pid_file "/home/ec2-user/apps/tipper/shared/processes/process_tips_worker.pid"
+    pid_file "/home/ec2-user/apps/tipper/shared/tmp/pids/process_tips_worker.pid"
     start_command "rails r /home/ec2-user/apps/tipper/current/lib/process_tips_worker.rb"
     daemonize true
     stdall "/home/ec2-user/apps/tipper/shared/processes/process_tips_worker.log"
