@@ -68,11 +68,11 @@ class ProcessTipWorker
   def notify_receiver(fromUser, toUser)
     return unless toUser["EndpointArn"]
     begin
-      apns_payload = { "aps" => { "alert" => "You just received 0.002BTC from #{fromUser["TwitterUsername"]}.", "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => "You just received 1000μBTC from #{fromUser["TwitterUsername"]}.", "badge" => 1 } }.to_json
       resp = sns.publish(
         target_arn: toUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => "You just received 0.002BTC from #{fromUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => "You just received 1000μBTC from #{fromUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"
@@ -84,11 +84,11 @@ class ProcessTipWorker
   def notify_sender(fromUser, toUser)
     return unless fromUser["EndpointArn"]
     begin
-      apns_payload = { "aps" => { "alert" => "You just sent 0.002BTC to #{toUser["TwitterUsername"]}.", "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => "You just sent 1000μBTC to #{toUser["TwitterUsername"]}.", "badge" => 1 } }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => "You just sent 0.002BTC to #{toUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => "You just sent 1000μBTC to #{toUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       puts "Aws::SNS::Errors::EndpointDisabled"

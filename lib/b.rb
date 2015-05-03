@@ -1,5 +1,8 @@
 #require 'bitcon_client'
 class B
+  TIP_AMOUNT = 0.001
+  FUND_AMOUNT = 0.02
+
   def self.client
     @client ||= BitcoinClient::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {:host => ENV["RPC_HOST"], port: ENV["RPC_PORT"], :ssl => ENV["RPC_SHOULD_USE_SSL"] })
   end
@@ -52,7 +55,7 @@ class B
     puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
     # The amount of btc to send to the receiving user
-    amount_to_send_to_other_user = 0.001
+    amount_to_send_to_other_user = TIP_AMOUNT
 
     # Does the user have enough money? 
     if senderBTCBalance < (transaction_fee + amount_to_send_to_other_user)
@@ -81,7 +84,7 @@ class B
   end
 
   def self.fundUser(address)
-    client.sendfrom("rromanchuk", address, 0.02)
+    client.sendfrom("rromanchuk", address, FUND_AMOUNT)
   end
 
 end
