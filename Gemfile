@@ -38,6 +38,7 @@ gem 'eventmachine'
 gem 'money'
 gem 'monetize'
 gem 'foreman'
+gem 'eye'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
