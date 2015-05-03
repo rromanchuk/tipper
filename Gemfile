@@ -46,7 +46,6 @@ gem 'eye'
 group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
-  gem 'capistrano-foreman'
 end
 
 gem 'puma'
