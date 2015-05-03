@@ -86,6 +86,34 @@ class User
     resp.attributes
   end
 
+  def self.update_balance(user)
+    balance = B.balance(user["BitcoinAddress"])
+    Rails.logger.info "balance is #{balance} bitcoinaddress is #{user["BitcoinAddress"]}"
+
+    resp = db.update_item(
+      # required
+      table_name: "TipperBitcoinAccounts",
+      # required
+      key: {
+        "TwitterUserID" => user["TwitterUserID"],
+      },
+      attribute_updates: {
+        "BitcoinBalanceSatoshi" => {
+          value: balance[:satoshi],
+          action: "PUT",
+        },
+        "BitcoinBalanceMBTC" => {
+          value: balance[:mbtc],
+          action: "PUT",
+        },
+        "BitcoinBalanceBTC" => {
+          value: balance[:btc],
+          action: "PUT",
+        }
+      })
+  end
+
+
   def self.userExists?(twitter_id)
     !find(twitter_id).item.nil?
   end
