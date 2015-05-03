@@ -26,6 +26,10 @@ class B
 
   def self.tip_user(fromAddress, toAddress)
     puts "tip_user from #{fromAddress} -> #{toAddress}"
+    if fromAddress == toAddress
+      puts "Trying to tip yourself.... "
+      return nil
+    end
     # Get the total avail inputs from the snders address with at least 1 confirmation
     unspents = client.listunspent(0, 9999999, [fromAddress])
     puts "unspents: #{unspents}"
@@ -43,6 +47,7 @@ class B
     numInputs = unspents.length
     bytes = 148 * numInputs + 34 * 2 + 10
     transaction_fee = (bytes / 1000) * 0.0001
+    puts "transaction_fee: #{transaction_fee}"
     transaction_fee = [0.0001, transaction_fee].max
     puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
