@@ -1,4 +1,4 @@
-Eye.application "rbenv_example" do
+Eye.application "tipper" do
   env 'RBENV_ROOT' => '/usr/local/rbenv', 'PATH' => "/usr/local/rbenv/shims:/usr/local/rbenv/bin:#{ENV['PATH']}"
   working_dir File.expand_path(File.join(File.dirname(__FILE__), %w[ processes ]))
 
