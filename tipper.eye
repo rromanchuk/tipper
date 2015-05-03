@@ -7,20 +7,20 @@ Eye.application "tipper" do
     pid_file "tmp/pids/favorite_stream.pid"
     start_command "rails r lib/t.rb"
     daemonize true
-    stdall "logs/favorite_stream.log"
+    stdall "log/favorite_stream.log"
   end
 
   process "fetch_favorites" do
     pid_file "tmp/pids/fetch_favorites.pid"
     start_command "rails r lib/fetch_favorites_worker.rb"
     daemonize true
-    stdall "logs/fetch_favorites.log"
+    stdall "log/fetch_favorites.log"
   end
 
   process "process_tips_worker" do
     pid_file "tmp/pids/process_tips_worker.pid"
     start_command "rails r lib/process_tips_worker.rb"
     daemonize true
-    stdall "logs/process_tips_worker.log"
+    stdall "log/process_tips_worker.log"
   end
 end
