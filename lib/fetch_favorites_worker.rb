@@ -59,12 +59,12 @@ end
 class FetchFavoritesWorker
   def initialize
     #test_event
-    puts "Starting event machine for FetchFavorites"
+    Rails.logger.info "Starting event machine for FetchFavorites"
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
-        puts "Ready to process tasks.."
+        Rails.logger.info "Ready to process tasks.."
         messages = receive
-        puts "Found message #{messages}"
+        Rails.logger.info "Found message #{messages}"
         process_messages(messages)
       end
     end
