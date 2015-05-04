@@ -1,3 +1,15 @@
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
+
+footer {
+  height: 60px;
+  background-color: #f5f5f5;
+  bottom: 0;
+  width: 100%;
+  position: absolute;
+}
+
+.tweet-box {
+  padding-top: 20px;
+}
