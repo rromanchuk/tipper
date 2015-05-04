@@ -23,4 +23,11 @@ Eye.application "tipper" do
     daemonize true
     stdall "log/process_tips_worker.log"
   end
+
+  process "process_wallet_notify_worker" do 
+    pid_file "tmp/pids/process_wallet_notify_worker.pid"
+    start_command "rails r lib/process_wallet_notify_worker.rb"
+    daemonize true
+    stdall "log/process_wallet_notify_worker.log"
+  end
 end
