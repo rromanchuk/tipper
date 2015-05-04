@@ -6,4 +6,8 @@ class SQSQueues
   def self.new_tip
     "***REMOVED***"
   end
+
+  def self.wallet_notify
+    "***REMOVED***"
+  end
 end
