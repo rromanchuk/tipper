@@ -1,13 +1,13 @@
 
 class ProcessTipWorker
    def initialize
-    Rails.logger.info "Starting event machine for ProcessTipWorker"
+    logger.info "Starting event machine for ProcessTipWorker"
     #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
-        Rails.logger.info "Ready to process tasks.."
+        logger.info "Ready to process tasks.."
         messages = receive
-        Rails.logger.info "Found message #{messages}"
+        logger.info "Found message #{messages}"
         process_messages(messages)
       end
     end
@@ -27,6 +27,14 @@ class ProcessTipWorker
 
   def queue
     @queue ||= SQSQueues.new_tip
+  end
+
+  def logger
+    @logger ||= begin 
+      _logger = Rails.logger
+      _logger.progname = "process_tips_worker"
+      _logger
+    end
   end
 
   def restClient
@@ -75,9 +83,9 @@ class ProcessTipWorker
         message: {"default" => "You just received 1000μBTC from #{fromUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
-      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
     rescue Aws::SNS::Errors::InvalidParameter
-      Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
+      logger.error "Aws::SNS::Errors::InvalidParameter"
     end
   end
 
@@ -91,9 +99,9 @@ class ProcessTipWorker
         message: {"default" => "You just sent 1000μBTC to #{toUser["TwitterUsername"]}.", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
-      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
     rescue Aws::SNS::Errors::InvalidParameter
-      Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
+      logger.error "Aws::SNS::Errors::InvalidParameter"
     end
   end
 
@@ -107,9 +115,9 @@ class ProcessTipWorker
         message: {"default" => "Opps, we weren't able to send the tip. Low balance?", "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
-      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
     rescue Aws::SNS::Errors::InvalidParameter
-      Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
+      logger.error "Aws::SNS::Errors::InvalidParameter"
     end
   end
 
@@ -122,20 +130,20 @@ class ProcessTipWorker
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
       json = message[:message]
-      Rails.logger.info "process_messages: #{json}"
+      logger.info "process_messages: #{json}"
 
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
       tweet = tweetObject(json["TweetID"])
 
-      Rails.logger.info "fromUser:"
+      logger.info "fromUser:"
       puts fromUser.to_yaml
       unless toUser # If the user doesn't exist create a stub account
         toUser = User.create_user(json["ToTwitterID"], tweet.user.screen_name)
       end
-      Rails.logger.info "toUser:"
-      Rails.logger.info toUser.to_yaml
+      logger.info "toUser:"
+      logger.info toUser.to_yaml
 
       # Publish the actual tip action to the bitcoind node
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])

@@ -1,5 +1,13 @@
 $stdout.sync = true
 
+def logger
+  @logger ||= begin 
+    _logger = Rails.logger
+    _logger.progname = "tweet_stream"
+    _logger
+  end
+end
+
 def sns
   @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
 end
@@ -26,7 +34,7 @@ end
 EventMachine.run {
   User.all.items.reverse.each do |user|
     next unless user["IsActive"] == "X"
-    Rails.logger.info "Starting stream for user #{user}"
+    logger.info "Starting stream for user #{user}"
 
     client = Twitter::Streaming::Client.new do |config|
       config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
@@ -45,7 +53,7 @@ EventMachine.run {
       when Twitter::Streaming::StallWarning
         puts "Falling behind!"
       when Twitter::Streaming::Event
-        Rails.logger.info "Found event: #{object.name}"
+        logger.info "Found event: #{object.name}"
         if object.name == :favorite
           Rails.logger.info "name: #{object.name}, currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
           if object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
