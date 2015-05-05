@@ -138,7 +138,7 @@ class ProcessTipWorker
       tweet = tweetObject(json["TweetID"])
 
       logger.info "fromUser:"
-      puts fromUser.to_yaml
+      logger.info fromUser.to_yaml
       unless toUser # If the user doesn't exist create a stub account
         toUser = User.create_user(json["ToTwitterID"], tweet.user.screen_name)
       end
@@ -156,7 +156,7 @@ class ProcessTipWorker
         notify_sender(fromUser, toUser)
         notify_receiver(fromUser, toUser)
         delete(receipt_handle)
-        post_on_twitter(fromUser, toUser)
+        #post_on_twitter(fromUser, toUser)
       else
         # Send failure notifications
         publish_from_problem(fromUser)

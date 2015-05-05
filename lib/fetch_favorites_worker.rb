@@ -1,4 +1,13 @@
 $stdout.sync = true
+
+def logger
+    @logger ||= begin 
+      _logger = Rails.logger
+      _logger.progname = "fetch_favorites_worker.rb"
+      _logger
+    end
+  end
+
 class TwitterFavorites
 
   def initialize
@@ -48,7 +57,7 @@ class TwitterFavorites
 
   def collect_with_max_id(collection=[], max_id=nil, &block)
     response = yield(max_id)
-    puts response.inspect
+    logger.info response.inspect
     collection += response
     response.empty? ? collection.flatten : collect_with_max_id(collection, response.last.id - 1, &block)
   end
@@ -59,12 +68,12 @@ end
 class FetchFavoritesWorker
   def initialize
     #test_event
-    Rails.logger.info "Starting event machine for FetchFavorites"
+    logger.info "Starting event machine for FetchFavorites"
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
-        Rails.logger.info "Ready to process tasks.."
+        logger.info "Ready to process tasks.."
         messages = receive
-        Rails.logger.info "Found message #{messages}"
+        logger.info "Found message #{messages}"
         process_messages(messages)
       end
     end
