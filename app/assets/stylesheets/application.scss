@@ -2,14 +2,64 @@
 @import "bootstrap-sprockets";
 @import "bootstrap";
 
+@font-face {
+  font-family: 'New Cicle';
+  src: url('New Cicle Fina.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  font-family: "Avenir Next", Times, serif;
+}
+
+.logo {
+  width: 150px;
+  height: 150px;
+}
+
 footer {
   height: 60px;
   background-color: #f5f5f5;
   bottom: 0;
   width: 100%;
-  position: absolute;
+  position: fixed;
 }
 
 .tweet-box {
   padding-top: 20px;
+}
+
+
+.header {
+  .jumbotron {
+    background-color: transparent;
+    background-image: image-url('logo.svg');
+    background-repeat: no-repeat;
+    background-position: left; 
+    width: 60%;
+    .marketing {
+      padding-left: 150px;
+    }
+  }
+  h1 {
+    font-size: 2.25em; 
+  }
+  h2 {
+    font-size: 1.37em;
+  }
+  color: white;
+  background-color: #6DBA94;
+  min-height: 300px;
+}
+
+.display-table {
+  display: table;
+  table-layout: fixed;
+}
+
+.display-cell {
+  display: table-cell;
+  vertical-align: middle;
+  text-align:center;
 }
