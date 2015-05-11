@@ -11,7 +11,7 @@ class B
   end
 
   def self.fund_amount_ubtc
-    TIP_AMOUNT/0.00000100
+    (TIP_AMOUNT/0.00000100).to_i
   end
 
   def self.totalBalance

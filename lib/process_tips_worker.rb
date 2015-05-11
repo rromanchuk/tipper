@@ -124,7 +124,7 @@ class ProcessTipWorker
   end
 
   def post_on_twitter(fromUser, toUser)
-    message = "@#{fromUser["TwitterUsername"]} just sent @#{toUser["TwitterUsername"]} 1000μBTC"
+    message = "@#{fromUser["TwitterUsername"]} just sent @#{toUser["TwitterUsername"]} #{B.fund_amount_ubtc}μBTC"
     tipper_bot_client.update(message)
   end
 
