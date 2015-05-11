@@ -10,4 +10,8 @@ class SQSQueues
   def self.wallet_notify
     "https://sqs.us-east-1.amazonaws.com/080383581145/WalletNotify"
   end
+
+  def self.withdraw_balance
+    "https://sqs.us-east-1.amazonaws.com/080383581145/WithdrawBalance"
+  end
 end

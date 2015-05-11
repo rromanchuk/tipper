@@ -1,4 +1,4 @@
-class ProcessWalletNotifications
+class ProcessWithdrawBalanceWorker
 
   def queue
     @queue ||= SQSQueues.wallet_notify
@@ -59,11 +59,19 @@ class ProcessWalletNotifications
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
       json = message[:message]
+
       puts "process_messages: #{json}"
-      tx = Transaction.create(json["txid"])
-      if tx["confirmations"] == 0
-        notify_admins(tx)
+      fromUser = User.find(json["FromTwitterID"])
+      fromBitcoinAddress = fromUser["BitcoinAddress"]
+      toBitcoinAddress = json["ToBitcoinAddress"])
+
+      txid = B.withdraw(fromBitcoinAddress, toBitcoinAddress)
+      if txid
+
+      else
+
       end
+
       delete(receipt_handle)
     end
   end
@@ -73,4 +81,4 @@ class ProcessWalletNotifications
   end
 
 end
-ProcessWalletNotifications.new
+ProcessWithdrawBalanceWorker.new
