@@ -1,6 +1,7 @@
 #require 'bitcon_client'
 class B
-  TIP_AMOUNT = 0.001
+  TIP_AMOUNT = 0.0005  # 12/cents
+  FEE_AMOUNT = 0.00001
   FUND_AMOUNT = 0.02
 
   def self.client
@@ -51,7 +52,7 @@ class B
     bytes = 148 * numInputs + 34 * 2 + 10
     transaction_fee = (bytes / 1000) * 0.0001
     puts "transaction_fee: #{transaction_fee}"
-    transaction_fee = [0.0001, transaction_fee].max
+    transaction_fee = FEE_AMOUNT
     puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
     # The amount of btc to send to the receiving user
