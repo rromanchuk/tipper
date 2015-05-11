@@ -8,6 +8,25 @@ class ProcessWalletNotifications
     @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end
 
+  def sns
+    @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+
+  def notify_admins(tx)
+    begin
+      message = "New wallet transactions amt: #{tx["amount"]}"
+      resp = sns.publish(
+        topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
+        message_structure: "json",
+        message: {"default" => message, "sms": message }.to_json
+      )
+    rescue Aws::SNS::Errors::EndpointDisabled
+      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+    end
+
+    AdminMailer
+  end
+
   def initialize
     puts "Starting event machine for ProcessWalletNotifications"
     #test_event
@@ -41,7 +60,8 @@ class ProcessWalletNotifications
       receipt_handle = message[:receipt_handle]
       json = message[:message]
       puts "process_messages: #{json}"
-      Transaction.create(json["txid"])
+      tx = Transaction.create(json["txid"])
+      notify_admins(tx)
       delete(receipt_handle)
     end
   end

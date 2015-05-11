@@ -39,4 +39,11 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  cred = Aws::SharedCredentials.new
+  ActionMailer::Base.add_delivery_method :ses, AWS::SES::Base,
+  :access_key_id     => cred.access_key_id,
+  :secret_access_key => cred.secret_access_key
+
+  config.action_mailer.delivery_method = :ses
 end
