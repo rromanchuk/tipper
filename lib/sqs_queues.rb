@@ -10,4 +10,8 @@ class SQSQueues
   def self.wallet_notify
     "***REMOVED***"
   end
+
+  def self.withdraw_balance
+    "***REMOVED***"
+  end
 end

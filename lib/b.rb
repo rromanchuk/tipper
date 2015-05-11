@@ -4,6 +4,7 @@ class B
   # http://bitcoindenominations.org/
   TIP_AMOUNT = 0.0005  # 12/cents
   FEE_AMOUNT = 0.00001
+  STANDARD_FEE_AMOUNT = 0.0001
   FUND_AMOUNT = 0.02
 
   def self.client
@@ -32,6 +33,49 @@ class B
 
   def self.unspent(address)
     client.listunspent(0, 99999, [address])
+  end
+
+  def self.withdraw(fromAddress, toAddress)
+    puts "tip_user from #{fromAddress} -> #{toAddress}"
+    if fromAddress == toAddress
+      puts "Trying to tip yourself.... "
+      return nil
+    end
+
+    # Get the total avail inputs from the snders address with at least 1 confirmation
+    unspents = client.listunspent(0, 9999999, [fromAddress])
+    puts "unspents: #{unspents}"
+
+    # Sum all of the amounts
+    amounts_array = unspents.map {|a| a["amount"] }
+    puts "amounts_array: #{amounts_array}"
+    senderBTCBalance = amounts_array.inject(:+)
+    puts "senderBTCBalance: #{senderBTCBalance}"
+    unless senderBTCBalance
+      return nil
+    end
+
+    # Transaction fees
+    numInputs = unspents.length
+    bytes = 148 * numInputs + 34 * 2 + 10
+    transaction_fee = (bytes / 1000) * STANDARD_FEE_AMOUNT
+    puts "transaction_fee: #{transaction_fee}"
+    transaction_fee = [STANDARD_FEE_AMOUNT, transaction_fee].max
+    puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
+
+    amount_to_send = senderBTCBalance - transaction_fee
+    puts "amount_to_send: #{amount_to_send}, senderBTCBalance: #{senderBTCBalance}, transaction_fee: #{transaction_fee}"
+
+    # Generate the transaction
+    rawtx = client.createrawtransaction(unspents, {toAddress => amount_to_send})
+    puts "rawtx:#{rawtx}"
+
+    # Sign the transaction
+    signedTx = client.signrawtransaction(rawtx, unspents)
+    puts "signedTx: #{signedTx}"
+
+    # Broadcast transaction on the network
+    return client.sendrawtransaction(signedTx["hex"])
   end
 
   def self.tip_user(fromAddress, toAddress)

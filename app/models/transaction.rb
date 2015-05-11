@@ -13,6 +13,9 @@ class Transaction
         "time" => {
           value: transaction["time"]
         },
+        "confirmations" => {
+          value: transaction["confirmations"]
+        },
         "details" => {
           value: transaction["details"].to_json
         }
