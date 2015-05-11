@@ -24,7 +24,7 @@ class ProcessWalletNotifications
       Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
     end
 
-    AdminMailer
+    AdminMailer.wallet_notify(tx).deliver_now
   end
 
   def initialize

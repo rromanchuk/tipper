@@ -1,11 +1,17 @@
 #require 'bitcon_client'
 class B
+
+  # http://bitcoindenominations.org/
   TIP_AMOUNT = 0.0005  # 12/cents
   FEE_AMOUNT = 0.00001
   FUND_AMOUNT = 0.02
 
   def self.client
     @client ||= BitcoinClient::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {:host => ENV["RPC_HOST"], port: ENV["RPC_PORT"], :ssl => ENV["RPC_SHOULD_USE_SSL"] })
+  end
+
+  def self.fund_amount_ubtc
+    TIP_AMOUNT/0.00000100
   end
 
   def self.totalBalance
