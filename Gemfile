@@ -40,6 +40,7 @@ gem 'monetize'
 gem 'foreman'
 gem 'eye'
 gem 'remote_syslog_logger'
+gem "aws-ses", :require => 'aws/ses'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

@@ -78,4 +78,11 @@ Rails.application.configure do
   #config.active_record.dump_schema_after_migration = false
 
   config.logger = RemoteSyslogLogger.new('logs2.papertrailapp.com', 44749)
+  
+  cred = Aws::SharedCredentials.new
+  ActionMailer::Base.add_delivery_method :ses, AWS::SES::Base,
+  :access_key_id     => cred.access_key_id,
+  :secret_access_key => cred.secret_access_key
+
+  config.action_mailer.delivery_method = :ses
 end
