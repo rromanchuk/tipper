@@ -12,6 +12,9 @@ class Transaction
         },
         "time" => {
           value: transaction["time"]
+        },
+        "details" => {
+          value: transaction["details"].to_json
         }
       }
 
