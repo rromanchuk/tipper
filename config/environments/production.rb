@@ -77,8 +77,8 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   #config.active_record.dump_schema_after_migration = false
 
-  config.logger = RemoteSyslogLogger.new('logs2.papertrailapp.com', 44749)
-  
+  config.logger = RemoteSyslogLogger.new('logs2.papertrailapp.com', 44749, program: "tipper-production")
+
   cred = Aws::SharedCredentials.new
   ActionMailer::Base.add_delivery_method :ses, AWS::SES::Base,
   :access_key_id     => cred.access_key_id,

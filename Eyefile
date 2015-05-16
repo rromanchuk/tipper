@@ -1,0 +1,5 @@
+Eye.config do
+  logger "/home/ec2-user/apps/tipper/current/log/eye.log"
+end
+
+Eye.load("config/tipper.eye")
