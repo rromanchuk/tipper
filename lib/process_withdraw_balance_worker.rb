@@ -1,7 +1,7 @@
 class ProcessWithdrawBalanceWorker
 
   def queue
-    @queue ||= SQSQueues.wallet_notify
+    @queue ||= SQSQueues.withdraw_balance
   end
 
   def sqs
