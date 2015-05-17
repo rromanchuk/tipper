@@ -12,19 +12,53 @@ class ProcessWithdrawBalanceWorker
     @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end
 
-  def notify_admins(tx)
+  # def notify_admins(tx)
+  #   begin
+  #     message = "New wallet transactions amt: #{tx["amount"]}"
+  #     resp = sns.publish(
+  #       topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
+  #       message_structure: "json",
+  #       message: {"default" => message, "sms": message }.to_json
+  #     )
+  #   rescue Aws::SNS::Errors::EndpointDisabled
+  #     Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+  #   end
+
+  #   AdminMailer.wallet_notify(tx).deliver_now
+  # end
+
+  def notify_sender(fromUser)
+    return unless fromUser["EndpointArn"]
     begin
-      message = "New wallet transactions amt: #{tx["amount"]}"
+      message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
       resp = sns.publish(
-        topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
+        target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => message, "sms": message }.to_json
+        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
-      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
+    rescue Aws::SNS::Errors::InvalidParameter
+      logger.error "Aws::SNS::Errors::InvalidParameter"
     end
+  end
 
-    AdminMailer.wallet_notify(tx).deliver_now
+  def notify_sender_fail(fromUser)
+    return unless fromUser["EndpointArn"]
+    begin
+      message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC failed. Try again?"
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
+      resp = sns.publish(
+        target_arn: fromUser["EndpointArn"],
+        message_structure: "json",
+        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
+      )
+    rescue Aws::SNS::Errors::EndpointDisabled
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
+    rescue Aws::SNS::Errors::InvalidParameter
+      logger.error "Aws::SNS::Errors::InvalidParameter"
+    end
   end
 
   def initialize
@@ -61,15 +95,15 @@ class ProcessWithdrawBalanceWorker
       json = message[:message]
 
       puts "process_messages: #{json}"
-      fromUser = User.find(json["FromTwitterID"])
+      fromUser = User.find(json["TwitterUserID"])
       fromBitcoinAddress = fromUser["BitcoinAddress"]
       toBitcoinAddress = json["ToBitcoinAddress"]
 
       txid = B.withdraw(fromBitcoinAddress, toBitcoinAddress)
       if txid
-
+        notify_sender(fromUser)
       else
-
+        notify_sender_fail(fromUser)
       end
 
       delete(receipt_handle)
