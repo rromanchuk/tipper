@@ -78,7 +78,7 @@ class B
     # Broadcast transaction on the network
     tx = client.sendrawtransaction(signedTx["hex"])
 
-    rescue => e do
+    rescue => e
       Bugsnag.notify(e, {:severity => "error"})
       tx = nil
     end
@@ -137,7 +137,7 @@ class B
 
     # Broadcast transaction on the network
     tx = client.sendrawtransaction(signedTx["hex"])
-    rescue => e do
+    rescue => e
       Bugsnag.notify(e, {:severity => "error"})
       tx = nil
     end
