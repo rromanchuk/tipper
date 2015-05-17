@@ -1,4 +1,4 @@
-class SQSQueues
+class SqsQueues
   def self.fetch_favorites
     "***REMOVED***"
   end
