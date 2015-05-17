@@ -127,7 +127,16 @@ class B
     Rails.logger.info "signedTx: #{signedTx}"
 
     # Broadcast transaction on the network
-    return client.sendrawtransaction(signedTx["hex"])
+    tx = client.sendrawtransaction(signedTx["hex"])
+    rescue => e do
+      Bugsnag.notify(e, {
+        :severity => "error",
+      })
+      tx = nil
+    end
+
+
+    tx
   end
 
   def self.recent
