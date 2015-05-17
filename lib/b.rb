@@ -36,21 +36,21 @@ class B
   end
 
   def self.withdraw(fromAddress, toAddress)
-    puts "tip_user from #{fromAddress} -> #{toAddress}"
+    Rails.logger.info "tip_user from #{fromAddress} -> #{toAddress}"
     if fromAddress == toAddress
-      puts "Trying to tip yourself.... "
+      Rails.logger.info "Trying to tip yourself.... "
       return nil
     end
 
     # Get the total avail inputs from the snders address with at least 1 confirmation
     unspents = client.listunspent(0, 9999999, [fromAddress])
-    puts "unspents: #{unspents}"
+    Rails.logger.info "unspents: #{unspents}"
 
     # Sum all of the amounts
     amounts_array = unspents.map {|a| a["amount"] }
-    puts "amounts_array: #{amounts_array}"
+    Rails.logger.info "amounts_array: #{amounts_array}"
     senderBTCBalance = amounts_array.inject(:+)
-    puts "senderBTCBalance: #{senderBTCBalance}"
+    Rails.logger.info "senderBTCBalance: #{senderBTCBalance}"
     unless senderBTCBalance
       return nil
     end
@@ -59,40 +59,40 @@ class B
     numInputs = unspents.length
     bytes = 148 * numInputs + 34 * 2 + 10
     transaction_fee = (bytes / 1000) * STANDARD_FEE_AMOUNT
-    puts "transaction_fee: #{transaction_fee}"
+    Rails.logger.info "transaction_fee: #{transaction_fee}"
     transaction_fee = [STANDARD_FEE_AMOUNT, transaction_fee].max
-    puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
+    Rails.logger.info "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
     amount_to_send = senderBTCBalance - transaction_fee
-    puts "amount_to_send: #{amount_to_send}, senderBTCBalance: #{senderBTCBalance}, transaction_fee: #{transaction_fee}"
+    Rails.logger.info "amount_to_send: #{amount_to_send}, senderBTCBalance: #{senderBTCBalance}, transaction_fee: #{transaction_fee}"
 
     # Generate the transaction
     rawtx = client.createrawtransaction(unspents, {toAddress => amount_to_send})
-    puts "rawtx:#{rawtx}"
+    Rails.logger.info "rawtx:#{rawtx}"
 
     # Sign the transaction
     signedTx = client.signrawtransaction(rawtx, unspents)
-    puts "signedTx: #{signedTx}"
+    Rails.logger.info "signedTx: #{signedTx}"
 
     # Broadcast transaction on the network
     return client.sendrawtransaction(signedTx["hex"])
   end
 
   def self.tip_user(fromAddress, toAddress)
-    puts "tip_user from #{fromAddress} -> #{toAddress}"
+    Rails.logger.info "tip_user from #{fromAddress} -> #{toAddress}"
     if fromAddress == toAddress
-      puts "Trying to tip yourself.... "
+      Rails.logger.info "Trying to tip yourself.... "
       return nil
     end
     # Get the total avail inputs from the snders address with at least 1 confirmation
     unspents = client.listunspent(0, 9999999, [fromAddress])
-    puts "unspents: #{unspents}"
+    Rails.logger.info "unspents: #{unspents}"
 
     # Sum all of the amounts
     amounts_array = unspents.map {|a| a["amount"] }
-    puts "amounts_array: #{amounts_array}"
+    Rails.logger.info "amounts_array: #{amounts_array}"
     senderBTCBalance = amounts_array.inject(:+)
-    puts "senderBTCBalance: #{senderBTCBalance}"
+    Rails.logger.info "senderBTCBalance: #{senderBTCBalance}"
     unless senderBTCBalance
       return nil
     end
@@ -101,30 +101,30 @@ class B
     numInputs = unspents.length
     bytes = 148 * numInputs + 34 * 2 + 10
     transaction_fee = (bytes / 1000) * 0.0001
-    puts "transaction_fee: #{transaction_fee}"
+    Rails.logger.info "transaction_fee: #{transaction_fee}"
     transaction_fee = FEE_AMOUNT
-    puts "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
+    Rails.logger.info "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
     # The amount of btc to send to the receiving user
     amount_to_send_to_other_user = TIP_AMOUNT
 
     # Does the user have enough money? 
     if senderBTCBalance < (transaction_fee + amount_to_send_to_other_user)
-      puts "User does not have a large enough balance to perform this transaction"
+      Rails.logger.info "User does not have a large enough balance to perform this transaction"
       return nil
     end
 
     # Calculate the amount that needs to be sent back to the sender after using avail inputs
     amount_to_send_back_to_self = senderBTCBalance - amount_to_send_to_other_user - transaction_fee
-    puts "senderBTCBalance: #{senderBTCBalance}, amount_to_send_back_to_self: #{amount_to_send_back_to_self}, amount_to_send_to_other_user: #{amount_to_send_to_other_user}, transaction_fee: #{transaction_fee}"
+    Rails.logger.info "senderBTCBalance: #{senderBTCBalance}, amount_to_send_back_to_self: #{amount_to_send_back_to_self}, amount_to_send_to_other_user: #{amount_to_send_to_other_user}, transaction_fee: #{transaction_fee}"
 
     # Generate the transaction
     rawtx = client.createrawtransaction(unspents, {fromAddress=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
-    puts "rawtx:#{rawtx}"
+    Rails.logger.info "rawtx:#{rawtx}"
 
     # Sign the transaction
     signedTx = client.signrawtransaction(rawtx, unspents)
-    puts "signedTx: #{signedTx}"
+    Rails.logger.info "signedTx: #{signedTx}"
 
     # Broadcast transaction on the network
     return client.sendrawtransaction(signedTx["hex"])
