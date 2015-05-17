@@ -1,7 +1,7 @@
 ## Deploy
 
 `bin/cap production deploy`
-
+`bin/cap production deploy:restart`
 
 ## Process monitoring with leye (production only)
 Logs and pids  are located in capistrano shared folder
