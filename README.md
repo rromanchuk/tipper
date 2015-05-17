@@ -1,6 +1,7 @@
 ## Deploy
 
 `bin/cap production deploy`
+
 `bin/cap production deploy:restart`
 
 ## Process monitoring with leye (production only)
