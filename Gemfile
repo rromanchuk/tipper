@@ -38,7 +38,6 @@ gem 'eventmachine'
 gem 'money'
 gem 'monetize'
 gem 'foreman'
-gem 'eye'
 gem 'remote_syslog_logger'
 gem "aws-ses", :require => 'aws/ses'
 # Use ActiveModel has_secure_password
@@ -51,7 +50,6 @@ group :development do
 end
 
 gem 'puma'
-gem 'capistrano3-puma'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

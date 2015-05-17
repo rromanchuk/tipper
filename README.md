@@ -3,14 +3,14 @@
 `bin/cap production deploy`
 
 
-## Process monitoring with eye (production only)
+## Process monitoring with leye (production only)
 Logs and pids  are located in capistrano shared folder
 
 #### Get info
-`eye w`
+`leye w`
 
-#### Stop and quit all monitoring 
-`eye q -s`
+#### Stop and quit all monitoring
+`leye q -s`
 
 #### Start monitoring
-`eye l /home/ec2-user/apps/tipper/current/tipper.eye' 
+`leye load` from current release path
