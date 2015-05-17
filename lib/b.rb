@@ -36,6 +36,7 @@ class B
   end
 
   def self.withdraw(fromAddress, toAddress)
+    begin
     Rails.logger.info "tip_user from #{fromAddress} -> #{toAddress}"
     if fromAddress == toAddress
       Rails.logger.info "Trying to tip yourself.... "
@@ -75,10 +76,18 @@ class B
     Rails.logger.info "signedTx: #{signedTx}"
 
     # Broadcast transaction on the network
-    return client.sendrawtransaction(signedTx["hex"])
+    tx = client.sendrawtransaction(signedTx["hex"])
+
+    rescue => e do
+      Bugsnag.notify(e, {:severity => "error"})
+      tx = nil
+    end
+
+    tx
   end
 
   def self.tip_user(fromAddress, toAddress)
+    begin
     Rails.logger.info "tip_user from #{fromAddress} -> #{toAddress}"
     if fromAddress == toAddress
       Rails.logger.info "Trying to tip yourself.... "
@@ -129,9 +138,7 @@ class B
     # Broadcast transaction on the network
     tx = client.sendrawtransaction(signedTx["hex"])
     rescue => e do
-      Bugsnag.notify(e, {
-        :severity => "error",
-      })
+      Bugsnag.notify(e, {:severity => "error"})
       tx = nil
     end
 
