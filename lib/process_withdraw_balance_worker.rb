@@ -28,7 +28,7 @@ class ProcessWithdrawBalanceWorker
   end
 
   def initialize
-    puts "Starting event machine for ProcessWalletNotifications"
+    puts "Starting event machine for ProcessWithdrawBalanceWorker"
     #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
@@ -63,7 +63,7 @@ class ProcessWithdrawBalanceWorker
       puts "process_messages: #{json}"
       fromUser = User.find(json["FromTwitterID"])
       fromBitcoinAddress = fromUser["BitcoinAddress"]
-      toBitcoinAddress = json["ToBitcoinAddress"])
+      toBitcoinAddress = json["ToBitcoinAddress"]
 
       txid = B.withdraw(fromBitcoinAddress, toBitcoinAddress)
       if txid
