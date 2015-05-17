@@ -80,9 +80,9 @@ class FetchFavoritesWorker
   end
 
   def test_event
-    sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": "14078827" }.to_json )
-    sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": "14764725" }.to_json )
-    sqs.send_message(queue_url: SQSQueues.fetch_favorites, message_body: { "TwitterUserID": "11916702" }.to_json )
+    sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": "14078827" }.to_json )
+    sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": "14764725" }.to_json )
+    sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": "11916702" }.to_json )
   end
 
   def sqs
@@ -90,7 +90,7 @@ class FetchFavoritesWorker
   end
 
   def queue
-    @queue ||= SQSQueues.fetch_favorites
+    @queue ||= SqsQueues.fetch_favorites
   end
 
   def receive

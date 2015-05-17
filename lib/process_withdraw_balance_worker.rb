@@ -1,7 +1,7 @@
 class ProcessWithdrawBalanceWorker
 
   def queue
-    @queue ||= SQSQueues.withdraw_balance
+    @queue ||= SqsQueues.withdraw_balance
   end
 
   def sqs

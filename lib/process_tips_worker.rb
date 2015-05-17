@@ -26,7 +26,7 @@ class ProcessTipWorker
   end
 
   def queue
-    @queue ||= SQSQueues.new_tip
+    @queue ||= SqsQueues.new_tip
   end
 
   def logger

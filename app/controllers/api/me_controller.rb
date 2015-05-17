@@ -70,7 +70,7 @@ module Api
     end
 
     def fetch_favorites
-      sqs.send_message(queue_url: ::SQSQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId }.to_json )
+      sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId }.to_json )
     end
 
     def db

@@ -1,7 +1,7 @@
 class ProcessWalletNotifications
 
   def queue
-    @queue ||= SQSQueues.wallet_notify
+    @queue ||= SqsQueues.wallet_notify
   end
 
   def sqs

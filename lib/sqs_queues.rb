@@ -1,4 +1,4 @@
-class SQSQueues
+class SqsQueues
   def self.fetch_favorites
     "https://sqs.us-east-1.amazonaws.com/080383581145/FetchFavorites"
   end

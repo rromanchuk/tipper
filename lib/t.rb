@@ -58,7 +58,7 @@ EventMachine.run {
           Rails.logger.info "name: #{object.name}, currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
           if object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
             publish_new_tweet(user)
-            sqs.send_message(queue_url: SQSQueues.new_tip, message_body: { "TweetID": object.target_object.id.to_s, "FromTwitterID": object.source.id.to_s, "ToTwitterID": object.target.id.to_s }.to_json )
+            sqs.send_message(queue_url: SqsQueues.new_tip, message_body: { "TweetID": object.target_object.id.to_s, "FromTwitterID": object.source.id.to_s, "ToTwitterID": object.target.id.to_s }.to_json )
           else
             puts "Skipping..."
           end
