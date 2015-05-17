@@ -12,6 +12,14 @@ class ProcessWithdrawBalanceWorker
     @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end
 
+  def logger
+    @logger ||= begin
+      _logger = Rails.logger
+      _logger.progname = "process_withdraw_balance_worker"
+      _logger
+    end
+  end
+
   # def notify_admins(tx)
   #   begin
   #     message = "New wallet transactions amt: #{tx["amount"]}"
@@ -66,9 +74,9 @@ class ProcessWithdrawBalanceWorker
     #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
-        puts "Ready to process tasks.."
+        logger.info "Ready to process tasks.."
         messages = receive
-        puts "Found message #{messages}"
+        logger.info "Found message #{messages}"
         process_messages(messages)
       end
     end
@@ -94,7 +102,7 @@ class ProcessWithdrawBalanceWorker
       receipt_handle = message[:receipt_handle]
       json = message[:message]
 
-      puts "process_messages: #{json}"
+      logger.info "process_messages: #{json}"
       fromUser = User.find(json["TwitterUserID"])
       fromBitcoinAddress = fromUser["BitcoinAddress"]
       toBitcoinAddress = json["ToBitcoinAddress"]
