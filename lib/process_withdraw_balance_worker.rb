@@ -109,6 +109,7 @@ class ProcessWithdrawBalanceWorker
 
       txid = B.withdraw(fromBitcoinAddress, toBitcoinAddress)
       if txid
+        Withdraw.create(fromUser, toBitcoinAddress, txid)
         notify_sender(fromUser)
       else
         notify_sender_fail(fromUser)
