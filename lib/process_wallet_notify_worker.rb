@@ -34,6 +34,12 @@ class ProcessWalletNotifications
     AdminMailer.wallet_notify(tx).deliver_now
   end
 
+  def notify_users(transaction)
+    transaction["details"].each do |tx|
+      
+    end
+  end
+
   def initialize
     logger.info "Starting event machine for ProcessWalletNotifications"
     #test_event
@@ -67,7 +73,9 @@ class ProcessWalletNotifications
       receipt_handle = message[:receipt_handle]
       json = message[:message]
       logger.info "process_messages: #{json}"
-      tx = Transaction.create(json["txid"])
+      transaction = B.client.gettransaction(txid)
+
+      tx = Transaction.create(transaction)
       if tx["confirmations"] == 0
         notify_admins(tx)
       end
