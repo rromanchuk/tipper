@@ -1,8 +1,7 @@
 class Transaction
   TABLE_NAME = "TipperBitcoinTransactions"
 
-  def self.create(txid)
-    transaction = B.client.gettransaction(txid)
+  def self.create(transaction)
     attributes = {
         "amount" => {
           value: transaction["amount"]
@@ -24,14 +23,14 @@ class Transaction
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
-        "txid" => txid,
+        "txid" => transaction["txid"],
       },
       attribute_updates: attributes,
       return_values: "ALL_NEW"
     )
 
     transaction["details"].each do |tx|
-      
+
     end
 
     resp.attributes
