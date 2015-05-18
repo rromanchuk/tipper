@@ -16,6 +16,9 @@ class Transaction
         "confirmations" => {
           value: transaction["confirmations"]
         },
+        "category" => {
+          value: transaction["details"]["category"]
+        },
         "details" => {
           value: transaction["details"].to_json
         }

@@ -1,4 +1,11 @@
 class ProcessWalletNotifications
+  def logger
+    @logger ||= begin
+      _logger = Rails.logger
+      _logger.progname = "process_withdraw_balance_worker"
+      _logger
+    end
+  end
 
   def queue
     @queue ||= SqsQueues.wallet_notify
@@ -14,27 +21,27 @@ class ProcessWalletNotifications
 
   def notify_admins(tx)
     begin
-      message = "New wallet transactions amt: #{tx["amount"]}"
+      message = "#{tx["category"]}: #{tx["amount"]}"
       resp = sns.publish(
         topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
         message_structure: "json",
         message: {"default" => message, "sms": message }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
-      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
     end
 
     AdminMailer.wallet_notify(tx).deliver_now
   end
 
   def initialize
-    puts "Starting event machine for ProcessWalletNotifications"
+    logger.info "Starting event machine for ProcessWalletNotifications"
     #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
-        puts "Ready to process tasks.."
+        logger.info "Ready to process tasks.."
         messages = receive
-        puts "Found message #{messages}"
+        logger.info "Found message #{messages}"
         process_messages(messages)
       end
     end
@@ -59,7 +66,7 @@ class ProcessWalletNotifications
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
       json = message[:message]
-      puts "process_messages: #{json}"
+      logger.info "process_messages: #{json}"
       tx = Transaction.create(json["txid"])
       if tx["confirmations"] == 0
         notify_admins(tx)
