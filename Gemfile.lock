@@ -269,15 +269,15 @@ DEPENDENCIES
   aws-sdk
   aws-ses
   bitcoin-client!
-  bootstrap-sass (~> 3.3.3)
+  bootstrap-sass (>= 3.3.3)
   bugsnag
   byebug
   capistrano-rails
   capistrano-rbenv
-  coffee-rails (~> 4.1.0)
+  coffee-rails (>= 4.1.0)
   eventmachine
   foreman
-  jbuilder (~> 2.0)
+  jbuilder (>= 2.0)
   jquery-rails
   monetize
   money
@@ -286,7 +286,7 @@ DEPENDENCIES
   rails (= 4.2.1)
   remote_syslog_logger
   responders!
-  sass-rails (~> 5.0)
+  sass-rails (>= 5.0)
   satoshi-unit
   sdoc (~> 0.4.0)
   slim-rails
