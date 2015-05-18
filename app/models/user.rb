@@ -26,13 +26,29 @@ class User
   end
 
   def self.find(twitter_id)
-    puts "User#find #{twitter_id}"
     db.get_item(
       table_name: TABLE_NAME,
       key: {
         "TwitterUserID" => twitter_id,
       },
     ).item
+  end
+
+  def self.find_by_address(address)
+    resp = db.query(
+      # required
+      table_name: TABLE_NAME,
+      index_name: "BitcoinAddress-index",
+      key_conditions: {
+        "BitcoinAddress" => {
+          attribute_value_list: [
+            address, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          ],
+        # required
+          comparison_operator: "EQ",
+        },
+      },
+    )
   end
 
   def self.find_tipper_bot
