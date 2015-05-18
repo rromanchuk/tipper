@@ -34,7 +34,7 @@ class Withdraw
         },
         "toBitcoinAddress" => {
           value: toBitcoinAddress
-        }
+        },
         "details" => {
           value: transaction["details"].to_json
         }
