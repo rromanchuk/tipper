@@ -2,6 +2,7 @@ class Transaction
   TABLE_NAME = "TipperBitcoinTransactions"
 
   def self.create(txid)
+    Transaction.create_wallet_transaction(txid)
     transaction = B.client.gettransaction(txid)
     attributes = {
         "amount" => {
@@ -16,9 +17,6 @@ class Transaction
         "confirmations" => {
           value: transaction["confirmations"]
         },
-        "category" => {
-          value: transaction["details"]["category"]
-        },
         "details" => {
           value: transaction["details"].to_json
         }
@@ -31,6 +29,33 @@ class Transaction
       },
       attribute_updates: attributes,
       return_values: "ALL_NEW"
+    )
+    resp.attributes
+  end
+
+  def self.create_wallet_transaction(txid)
+    transaction = B.client.gettransaction(txid)
+
+    putRequests = []
+    transaction["details"].each do |tx|
+      putRequests << { put_request:
+        { item:
+          { "account": tx["account"],
+            "category": tx["category"],
+            "amount": tx["amount"],
+            "vout": tx["vout"],
+            "TransactionID": txid,
+            "BitcoinAddress": tx["address"],
+          } 
+        } 
+      }
+    end
+
+    resp = db.batch_write_item(
+      # required
+      request_items: {
+        "TipperWalletTransaction" => putRequests
+      },
     )
     resp.attributes
   end
