@@ -9,6 +9,12 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :users,  only: [:index, :show]
     resources :tips,  only: [:index]
+    resources :wallet do
+      collection do 
+        get 'withdrawls'
+      end
+    end
+
     resources :bitcoin_accounts do 
       collection do 
         get 'index'
