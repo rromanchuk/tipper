@@ -73,7 +73,7 @@ class ProcessWalletNotifications
       receipt_handle = message[:receipt_handle]
       json = message[:message]
       logger.info "process_messages: #{json}"
-      transaction = B.client.gettransaction(txid)
+      transaction = B.client.gettransaction(transaction["txid"])
 
       tx = Transaction.create(transaction)
       if tx["confirmations"] == 0
