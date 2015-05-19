@@ -17,7 +17,6 @@ class Withdraw
   end
 
   def self.create(fromUser, toBitcoinAddress, txid)
-    Transaction.create_wallet_transaction(txid)
     transaction = B.client.gettransaction(txid)
     attributes = {
         "amount" => {
