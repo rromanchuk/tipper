@@ -48,7 +48,7 @@ class User
           comparison_operator: "EQ",
         },
       },
-    ).item
+    ).items.first
   end
 
   def self.find_tipper_bot
