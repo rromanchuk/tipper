@@ -80,6 +80,10 @@ class ProcessWalletNotifications
         notify_admins(tx)
       end
       delete(receipt_handle)
+
+      transaction["details"].each do |detail|
+        
+      end
     end
   end
 

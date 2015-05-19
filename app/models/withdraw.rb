@@ -19,6 +19,9 @@ class Withdraw
   def self.create(fromUser, toBitcoinAddress, txid)
     transaction = B.client.gettransaction(txid)
     attributes = {
+        "TwitterUsername" => {
+          value: fromUser["TwitterUsername"]
+        },
         "amount" => {
           value: transaction["amount"]
         },
@@ -42,7 +45,7 @@ class Withdraw
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
-        "TwitterID" => fromUser["TwitterID"],
+        "TwitterID" => fromUser["TwitterUserID"],
         "TransactionID" => txid
       },
       attribute_updates: attributes,
