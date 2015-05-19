@@ -153,6 +153,8 @@ class ProcessTipWorker
 
       if txid
         resp = Tip.new_tip(tweet, fromUser, toUser, txid)
+        transaction = B.client.gettransaction(txid)
+        Transaction.create(transaction, fromUser, toUser)
 
         # Send success notifications
         notify_sender(fromUser, toUser)

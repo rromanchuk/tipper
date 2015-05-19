@@ -34,11 +34,23 @@ class ProcessWalletNotifications
     AdminMailer.wallet_notify(tx).deliver_now
   end
 
-  def notify_users(transaction)
-    transaction["details"].each do |tx|
-      
+  def notify(user)
+    return unless fromUser["EndpointArn"]
+    begin
+      message = "You just sent #{B.fund_amount_ubtc}μBTC to #{toUser["TwitterUsername"]}."
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "user" => fromUser }.to_json
+      resp = sns.publish(
+        target_arn: fromUser["EndpointArn"],
+        message_structure: "json",
+        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
+      )
+    rescue Aws::SNS::Errors::EndpointDisabled
+      logger.error "Aws::SNS::Errors::EndpointDisabled"
+    rescue Aws::SNS::Errors::InvalidParameter
+      logger.error "Aws::SNS::Errors::InvalidParameter"
     end
   end
+
 
   def initialize
     logger.info "Starting event machine for ProcessWalletNotifications"
