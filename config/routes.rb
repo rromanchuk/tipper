@@ -12,6 +12,7 @@ Rails.application.routes.draw do
     resources :wallet do
       collection do 
         get 'withdrawls'
+        get 'transactions'
       end
     end
 
