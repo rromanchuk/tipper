@@ -48,7 +48,7 @@ class User
           comparison_operator: "EQ",
         },
       },
-    )
+    ).item
   end
 
   def self.find_tipper_bot
@@ -100,6 +100,12 @@ class User
       return_values: "ALL_NEW"
     )
     resp.attributes
+  end
+
+  def self.update_balance_by_address(address)
+    user = User.find_by_address(address)
+    User.update_balance(user) if user
+    user
   end
 
   def self.update_balance(user)

@@ -77,7 +77,7 @@ class ProcessTipWorker
     return unless toUser["EndpointArn"]
     begin
       message =  "You just received #{B.fund_amount_ubtc}μBTC from #{fromUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "user" => toUser }.to_json
       resp = sns.publish(
         target_arn: toUser["EndpointArn"],
         message_structure: "json",
@@ -94,7 +94,7 @@ class ProcessTipWorker
     return unless fromUser["EndpointArn"]
     begin
       message = "You just sent #{B.fund_amount_ubtc}μBTC to #{toUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "user" => fromUser }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
@@ -110,7 +110,7 @@ class ProcessTipWorker
   def publish_from_problem(user)
     return unless user["EndpointArn"]
     begin
-      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, "user" => user }.to_json
       resp = sns.publish(
         target_arn: user["EndpointArn"],
         message_structure: "json",
