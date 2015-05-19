@@ -1,7 +1,7 @@
 class Transaction
   TABLE_NAME = "TipperBitcoinTransactions"
 
-  def self.create(transaction)
+  def self.create(transaction, fromUser=nil, toUser=nil)
     attributes = {
         "amount" => {
           value: transaction["amount"]
@@ -20,6 +20,18 @@ class Transaction
         }
       }
 
+    if fromUser
+      attributes["FromTwitterID"] = {value: fromUser["TwitterUserID"]}
+      attributes["FromTwitterUsername"] = {value: fromUser["TwitterUsername"]}
+      attributes["FromBitcoinAddress"] = { value: fromUser["BitcoinAddress"]}
+    end
+
+    if toUser
+      attributes["ToTwitterID"] = {value: toUser["TwitterUserID"] }
+      attributes["TowitterUsername"] = { value: toUser["TwitterUsername"] }
+      attributes["ToBitcoinAddress"] = { value: toUser["BitcoinAddress"] }
+    end
+
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
@@ -28,10 +40,6 @@ class Transaction
       attribute_updates: attributes,
       return_values: "ALL_NEW"
     )
-
-    transaction["details"].each do |tx|
-
-    end
 
     resp.attributes
   end
