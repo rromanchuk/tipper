@@ -38,7 +38,7 @@ EventMachine.run {
 
     client = Twitter::Streaming::Client.new do |config|
       config.consumer_key        = "***REMOVED***"
-      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
       config.access_token        = user["TwitterAuthToken"]
       config.access_token_secret = user["TwitterAuthSecret"]
     end
