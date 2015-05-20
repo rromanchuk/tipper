@@ -39,16 +39,16 @@ class ProcessTipWorker
 
   def restClient
     @restClient ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
-      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
+      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
     end
   end
 
   def tipper_bot_client
     tipper_bot = User.find_tipper_bot
     @tipper_bot_client ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = "O3S9j8D3ZJQZCU6DcI1ABjinR"
-      config.consumer_secret     = "DCL7zOahnqqH7DLAy6VMlCn5ZH866Nwylb5YYmInuue6MR510I"
+      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
+      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
       config.access_token        = tipper_bot["TwitterAuthToken"]
       config.access_token_secret = tipper_bot["TwitterAuthSecret"]
     end
