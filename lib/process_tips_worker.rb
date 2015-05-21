@@ -63,9 +63,9 @@ class ProcessTipWorker
     end
   end
 
-  def tweetObject(fromUser)
+  def tweetObject(fromUser, tweetId)
     begin
-      restClientForUser(fromUser).status(fromUser["TweetID"])
+      restClientForUser(fromUser).status(tweetId)
     rescue Twitter::Error::Forbidden => e
       Bugsnag.notify(e, {:severity => "error"})
       nil
@@ -151,7 +151,7 @@ class ProcessTipWorker
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
-      tweet = tweetObject(fromUser)
+      tweet = tweetObject(fromUser, json["TweetID"])
       unless tweet
         publish_from_problem(fromUser)
         delete(receipt_handle)
