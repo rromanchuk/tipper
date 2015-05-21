@@ -55,7 +55,11 @@ class ProcessTipWorker
   end
 
   def tweetObject(tweetId)
-    restClient.status(tweetId)
+    begin
+      restClient.status(tweetId)
+    rescue Twitter::Error::Forbidden => e
+      Bugsnag.notify(e, {:severity => "error"})
+    end
   end
 
   def receive
@@ -138,6 +142,10 @@ class ProcessTipWorker
       toUser = User.find(json["ToTwitterID"])
 
       tweet = tweetObject(json["TweetID"])
+      unless tweet
+        publish_from_problem(fromUser)
+        delete(receipt_handle)
+      end
 
       logger.info "fromUser:"
       logger.info fromUser.to_yaml
