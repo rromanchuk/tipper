@@ -145,6 +145,7 @@ class ProcessTipWorker
       unless tweet
         publish_from_problem(fromUser)
         delete(receipt_handle)
+        next
       end
 
       logger.info "fromUser:"
