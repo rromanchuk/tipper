@@ -59,6 +59,7 @@ class ProcessTipWorker
       restClient.status(tweetId)
     rescue Twitter::Error::Forbidden => e
       Bugsnag.notify(e, {:severity => "error"})
+      nil
     end
   end
 
