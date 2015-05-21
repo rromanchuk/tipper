@@ -49,28 +49,32 @@ EventMachine.run {
     end
 
   EventMachine.defer {
-    client.user(with: "user") do |object|
-      case object
-      when Twitter::Tweet
-        puts "It's a tweet!"
-      when Twitter::DirectMessage
-        puts "It's a direct message!"
-      when Twitter::Streaming::StallWarning
-        puts "Falling behind!"
-      when Twitter::Streaming::Event
-        logger.info "Found event: #{object.name}"
-        if object.name == :favorite
-          Rails.logger.info "name: #{object.name}, currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
-          if object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
-            publish_new_tweet(user)
-            sqs.send_message(queue_url: SqsQueues.new_tip, message_body: { "TweetID": object.target_object.id.to_s, "FromTwitterID": object.source.id.to_s, "ToTwitterID": object.target.id.to_s }.to_json )
-          else
-            puts "Skipping..."
+    begin
+      client.user(with: "user") do |object|
+        case object
+        when Twitter::Tweet
+          puts "It's a tweet!"
+        when Twitter::DirectMessage
+          puts "It's a direct message!"
+        when Twitter::Streaming::StallWarning
+          puts "Falling behind!"
+        when Twitter::Streaming::Event
+          logger.info "Found event: #{object.name}"
+          if object.name == :favorite
+            Rails.logger.info "name: #{object.name}, currentUser: #{user["TwitterUserID"]},  Source #{object.source.id}, Target #{object.target.id}, object #{object.target_object.id}"
+            if object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
+              publish_new_tweet(user)
+              sqs.send_message(queue_url: SqsQueues.new_tip, message_body: { "TweetID": object.target_object.id.to_s, "FromTwitterID": object.source.id.to_s, "ToTwitterID": object.target.id.to_s }.to_json )
+            else
+              puts "Skipping..."
+            end
           end
         end
       end
+    rescue => e
+      Bugsnag.notify(e, {:severity => "error"})
     end
-    }
+  }
 end
 }
 
