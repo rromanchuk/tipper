@@ -34,13 +34,18 @@ end
 EventMachine.run {
   User.all.items.reverse.each do |user|
     next unless user["IsActive"] == "X"
-    logger.info "Starting stream for user #{user}"
+    logger.info "Starting stream for user #{user["TwitterUsername"]}"
 
-    client = Twitter::Streaming::Client.new do |config|
-      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
-      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
-      config.access_token        = user["TwitterAuthToken"]
-      config.access_token_secret = user["TwitterAuthSecret"]
+    begin
+      client = Twitter::Streaming::Client.new do |config|
+        config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
+        config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
+        config.access_token        = user["TwitterAuthToken"]
+        config.access_token_secret = user["TwitterAuthSecret"]
+      end
+    rescue Twitter::Error::Unauthorized
+      logger.info "User #{user["TwitterUsername"]} has invalid token"
+      next
     end
 
   EventMachine.defer {
