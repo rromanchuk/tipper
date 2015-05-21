@@ -44,6 +44,15 @@ class ProcessTipWorker
     end
   end
 
+  def restClientForUser(fromUser)
+    Twitter::REST::Client.new do |config|
+      config.consumer_key        = "***REMOVED***"
+      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
+      config.access_token        = fromUser["TwitterAuthToken"]
+      config.access_token_secret = fromUser["TwitterAuthSecret"]
+    end
+  end
+
   def tipper_bot_client
     tipper_bot = User.find_tipper_bot
     @tipper_bot_client ||= Twitter::REST::Client.new do |config|
@@ -54,9 +63,9 @@ class ProcessTipWorker
     end
   end
 
-  def tweetObject(tweetId)
+  def tweetObject(fromUser)
     begin
-      restClient.status(tweetId)
+      restClientForUser(fromUser).status(fromUser["TweetID"])
     rescue Twitter::Error::Forbidden => e
       Bugsnag.notify(e, {:severity => "error"})
       nil
@@ -142,7 +151,7 @@ class ProcessTipWorker
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
-      tweet = tweetObject(json["TweetID"])
+      tweet = tweetObject(fromUser)
       unless tweet
         publish_from_problem(fromUser)
         delete(receipt_handle)
