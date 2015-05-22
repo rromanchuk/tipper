@@ -1,1 +1,19 @@
-pre = JSON.pretty_generate(@paginated_transactions.items)
+table.table
+  thead
+    tr
+      th txid
+      th FromTwitterUsername
+      th FromBitcoinAddress
+      th ToTwitterUsername
+      th ToBitcoinAddress
+      th Amount
+      th Fee
+  - @paginated_transactions.items.each do |item|
+    tr
+      td = truncate(item["txid"], length: 17) 
+      td = item["FromTwitterUsername"]
+      td = item["FromBitcoinAddress"]
+      td = item["ToTwitterUsername"]
+      td = item["ToBitcoinAddress"]
+      td = item["amount"]
+      td = item["fee"]

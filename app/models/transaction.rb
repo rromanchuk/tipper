@@ -28,7 +28,7 @@ class Transaction
 
     if toUser
       attributes["ToTwitterID"] = {value: toUser["TwitterUserID"] }
-      attributes["TowitterUsername"] = { value: toUser["TwitterUsername"] }
+      attributes["ToTwitterUsername"] = { value: toUser["TwitterUsername"] }
       attributes["ToBitcoinAddress"] = { value: toUser["BitcoinAddress"] }
     end
 
