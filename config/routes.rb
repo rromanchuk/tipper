@@ -22,6 +22,7 @@ Rails.application.routes.draw do
         get 'recent'
         get 'addresses'
         get 'network'
+        get 'balance'
       end
 
       member do 

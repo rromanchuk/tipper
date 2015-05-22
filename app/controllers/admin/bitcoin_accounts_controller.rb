@@ -1,4 +1,8 @@
 class Admin::BitcoinAccountsController < Admin::BaseController
+  
+  def balance
+    @balance = B.totalBalance
+  end
 
   def index
     @accounts = B.client.listaccounts
