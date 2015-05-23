@@ -112,6 +112,7 @@ GEM
     debug_inspector (0.0.2)
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
+    dotenv (2.0.1)
     equalizer (0.0.11)
     erubis (2.7.0)
     eventmachine (1.0.7)
@@ -275,6 +276,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   coffee-rails (>= 4.1.0)
+  dotenv
   eventmachine
   foreman
   jbuilder (>= 2.0)
