@@ -7,13 +7,24 @@ class B
   STANDARD_FEE_AMOUNT = 0.0001
   FUND_AMOUNT = 0.02
 
+  MTC_FRACTION = 0.00100000
+  UTC_FRACTION = 0.00000100
+
+  FUND_AMOUNT_UBTC = FUND_AMOUNT/UTC_FRACTION
+  FUND_AMOUNT_MBTC = FUND_AMOUNT/MTC_FRACTION
+
+  TIP_AMOUNT_UBTC = TIP_AMOUNT/UTC_FRACTION
+  TIP_AMOUNT_MBTC = TIP_AMOUNT/MTC_FRACTION
+
   def self.client
     @client ||= BitcoinClient::Client.new(ENV["RPC_USER"], ENV["RPC_PASSWORD"], {:host => ENV["RPC_HOST"], port: ENV["RPC_PORT"], :ssl => ENV["RPC_SHOULD_USE_SSL"] })
   end
 
   def self.fund_amount_ubtc
-    (TIP_AMOUNT/0.00000100).to_i
+    FUND_AMOUNT_UBTC.to_i
   end
+
+
 
   def self.totalBalance
     s = Satoshi.new(client.balance)

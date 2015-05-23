@@ -1,7 +1,7 @@
 class Admin::WalletController < Admin::BaseController
 
-  def withdrawls
-    @paginated_withdrawls =  Withdraw.all
+  def withdrawals
+    @paginated_withdrawals =  Withdraw.all
   end
 
   def transactions

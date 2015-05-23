@@ -11,7 +11,7 @@ Rails.application.routes.draw do
     resources :tips,  only: [:index]
     resources :wallet do
       collection do 
-        get 'withdrawls'
+        get 'withdrawals'
         get 'transactions'
       end
     end
