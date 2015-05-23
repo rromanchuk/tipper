@@ -42,7 +42,7 @@ class ProcessWalletNotifications
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload}.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"

@@ -24,7 +24,7 @@ def publish_new_tweet(user)
     resp = sns.publish(
       target_arn: user["EndpointArn"],
       message_structure: "json",
-      message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload }.to_json
+      message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
     )
   rescue Aws::SNS::Errors::EndpointDisabled
     logger.error "Aws::SNS::Errors::EndpointDisabled"
