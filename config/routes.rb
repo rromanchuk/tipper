@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
 
   namespace :admin do
+    get 'settings' => 'settings#index'
     resources :users,  only: [:index, :show]
     resources :tips,  only: [:index]
     resources :wallet do
