@@ -26,7 +26,7 @@ def publish_new_tweet(user)
       message_structure: "json",
       message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
     )
-  rescue Aws::SNS::Errors::EndpointDisabled
+  rescue Aws::SNS::Errors::EndpointDisabled => e
     logger.error "Aws::SNS::Errors::EndpointDisabled"
   end
 end
