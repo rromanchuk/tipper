@@ -74,10 +74,13 @@ Rails.application.configure do
   # Use default logging formatter so that PID and timestamp are not suppressed.
   config.log_formatter = ::Logger::Formatter.new
 
+
   # Do not dump schema after migrations.
   #config.active_record.dump_schema_after_migration = false
 
   config.logger = RemoteSyslogLogger.new('logs2.papertrailapp.com', 44749, program: "tipper-production")
+
+  config.action_mailer.logger = nil
 
   cred = Aws::SharedCredentials.new
   ActionMailer::Base.add_delivery_method :ses, AWS::SES::Base,
