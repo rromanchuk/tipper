@@ -1,4 +1,5 @@
 table.table
+  caption Incoming transaction
   thead
     tr
       th txid
@@ -16,3 +17,27 @@ table.table
       td = @tx["ToBitcoinAddress"]
       td = @tx["amount"]
       td = @tx["fee"]
+
+
+
+table.table
+  caption Transaction details
+  thead
+    tr
+      th account
+      th address
+      th category
+      th send
+      th amount
+      th vout
+      th fee
+    - JSON.parse(@tx["details"]).each do |tx|
+      tr
+        td = tx["account"]
+        td = tx["address"]
+        td = tx["category"]
+        td = tx["send"]
+        td = tx["amount"]
+        td = tx["vout"]
+        td = tx["fee"]
+
