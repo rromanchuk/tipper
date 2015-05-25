@@ -92,7 +92,7 @@ class ProcessTipWorker
     return unless toUser["EndpointArn"]
     begin
       message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_received", "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, "user" => toUser, "favorite" => favorite }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_received", "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
       resp = sns.publish(
         target_arn: toUser["EndpointArn"],
         message_structure: "json",
@@ -110,7 +110,7 @@ class ProcessTipWorker
     return unless fromUser["EndpointArn"]
     begin
       message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_sent", "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, "user" => fromUser, "favorite" => favorite }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_sent", "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
@@ -128,7 +128,7 @@ class ProcessTipWorker
     return unless user["EndpointArn"]
     begin
       message = "Opps, we weren't able to send the tip. Low balance?"
-      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, "user" => user, "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
+      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
       resp = sns.publish(
         target_arn: user["EndpointArn"],
         message_structure: "json",
