@@ -39,15 +39,15 @@ class ProcessTipWorker
 
   def restClient
     @restClient ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
-      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
+      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
     end
   end
 
   def restClientForUser(fromUser)
     Twitter::REST::Client.new do |config|
-      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
-      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
+      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
       config.access_token        = fromUser["TwitterAuthToken"]
       config.access_token_secret = fromUser["TwitterAuthSecret"]
     end
@@ -56,8 +56,8 @@ class ProcessTipWorker
   def tipper_bot_client
     tipper_bot = User.find_tipper_bot
     @tipper_bot_client ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
-      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
+      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
       config.access_token        = tipper_bot["TwitterAuthToken"]
       config.access_token_secret = tipper_bot["TwitterAuthSecret"]
     end
@@ -90,8 +90,8 @@ class ProcessTipWorker
   def notify_receiver(fromUser, toUser)
     return unless toUser["EndpointArn"]
     begin
-      message =  "You just received #{B.fund_amount_ubtc}μBTC from #{fromUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "user" => toUser }.to_json
+      message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_received", "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, "user" => toUser }.to_json
       resp = sns.publish(
         target_arn: toUser["EndpointArn"],
         message_structure: "json",
@@ -107,12 +107,12 @@ class ProcessTipWorker
   def notify_sender(fromUser, toUser)
     return unless fromUser["EndpointArn"]
     begin
-      message = "You just sent #{B.fund_amount_ubtc}μBTC to #{toUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "user" => fromUser }.to_json
+      message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_sent", "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, "user" => fromUser }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
@@ -124,11 +124,12 @@ class ProcessTipWorker
   def publish_from_problem(user)
     return unless user["EndpointArn"]
     begin
-      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, "user" => user }.to_json
+      message = "Opps, we weren't able to send the tip. Low balance?"
+      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, "user" => user, "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
       resp = sns.publish(
         target_arn: user["EndpointArn"],
         message_structure: "json",
-        message: {"default" => "Opps, we weren't able to send the tip. Low balance?", "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
@@ -138,7 +139,7 @@ class ProcessTipWorker
   end
 
   def post_on_twitter(fromUser, toUser)
-    message = "@#{fromUser["TwitterUsername"]} just sent @#{toUser["TwitterUsername"]} #{B.fund_amount_ubtc}μBTC"
+    message = "@#{fromUser["TwitterUsername"]} just sent @#{toUser["TwitterUsername"]} #{B::TIP_AMOUNT_UBTC.to_i}μBTC"
     tipper_bot_client.update(message)
   end
 
