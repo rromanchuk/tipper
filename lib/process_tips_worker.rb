@@ -87,11 +87,11 @@ class ProcessTipWorker
     end
   end
 
-  def notify_receiver(fromUser, toUser)
+  def notify_receiver(fromUser, toUser, favorite)
     return unless toUser["EndpointArn"]
     begin
       message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_received", "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, "user" => toUser }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_received", "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, "user" => toUser, "favorite" => favorite }.to_json
       resp = sns.publish(
         target_arn: toUser["EndpointArn"],
         message_structure: "json",
@@ -104,11 +104,11 @@ class ProcessTipWorker
     end
   end
 
-  def notify_sender(fromUser, toUser)
+  def notify_sender(fromUser, toUser, favorite)
     return unless fromUser["EndpointArn"]
     begin
       message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_sent", "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, "user" => fromUser }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_sent", "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, "user" => fromUser, "favorite" => favorite }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
@@ -172,13 +172,13 @@ class ProcessTipWorker
 
 
       if txid
-        resp = Tip.new_tip(tweet, fromUser, toUser, txid)
+        favorite = Tip.new_tip(tweet, fromUser, toUser, txid)
         transaction = B.client.gettransaction(txid)
         Transaction.create(transaction, fromUser, toUser)
 
         # Send success notifications
-        notify_sender(fromUser, toUser)
-        notify_receiver(fromUser, toUser)
+        notify_sender(fromUser, toUser, favorite)
+        notify_receiver(fromUser, toUser, favorite)
         delete(receipt_handle)
         #post_on_twitter(fromUser, toUser)
       else

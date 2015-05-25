@@ -39,11 +39,11 @@ class ProcessWithdrawBalanceWorker
     return unless fromUser["EndpointArn"]
     begin
       message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
@@ -56,11 +56,11 @@ class ProcessWithdrawBalanceWorker
     return unless fromUser["EndpointArn"]
     begin
       message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC failed. Try again?"
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "message" => {"title" => "Withdrawal failed", "subtitle" => message, "type" => "error"} }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
-        message: {"default" => message, "APNS_SANDBOX": apns_payload }.to_json
+        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
@@ -70,7 +70,7 @@ class ProcessWithdrawBalanceWorker
   end
 
   def initialize
-    puts "Starting event machine for ProcessWithdrawBalanceWorker"
+    logger.info "Starting event machine for ProcessWithdrawBalanceWorker"
     #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
