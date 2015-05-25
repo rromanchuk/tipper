@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   namespace :api, path: '/', defaults: { format: 'json' } do
-     resource :me,                  only: [:create, :show, :index], controller: 'me'
-     resources :charges, only: [:create]
-     resources :cognito, only: [:create]
+    get 'settings' => 'settings#index'
+    resource :me,                  only: [:create, :show, :index], controller: 'me'
+    resources :charges, only: [:create]
+    resources :cognito, only: [:create]
   end
 
 
   namespace :admin do
-    get 'settings' => 'settings#index'
     resources :users,  only: [:index, :show]
     resources :tips,  only: [:index]
     resources :wallet do
