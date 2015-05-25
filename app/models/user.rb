@@ -115,24 +115,18 @@ class User
     resp = db.update_item(
       # required
       table_name: "TipperBitcoinAccounts",
+      return_values: "ALL_NEW",
       # required
       key: {
         "TwitterUserID" => user["TwitterUserID"],
       },
       attribute_updates: {
-        "BitcoinBalanceSatoshi" => {
-          value: balance[:satoshi],
-          action: "PUT",
-        },
-        "BitcoinBalanceMBTC" => {
-          value: balance[:mbtc],
-          action: "PUT",
-        },
         "BitcoinBalanceBTC" => {
           value: balance[:btc],
           action: "PUT",
         }
       })
+    resp.attributes
   end
 
 

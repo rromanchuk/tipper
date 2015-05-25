@@ -92,7 +92,11 @@ class ProcessTipWorker
     return unless toUser["EndpointArn"]
     begin
       message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_received", "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, 
+                                  "type" => "tip_received", 
+                                  "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"}, 
+                                  "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] }, 
+                                  "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
       resp = sns.publish(
         target_arn: toUser["EndpointArn"],
         message_structure: "json",
@@ -100,6 +104,7 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
+      # TODO: remove user's endpoint from dynamo, it's invalid
     rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
       Bugsnag.notify(e, {:severity => "error"})
@@ -110,7 +115,11 @@ class ProcessTipWorker
     return unless fromUser["EndpointArn"]
     begin
       message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "type" => "tip_sent", "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, 
+                                  "type" => "tip_sent", 
+                                  "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"}, 
+                                  "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] }, 
+                                  "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
       resp = sns.publish(
         target_arn: fromUser["EndpointArn"],
         message_structure: "json",
@@ -118,6 +127,7 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
+      # TODO: remove user's endpoint from dynamo, it's invalid
     rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
       Bugsnag.notify(e, {:severity => "error"})
@@ -127,8 +137,12 @@ class ProcessTipWorker
   def publish_from_problem(user)
     return unless user["EndpointArn"]
     begin
+
       message = "Opps, we weren't able to send the tip. Low balance?"
-      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
+      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, 
+                      "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, 
+                      "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
+
       resp = sns.publish(
         target_arn: user["EndpointArn"],
         message_structure: "json",
@@ -136,6 +150,7 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
+      # TODO: remove user's endpoint from dynamo, it's invalid
     rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
       Bugsnag.notify(e, {:severity => "error"})
@@ -156,6 +171,7 @@ class ProcessTipWorker
       fromUser = User.find(json["FromTwitterID"])
       toUser = User.find(json["ToTwitterID"])
 
+      # Fetch the tweet object
       tweet = tweetObject(fromUser, json["TweetID"])
       unless tweet
         publish_from_problem(fromUser)
@@ -168,6 +184,7 @@ class ProcessTipWorker
       unless toUser # If the user doesn't exist create a stub account
         toUser = User.create_user(json["ToTwitterID"], tweet.user.screen_name)
       end
+      
       logger.info "toUser:"
       logger.info toUser.to_yaml
 
@@ -176,6 +193,9 @@ class ProcessTipWorker
 
 
       if txid
+        fromUser = User.update_balance(fromUser)
+        toUser = User.update_balance(toUser)
+
         favorite = Tip.new_tip(tweet, fromUser, toUser, txid)
         transaction = B.client.gettransaction(txid)
         Transaction.create(transaction, fromUser, toUser)
@@ -186,7 +206,7 @@ class ProcessTipWorker
         delete(receipt_handle)
         #post_on_twitter(fromUser, toUser)
       else
-        # Send failure notifications
+        # Send failure notifications, delete the sqs receipt so we don't keep retrying
         publish_from_problem(fromUser)
         delete(receipt_handle)
       end

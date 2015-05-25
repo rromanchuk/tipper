@@ -2,7 +2,7 @@ class ProcessWalletNotifications
   def logger
     @logger ||= begin
       _logger = Rails.logger
-      _logger.progname = "process_withdraw_balance_worker"
+      _logger.progname = "process_wallet_notification_worker"
       _logger
     end
   end
@@ -46,8 +46,9 @@ class ProcessWalletNotifications
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter
+    rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -75,8 +76,9 @@ class ProcessWalletNotifications
         { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
       end
       messages
-    rescue Aws::SQS::Errors::ServiceError
-    # rescues all errors returned by Amazon Simple Queue Service
+    rescue Aws::SQS::Errors::ServiceError => e
+      # rescues all errors returned by Amazon Simple Queue Service
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 

@@ -20,21 +20,6 @@ class ProcessWithdrawBalanceWorker
     end
   end
 
-  # def notify_admins(tx)
-  #   begin
-  #     message = "New wallet transactions amt: #{tx["amount"]}"
-  #     resp = sns.publish(
-  #       topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
-  #       message_structure: "json",
-  #       message: {"default" => message, "sms": message }.to_json
-  #     )
-  #   rescue Aws::SNS::Errors::EndpointDisabled
-  #     Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
-  #   end
-
-  #   AdminMailer.wallet_notify(tx).deliver_now
-  # end
-
   def notify_sender(fromUser)
     return unless fromUser["EndpointArn"]
     begin
@@ -47,8 +32,9 @@ class ProcessWithdrawBalanceWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter
+    rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -64,8 +50,9 @@ class ProcessWithdrawBalanceWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter
+    rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -92,8 +79,9 @@ class ProcessWithdrawBalanceWorker
         { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
       end
       messages
-    rescue Aws::SQS::Errors::ServiceError
-    # rescues all errors returned by Amazon Simple Queue Service
+    rescue Aws::SQS::Errors::ServiceError => e
+      # rescues all errors returned by Amazon Simple Queue Service
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 

@@ -18,14 +18,6 @@ module UserAuthenticatable
         "TwitterUserID" => twitter_id,
       },
       attribute_updates: {
-        "BitcoinBalanceSatoshi" => {
-          value: balance[:satoshi],
-          action: "PUT",
-        },
-        "BitcoinBalanceMBTC" => {
-          value: balance[:mbtc],
-          action: "PUT",
-        },
         "BitcoinBalanceBTC" => {
           value: balance[:btc],
           action: "PUT",
