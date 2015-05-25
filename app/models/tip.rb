@@ -72,7 +72,7 @@ class Tip
           value: txid
         },
         "CreatedAt" => {
-          value: Time.now.to_i
+          value: tweet.created_at.to_i
         },
         "TweetJSON" => {
           value: tweet.to_json
