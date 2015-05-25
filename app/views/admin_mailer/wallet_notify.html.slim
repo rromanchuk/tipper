@@ -1,1 +1,18 @@
-pre = JSON.pretty_generate(@tx)
+table.table
+  thead
+    tr
+      th txid
+      th FromTwitterUsername
+      th FromBitcoinAddress
+      th ToTwitterUsername
+      th ToBitcoinAddress
+      th Amount
+      th Fee
+    tr
+      td = truncate(@tx["txid"], length: 17) 
+      td = @tx["FromTwitterUsername"]
+      td = @tx["FromBitcoinAddress"]
+      td = @tx["ToTwitterUsername"]
+      td = @tx["ToBitcoinAddress"]
+      td = @tx["amount"]
+      td = @tx["fee"]

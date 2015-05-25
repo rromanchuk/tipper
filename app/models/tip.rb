@@ -50,7 +50,7 @@ class Tip
   end
 
   def self.new_tip(tweet, fromUser, toUser, txid)
-    puts "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
+    Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
@@ -88,7 +88,7 @@ class Tip
 
 
    def self.find(tweet_id, from_id)
-    puts "User#find #{twitter_id}"
+    Rails.logger.info "User#find #{twitter_id}"
       db.get_item(
         table_name: TABLE_NAME,
         key: {
