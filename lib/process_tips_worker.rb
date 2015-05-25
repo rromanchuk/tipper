@@ -82,8 +82,9 @@ class ProcessTipWorker
         { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
       end
       messages
-    rescue Aws::SQS::Errors::ServiceError
+    rescue Aws::SQS::Errors::ServiceError => e
     # rescues all errors returned by Amazon Simple Queue Service
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -99,8 +100,9 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter
+    rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -116,8 +118,9 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter
+    rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -133,8 +136,9 @@ class ProcessTipWorker
       )
     rescue Aws::SNS::Errors::EndpointDisabled
       logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter
+    rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
