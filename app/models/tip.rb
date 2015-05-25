@@ -53,6 +53,7 @@ class Tip
     Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
     resp = db.update_item(
       table_name: TABLE_NAME,
+      return_values: "ALL_NEW",
       key: {
         "TweetID" => tweet.id.to_s,
         "FromTwitterID" => fromUser["TwitterUserID"]

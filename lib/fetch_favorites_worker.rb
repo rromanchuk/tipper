@@ -12,8 +12,8 @@ class TwitterFavorites
 
   def initialize
     client = Twitter::REST::Client.new do |config|
-      config.consumer_key        = "oGbPqpQeXUojn7macV7Ze9HvO"
-      config.consumer_secret     = "iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ"
+      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
     end
     @client = client
 
