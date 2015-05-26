@@ -2,6 +2,16 @@ class Transaction
   TABLE_NAME = "TipperBitcoinTransactions"
 
   def self.create(transaction, fromUser=nil, toUser=nil)
+
+    category = nil
+    if transaction["amount"] == 0
+      category = "internal_tip"
+    elsif transaction["amount"] > 0
+      category = "external_deposit"
+    elsif transaction["amount"] < 0
+      category = "external_withdrawal"
+    end
+
     attributes = {
         "amount" => {
           value: transaction["amount"]
@@ -14,6 +24,9 @@ class Transaction
         },
         "confirmations" => {
           value: transaction["confirmations"]
+        },
+        "category" => {
+          value: category
         },
         "details" => {
           value: transaction["details"].to_json
