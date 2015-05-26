@@ -2,6 +2,7 @@ table.table
   thead
     tr
       th txid
+      th Category
       th FromTwitterUsername
       th FromBitcoinAddress
       th ToTwitterUsername
@@ -10,7 +11,8 @@ table.table
       th Fee
   - @paginated_transactions.items.each do |item|
     tr
-      td = truncate(item["txid"], length: 17) 
+      td = link_to truncate(item["txid"], length: 17), "https://blockchain.info/tx/#{item["txid"]}"
+      td = item["category"]
       td = item["FromTwitterUsername"]
       td = item["FromBitcoinAddress"]
       td = item["ToTwitterUsername"]
