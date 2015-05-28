@@ -16,6 +16,9 @@ class Transaction
         "amount" => {
           value: transaction["amount"]
         },
+        "tip_amount" => {
+          value: B::TIP_AMOUNT
+        }
         "fee" => {
           value: transaction["fee"]
         },

@@ -140,7 +140,7 @@ class ProcessTipWorker
 
       message = "Opps, we weren't able to send the tip. Low balance?"
       apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 }, 
-                      "user" => { "TwitterUserID" => fromUser["TwitterUserID"] }, 
+                      "user" => { "TwitterUserID" => user["TwitterUserID"] }, 
                       "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
 
       resp = sns.publish(
