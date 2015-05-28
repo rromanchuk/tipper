@@ -47,4 +47,11 @@ Eye.application "tipper" do
     daemonize true
     stdall "log/process_withdraw_balance_worker.log"
   end
+
+  process "process_fund_worker" do
+    pid_file "tmp/pids/process_fund_worker.pid"
+    start_command "bundle exec rails r lib/process_fund_worker.rb"
+    daemonize true
+    stdall "log/process_fund_worker.log"
+  end
 end

@@ -14,4 +14,8 @@ class SqsQueues
   def self.withdraw_balance
     "https://sqs.us-east-1.amazonaws.com/080383581145/WithdrawBalance"
   end
+
+  def self.fund
+    "https://sqs.us-east-1.amazonaws.com/080383581145/TipperFund"
+  end
 end
