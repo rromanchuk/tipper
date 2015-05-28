@@ -37,7 +37,11 @@ module UserAuthenticatable
     raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token
     update_balance
     user
-  rescue ActionController::InvalidAuthenticityToken
+  rescue ActionController::InvalidAuthenticityToken => e
+    Bugsnag.notify(e, {:severity => "error"})
+    false
+  rescue ActionController::ParameterMissing => e
+    Bugsnag.notify(e, {:severity => "error"})
     false
   end
 
