@@ -18,7 +18,7 @@ class Transaction
         },
         "tip_amount" => {
           value: B::TIP_AMOUNT
-        }
+        },
         "fee" => {
           value: transaction["fee"]
         },
