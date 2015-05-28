@@ -33,7 +33,7 @@ module Api
     end
 
     def fetch_favorites
-      sqs.send_message(queue_url: SqsQueues.fund, message_body: { current_user }.to_json )
+      sqs.send_message(queue_url: SqsQueues.fund, message_body: current_user.to_json )
     end
 
     def sqs
