@@ -18,7 +18,7 @@ module Api
         :description => 'Tipper refill',
         :currency    => 'usd'
       )
-      send_bitcoin
+  
       render json: charge
     end
 
@@ -32,6 +32,13 @@ module Api
       params.require(:amount)
     end
 
+    def fetch_favorites
+      sqs.send_message(queue_url: SqsQueues.fund, message_body: { current_user }.to_json )
+    end
+
+    def sqs
+      @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+    end
 
   end
 end

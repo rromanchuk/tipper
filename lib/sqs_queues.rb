@@ -14,4 +14,8 @@ class SqsQueues
   def self.withdraw_balance
     "***REMOVED***"
   end
+
+  def self.fund
+    "***REMOVED***"
+  end
 end
