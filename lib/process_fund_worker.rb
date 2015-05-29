@@ -102,14 +102,15 @@ class ProcessFundWorker
 
       txid = B.fundUser(toUser["BitcoinAddress"])
       if txid
+        delete(receipt_handle)
         toUser = User.update_balance(toUser)
         transaction = B.client.gettransaction(txid)
         transaction = Transaction.create(transaction, nil, toUser)
         notify_receiver(toUser)
       else
-        
+        # do not delete message on failure
       end
-      delete(receipt_handle)
+
 
       transaction["details"].each do |detail|
         user = User.update_balance_by_address(detail["address"])
