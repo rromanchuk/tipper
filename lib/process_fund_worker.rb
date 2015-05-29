@@ -110,11 +110,6 @@ class ProcessFundWorker
       else
         # do not delete message on failure
       end
-
-
-      transaction["details"].each do |detail|
-        user = User.update_balance_by_address(detail["address"])
-      end
     end
   end
 
