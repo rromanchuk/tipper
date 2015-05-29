@@ -20,7 +20,7 @@ module Api
       )
 
       fund_account
-      render json: charge
+      render json: current_user
     end
 
     private
