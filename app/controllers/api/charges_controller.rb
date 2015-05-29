@@ -18,21 +18,18 @@ module Api
         :description => 'Tipper refill',
         :currency    => 'usd'
       )
-  
+
+      fund_account
       render json: charge
     end
 
     private
 
-    def send_bitcoin
-      B.fundUser(bitcoin_address)
-    end
-
     def amount
       params.require(:amount)
     end
 
-    def fetch_favorites
+    def fund_account
       sqs.send_message(queue_url: SqsQueues.fund, message_body: current_user.to_json )
     end
 
