@@ -49,6 +49,10 @@ module Api
       params.require(:twitter_auth_secret)
     end
 
+    def profile_image
+      params.require(:profile_image)
+    end
+
     def attributes_to_update
       {
         "TwitterAuthToken" => {
@@ -65,6 +69,9 @@ module Api
         },
         "IsActive" => {
           value: "X"
+        }, 
+        "ProfileImage" => {
+          value: profile_image
         }
       }
     end

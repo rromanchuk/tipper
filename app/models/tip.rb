@@ -25,30 +25,6 @@ class Tip
     )
   end
 
-  def self.batchWrite(collection, currentUser)
-    putRequests = []
-    collection.each do |tweet|
-      putRequests << { put_request:
-        { item:
-          { "TweetID": tweet.id.to_s,
-            "TweetJSON": tweet.to_json,
-            "CreatedAt": tweet.created_at.to_i,
-            "FromTwitterID": currentUser["TwitterUserID"],
-            "FromTwitterUsername": currentUser["TwitterUsername"],
-            "ToTwitterID": tweet.user.id.to_s,
-            "ToTwitterUsername": tweet.user.screen_name
-          }
-        }
-      }
-    end
-    resp = db.batch_write_item(
-      # required
-      request_items: {
-        TABLE_NAME => putRequests
-      },
-    )
-  end
-
   def self.new_tip(tweet, fromUser, toUser, txid)
     Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
     resp = db.update_item(
@@ -65,8 +41,14 @@ class Tip
         "ToTwitterUsername" => {
           value: toUser["TwitterUsername"]
         },
+        "ToTwitterPofileImage" => {
+          value: toUser["ProfileImage"]
+        },
         "FromTwitterUsername": {
           value: fromUser["TwitterUsername"]
+        },
+        "FromTwitterPofileImage" => {
+          value: fromUser["ProfileImage"]
         },
         "txid" => {
           value: txid
