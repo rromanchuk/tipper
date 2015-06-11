@@ -10,8 +10,10 @@ class Favorite
             "CreatedAt": tweet.created_at.to_i, 
             "FromTwitterID": currentUser["TwitterUserID"],
             "FromTwitterUsername": currentUser["TwitterUsername"],
+            "FromTwitterPofileImage": currentUser["ProfileImage"],
             "ToTwitterID": tweet.user.id.to_s,
-            "ToTwitterUsername": tweet.user.screen_name 
+            "ToTwitterUsername": tweet.user.screen_name,
+            "ToTwitterPofileImage": tweet.user.profile_image_url
           } 
         } 
       }
