@@ -129,6 +129,37 @@ class User
     resp.attributes
   end
 
+  def self.update_user_with_twitter(user)
+    client = Twitter::REST::Client.new do |config|
+      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
+      config.access_token        = user["TwitterAuthToken"]
+      config.access_token_secret = user["TwitterAuthSecret"]
+    end
+
+    twitter_user = client.user(user["TwitterUsername"])
+
+    resp = db.update_item(
+      # required
+      table_name: "TipperBitcoinAccounts",
+      return_values: "ALL_NEW",
+      # required
+      key: {
+        "TwitterUserID" => user["TwitterUserID"],
+      },
+      attribute_updates: {
+        "ProfileImage" => {
+          value: twitter_user.profile_image_url,
+          action: "PUT",
+        },
+        "Name" => {
+          value: twitter_user.name,
+          action: "PUT",
+        }
+      })
+    resp.attributes
+  end
+
 
   def self.userExists?(twitter_id)
     !find(twitter_id).item.nil?
@@ -140,6 +171,14 @@ class User
   
   def db
     User.db
+  end
+
+  def self.update_users
+    users = User.find_active
+    users.items.each do |user|
+      User.update_user_with_twitter(user)
+      sleep 1
+    end
   end
 
 end
