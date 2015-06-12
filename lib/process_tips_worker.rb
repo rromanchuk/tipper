@@ -203,6 +203,7 @@ class ProcessTipWorker
         # Send success notifications
         notify_sender(fromUser, toUser, favorite)
         notify_receiver(fromUser, toUser, favorite)
+
         #post_on_twitter(fromUser, toUser)
       else
         # Send failure notifications, delete the sqs receipt so we don't keep retrying
