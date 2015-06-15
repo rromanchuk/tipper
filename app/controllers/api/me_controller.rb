@@ -19,7 +19,7 @@ module Api
       end
 
       Rails.logger.info "User: #{user.to_yaml}"
-      fetch_favorites(user_id)
+      fetch_favorites(user["UserID"])
 
       render json: user
     end
