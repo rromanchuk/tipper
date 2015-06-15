@@ -12,10 +12,10 @@ module UserAuthenticatable
     Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
     resp = db.update_item(
       # required
-      table_name: "TipperBitcoinAccounts",
+      table_name: User::TABLE_NAME,
       # required
       key: {
-        "TwitterUserID" => twitter_id,
+        "UserID" => user_id,
       },
       attribute_updates: {
         "BitcoinBalanceBTC" => {
@@ -28,7 +28,6 @@ module UserAuthenticatable
         }
       })
   end
-
 
 
   def authenticate_user_from_token
@@ -85,6 +84,10 @@ module UserAuthenticatable
 
   def cognito_identity
     user["CognityIdentity"]
+  end
+
+  def user_id
+    user["UserID"]
   end
 
   def auth_token

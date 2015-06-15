@@ -168,8 +168,8 @@ class ProcessTipWorker
       json = message[:message]
       logger.info "process_messages: #{json}"
 
-      fromUser = User.find(json["FromTwitterID"])
-      toUser = User.find(json["ToTwitterID"])
+      fromUser = User.find_by_twitter_id(json["FromTwitterID"])
+      toUser = User.find_by_twitter_id(json["ToTwitterID"])
 
       # Fetch the tweet object
       tweet = tweetObject(fromUser, json["TweetID"])
@@ -182,7 +182,7 @@ class ProcessTipWorker
       logger.info "fromUser:"
       logger.info fromUser.to_yaml
       unless toUser # If the user doesn't exist create a stub account
-        toUser = User.create_user(json["ToTwitterID"], tweet.user.screen_name)
+        toUser = User.create_user({"TwitterUserID": json["ToTwitterID"], "TwitterUsername": tweet.user.screen_name})
       end
       
       logger.info "toUser:"
