@@ -1,5 +1,5 @@
 class User
-  TABLE_NAME = "TipperAccounts"
+  TABLE_NAME = "TipperUsers"
   
   def self.all
     @resp = db.scan(
