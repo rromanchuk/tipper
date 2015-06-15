@@ -91,7 +91,7 @@ class ProcessWithdrawBalanceWorker
       json = message[:message]
 
       logger.info "process_messages: #{json}"
-      fromUser = User.find(json["TwitterUserID"])
+      fromUser = User.find_by_twitter_id(json["TwitterUserID"])
       fromBitcoinAddress = fromUser["BitcoinAddress"]
       toBitcoinAddress = json["ToBitcoinAddress"]
 

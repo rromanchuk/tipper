@@ -44,7 +44,7 @@ class TwitterFavorites
   end
 
   def self.start_for_user(twitterId)
-    user = User.find(twitterId)
+    user = User.find_by_twitter_id(twitterId)
     f = TwitterFavorites.new
     f.client.access_token        = user["TwitterAuthToken"]
     f.client.access_token_secret = user["TwitterAuthSecret"]
