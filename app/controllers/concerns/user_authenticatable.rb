@@ -71,7 +71,7 @@ module UserAuthenticatable
   end
   
   def user
-    @user ||= User.find(twitter_id)
+    @user ||= User.find_by_twitter_id(twitter_id)
   end
 
   def twitter_id
