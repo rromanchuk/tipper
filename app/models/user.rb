@@ -1,5 +1,5 @@
 class User
-  TABLE_NAME = "TipperBitcoinAccounts"
+  TABLE_NAME = "TipperAccounts"
   
   def self.all
     @resp = db.scan(
@@ -25,13 +25,30 @@ class User
     )
   end
 
-  def self.find(twitter_id)
+  def self.find(user_id)
     db.get_item(
       table_name: TABLE_NAME,
       key: {
-        "TwitterUserID" => twitter_id,
+        "UserID" => user_id,
       },
     ).item
+  end
+
+  def self.find_by_twitter_id(twitter_id)
+    resp = db.query(
+      # required
+      table_name: TABLE_NAME,
+      index_name: "TwitterUserID-index",
+      key_conditions: {
+        "BitcoinAddress" => {
+          attribute_value_list: [
+            twitter_id, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          ],
+        # required
+          comparison_operator: "EQ",
+        },
+      },
+    ).items.first
   end
 
   def self.find_by_address(address)
@@ -60,41 +77,37 @@ class User
     ).item
   end
 
-  def self.create_user(twitter_id, twitter_username, isActive=false)
+  def self.create_user(additional_attributes={})
 
     attributes = {
-        "BitcoinAddress" => {
-          value: B.getNewUserAddress
-        },
-        "TwitterUsername" => {
-          value: twitter_username
-        },
-        "token" => {
-          value: SecureRandom.urlsafe_base64(30)
-        }
-      }
+      "BitcoinAddress" => {
+        value: B.getNewUserAddress
+      },
+      "token" => {
+        value: SecureRandom.urlsafe_base64(30)
+      },
+    }
 
-    if isActive
-      attributes["IsActive"] = { value: "X" }
-    end
+    attributes = attributes.merge(additional_attributes)
 
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
-        "TwitterUserID" => twitter_id,
+        "UserID" => SecureRandom.uuid,
       },
       attribute_updates: attributes,
       return_values: "ALL_NEW"
     )
+
     resp.attributes
   end
 
 
-  def self.update_user(twitter_id, attribute_updates)
+  def self.update_user(user_id, attribute_updates)
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
-        "TwitterUserID" => twitter_id,
+        "UserID" => user_id,
       },
       attribute_updates: attribute_updates,
       return_values: "ALL_NEW"
@@ -118,7 +131,7 @@ class User
       return_values: "ALL_NEW",
       # required
       key: {
-        "TwitterUserID" => user["TwitterUserID"],
+        "UserID" => user["UserID"],
       },
       attribute_updates: {
         "BitcoinBalanceBTC" => {
@@ -141,15 +154,15 @@ class User
 
     resp = db.update_item(
       # required
-      table_name: "TipperBitcoinAccounts",
+      table_name: TABLE_NAME,
       return_values: "ALL_NEW",
       # required
       key: {
-        "TwitterUserID" => user["TwitterUserID"],
+        "UserID" => user["UserID"],
       },
       attribute_updates: {
         "ProfileImage" => {
-          value: twitter_user.profile_image_url,
+          value: twitter_user.profile_image_url.to_s,
           action: "PUT",
         },
         "Name" => {
@@ -176,7 +189,10 @@ class User
   def self.update_users
     users = User.find_active
     users.items.each do |user|
-      User.update_user_with_twitter(user)
+      begin
+        puts User.update_user_with_twitter(user)
+      rescue
+      end
       sleep 1
     end
   end

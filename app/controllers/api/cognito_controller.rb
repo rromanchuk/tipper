@@ -23,10 +23,10 @@ module Api
     def update_cognito
       resp = db.update_item(
         # required
-        table_name: "TipperBitcoinAccounts",
+        table_name: User::TABLE_NAME,
         # required
         key: {
-          "TwitterUserID" => twitter_id,
+          "UserID" => user_id,
         },
         attribute_updates: {
           "CognitoToken" => {

@@ -12,15 +12,16 @@ module Api
         logins: { "com.ryanromanchuk.tipper" => twitterId },
         token_duration: 1)
 
-
-      unless User.find(twitterId)
-        User.create_user(twitterId, username, true)
+      Rails.logger.info "Find or create for twitterID: #{twitterId}...."
+      user = User.find_by_twitter_id(twitterId)
+      unless user
+        user = User.create_user(attributes_to_update)
       end
 
-      item = User.update_user(twitterId, attributes_to_update)
-      fetch_favorites
+      Rails.logger.info "User: #{user.to_yaml}"
+      fetch_favorites(user_id)
 
-      render json: item
+      render json: user
     end
 
 
@@ -72,12 +73,21 @@ module Api
         }, 
         "ProfileImage" => {
           value: profile_image
+        },
+        "TwitterUserID" => {
+          value: twitterId
+        },
+        "TwitterUsername" => {
+          value: username
+        },
+        "IsActive" => {
+          value: "X"
         }
       }
     end
 
-    def fetch_favorites
-      sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId }.to_json )
+    def fetch_favorites(user_id)
+      sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId, "UserID":  user_id }.to_json )
     end
 
     def db

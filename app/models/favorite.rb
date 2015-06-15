@@ -13,7 +13,7 @@ class Favorite
             "FromTwitterPofileImage": currentUser["ProfileImage"],
             "ToTwitterID": tweet.user.id.to_s,
             "ToTwitterUsername": tweet.user.screen_name,
-            "ToTwitterPofileImage": tweet.user.profile_image_url
+            "ToTwitterPofileImage": tweet.user.profile_image_url.to_s,
           } 
         } 
       }
