@@ -127,7 +127,7 @@ class User
 
     resp = db.update_item(
       # required
-      table_name: "TipperBitcoinAccounts",
+      table_name: TABLE_NAME,
       return_values: "ALL_NEW",
       # required
       key: {
