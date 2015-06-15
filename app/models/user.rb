@@ -40,7 +40,7 @@ class User
       table_name: TABLE_NAME,
       index_name: "TwitterUserID-index",
       key_conditions: {
-        "BitcoinAddress" => {
+        "TwitterUserID" => {
           attribute_value_list: [
             twitter_id, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
           ],
