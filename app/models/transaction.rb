@@ -37,12 +37,14 @@ class Transaction
       }
 
     if fromUser
+      attributes["FromUserID"] = {value: fromUser["UserID"]}
       attributes["FromTwitterID"] = {value: fromUser["TwitterUserID"]}
       attributes["FromTwitterUsername"] = {value: fromUser["TwitterUsername"]}
       attributes["FromBitcoinAddress"] = { value: fromUser["BitcoinAddress"]}
     end
 
     if toUser
+      attributes["ToUserID"] = {value: toUser["UserID"] }
       attributes["ToTwitterID"] = {value: toUser["TwitterUserID"] }
       attributes["ToTwitterUsername"] = { value: toUser["TwitterUsername"] }
       attributes["ToBitcoinAddress"] = { value: toUser["BitcoinAddress"] }
