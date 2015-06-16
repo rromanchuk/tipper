@@ -1,5 +1,5 @@
 class Withdraw
-  TABLE_NAME = "TipperWithdraw"
+  TABLE_NAME = "TipperWithdrawTransaction"
 
   def self.db
     @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
@@ -39,13 +39,16 @@ class Withdraw
         },
         "details" => {
           value: transaction["details"].to_json
+        },
+        "TwitterID" => {
+          value: fromUser["TwitterUserID"]
         }
       }
 
     resp = db.update_item(
       table_name: TABLE_NAME,
       key: {
-        "TwitterID" => fromUser["TwitterUserID"],
+        "UserID" => fromUser["UserID"],
         "TransactionID" => txid
       },
       attribute_updates: attributes,
