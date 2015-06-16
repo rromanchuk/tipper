@@ -13,28 +13,28 @@ class Transaction
     end
 
     attributes = {
-        "amount" => {
-          value: transaction["amount"]
-        },
-        "tip_amount" => {
-          value: B::TIP_AMOUNT
-        },
-        "fee" => {
-          value: transaction["fee"]
-        },
-        "time" => {
-          value: transaction["time"]
-        },
-        "confirmations" => {
-          value: transaction["confirmations"]
-        },
-        "category" => {
-          value: category
-        },
-        "details" => {
-          value: transaction["details"].to_json
-        }
+      "amount" => {
+        value: transaction["amount"]
+      },
+      "tip_amount" => {
+        value: B::TIP_AMOUNT
+      },
+      "fee" => {
+        value: transaction["fee"]
+      },
+      "time" => {
+        value: transaction["time"]
+      },
+      "confirmations" => {
+        value: transaction["confirmations"]
+      },
+      "category" => {
+        value: category
+      },
+      "details" => {
+        value: transaction["details"].to_json
       }
+    }
 
     if fromUser
       attributes["FromUserID"] = {value: fromUser["UserID"]}

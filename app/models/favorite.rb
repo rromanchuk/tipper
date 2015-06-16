@@ -7,7 +7,8 @@ class Favorite
         { item:
           { "TweetID": tweet.id.to_s,
             "TweetJSON": tweet.to_json, 
-            "CreatedAt": tweet.created_at.to_i, 
+            "CreatedAt": tweet.created_at.to_i,
+            "FromUserID": currentUser["UserID"],
             "FromTwitterID": currentUser["TwitterUserID"],
             "FromTwitterUsername": currentUser["TwitterUsername"],
             "FromTwitterPofileImage": currentUser["ProfileImage"],
