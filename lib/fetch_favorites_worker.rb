@@ -1,12 +1,12 @@
 $stdout.sync = true
 
 def logger
-    @logger ||= begin 
-      _logger = Rails.logger
-      _logger.progname = "fetch_favorites_worker.rb"
-      _logger
-    end
+  @logger ||= begin 
+    _logger = Rails.logger
+    _logger.progname = "fetch_favorites_worker.rb"
+    _logger
   end
+end
 
 class TwitterFavorites
 
@@ -28,19 +28,6 @@ class TwitterFavorites
 
   def client
     @client
-  end
-
-  def self.start
-    User.all.items.each do |user|
-      f = TwitterFavorites.new
-      f.client.access_token        = user["TwitterAuthToken"]
-      f.client.access_token_secret = user["TwitterAuthSecret"]
-      favorites = f.client.get_all_favorites
-      favorites.each_slice(25).each do |chunkedFavorites|
-        Favorite.batchWrite(chunkedFavorites, user["TwitterUserID"])
-      end
-      favorites
-    end
   end
 
   def self.start_for_user(twitterId)
