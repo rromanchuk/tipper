@@ -1,5 +1,5 @@
 class Tip
-  TABLE_NAME = "TipperTwitterFavorites"
+  TABLE_NAME = "TipperTips"
 
   def self.all
     resp = db.scan(
@@ -31,10 +31,13 @@ class Tip
       table_name: TABLE_NAME,
       return_values: "ALL_NEW",
       key: {
-        "TweetID" => tweet.id.to_s,
-        "FromTwitterID" => fromUser["TwitterUserID"]
+        "ObjectID" => tweet.id.to_s,
+        "FromUserID" => fromUser["UserID"]
       },
       attribute_updates: {
+        "FromTwitterID": {
+          value: fromUser["TwitterUserID"]
+        },
         "ToTwitterID": {
           value: toUser["TwitterUserID"]
         },
@@ -70,13 +73,13 @@ class Tip
   end
 
 
-   def self.find(tweet_id, from_id)
+   def self.find(object_id, from_id)
     Rails.logger.info "User#find #{twitter_id}"
       db.get_item(
         table_name: TABLE_NAME,
         key: {
-          "TweetID" => tweet_id,
-          "FromTwitterID" => from_id
+          "ObjectID" => object_id,
+          "FromUserID" => from_id
         },
       ).item
   end
