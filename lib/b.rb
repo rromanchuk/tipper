@@ -1,6 +1,8 @@
 #require 'bitcon_client'
 class B
 
+  FUND_FROM_ACCOUNT = "tipper_reserves"
+  NEW_USER_ACCOUNT = "tipper_users"
   # http://bitcoindenominations.org/
   TIP_AMOUNT = 0.0005  # 12/cents
   FEE_AMOUNT = 0.00001
@@ -39,7 +41,7 @@ class B
   end
 
   def self.getNewUserAddress
-    client.getnewaddress("tipper_users")
+    client.getnewaddress(NEW_USER_ACCOUNT)
   end
 
   def self.unspent(address)
@@ -162,7 +164,7 @@ class B
   end
 
   def self.fundUser(address)
-    client.sendfrom("rromanchuk", address, FUND_AMOUNT)
+    client.sendfrom(FUND_FROM_ACCOUNT, address, FUND_AMOUNT)
   end
 
 end
