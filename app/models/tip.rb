@@ -12,7 +12,7 @@ class Tip
     resp = db.query(
       # required
       table_name: TABLE_NAME,
-      index_name: "DidLeaveTip-index-copy",
+      index_name: "DidLeaveTip-index",
       key_conditions: {
         "DidLeaveTip" => {
           attribute_value_list: [
