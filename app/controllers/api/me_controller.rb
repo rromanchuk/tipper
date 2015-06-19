@@ -4,13 +4,6 @@ module Api
     skip_before_filter :require_user!, only: [:create]
 
     def create
-      @resp = identity.get_open_id_token_for_developer_identity(
-        # required
-        identity_pool_id: "us-east-1:71450ec4-894b-4e51-bfbb-35a012b5b514",
-        identity_id:  params[:identity_id],
-        # required
-        logins: { "com.ryanromanchuk.tipper" => twitterId },
-        token_duration: 1)
 
       Rails.logger.info "Find or create for twitterID: #{twitterId}...."
       user = User.find_by_twitter_id(twitterId)
@@ -18,6 +11,18 @@ module Api
         user = User.create_user(attributes_to_update)
         fetch_favorites(user["UserID"])
       end
+
+      @resp = identity.get_open_id_token_for_developer_identity(
+        # required
+        identity_pool_id: ENV["AWS_COGNITO_POOL"],
+        identity_id:  user["CognitoIdentity"],
+        # required
+        logins: { "com.ryanromanchuk.tipper" => user["UserID"] },
+        token_duration: 1)
+
+      user["CognitoToken"] = resp.token
+      user["CognitoIdentity"] = resp.identity_id
+
 
       Rails.logger.info "User: #{user.to_yaml}"
 
@@ -73,12 +78,6 @@ module Api
         "TwitterAuthSecret" => {
           value: twitter_auth_secret
         },
-        "CognityIdentity" => {
-          value: @resp.identity_id
-        },
-        "CognitoToken" => {
-          value: @resp.token
-        },
         "IsActive" => {
           value: "X"
         }, 
@@ -95,6 +94,26 @@ module Api
           value: "X"
         }
       }
+    end
+
+    def update_cognito(user)
+      resp = db.update_item(
+        # required
+        table_name: User::TABLE_NAME,
+        # required
+        key: {
+          "UserID" => user["UserID"],
+        },
+        attribute_updates: {
+          "CognitoToken" => {
+            value: user["CognitoToken"],
+            action: "PUT",
+          },
+          "CognitoIdentity" => {
+            value: user["CognitoIdentity"],
+            action: "PUT",
+          },
+        })
     end
 
     def fetch_favorites(user_id)

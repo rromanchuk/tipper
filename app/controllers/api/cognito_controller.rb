@@ -3,10 +3,10 @@ module Api
     def create
       resp = identity.get_open_id_token_for_developer_identity(
         # required
-        identity_pool_id: "us-east-1:71450ec4-894b-4e51-bfbb-35a012b5b514",
+        identity_pool_id: ENV["AWS_COGNITO_POOL"],
         identity_id: cognito_identity,
         # required
-        logins: { "com.ryanromanchuk.tipper" => twitter_id },
+        logins: { "com.ryanromanchuk.tipper" => user_id },
         token_duration: 1)
 
       current_user["CognitoToken"] = resp.token
