@@ -24,8 +24,9 @@ module Api
 
       user["CognitoToken"] = resp.token
       user["CognitoIdentity"] = resp.identity_id
+      update_cognito(user)
 
-      
+
       Rails.logger.info "User: #{user.to_yaml}"
 
 
