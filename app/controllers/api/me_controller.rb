@@ -16,10 +16,11 @@ module Api
       user = User.find_by_twitter_id(twitterId)
       unless user
         user = User.create_user(attributes_to_update)
+        fetch_favorites(user["UserID"])
       end
 
       Rails.logger.info "User: #{user.to_yaml}"
-      fetch_favorites(user["UserID"])
+
 
       render json: user
     end
@@ -30,6 +31,16 @@ module Api
     end
 
     private
+
+    def valid_twitter_credentials
+      client = Twitter::REST::Client.new do |config|
+        config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+        config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
+        config.access_token        = twitter_auth_token
+        config.access_token_secret = twitter_auth_secret
+      end
+    end
+
     def identity
       @cognitoidentity ||= Aws::CognitoIdentity::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
     end
