@@ -83,7 +83,7 @@ module UserAuthenticatable
   end
 
   def cognito_identity
-    user["CognityIdentity"]
+    user["CognitoIdentity"]
   end
 
   def user_id
