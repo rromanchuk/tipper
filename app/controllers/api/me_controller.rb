@@ -12,7 +12,9 @@ module Api
         fetch_favorites(user["UserID"])
       end
 
-      @resp = identity.get_open_id_token_for_developer_identity(
+      Rails.logger.info "User: #{user.to_yaml}"
+
+      resp = identity.get_open_id_token_for_developer_identity(
         # required
         identity_pool_id: ENV["AWS_COGNITO_POOL"],
         identity_id:  user["CognitoIdentity"],
@@ -23,7 +25,7 @@ module Api
       user["CognitoToken"] = resp.token
       user["CognitoIdentity"] = resp.identity_id
 
-
+      
       Rails.logger.info "User: #{user.to_yaml}"
 
 
