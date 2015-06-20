@@ -51,7 +51,7 @@ class Tip
           value: fromUser["TwitterUsername"]
         },
         "FromTwitterProfileImage" => {
-          value: fromUser["ProfileImage"]
+          value: fromUser["ProfileImage"] ? fromUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png"
         },
         "txid" => {
           value: txid
