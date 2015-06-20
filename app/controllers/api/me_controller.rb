@@ -5,6 +5,8 @@ module Api
 
     def create
 
+      valid_twitter_credentials?
+
       Rails.logger.info "Find or create for twitterID: #{twitterId}...."
       user = User.find_by_twitter_id(twitterId)
       unless user
@@ -40,13 +42,14 @@ module Api
 
     private
 
-    def valid_twitter_credentials
+    def valid_twitter_credentials?
       client = Twitter::REST::Client.new do |config|
         config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
         config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
         config.access_token        = twitter_auth_token
         config.access_token_secret = twitter_auth_secret
       end
+      client.current_user
     end
 
     def identity
