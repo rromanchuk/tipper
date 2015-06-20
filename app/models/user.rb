@@ -1,6 +1,11 @@
 class User
   TABLE_NAME = "TipperUsers"
-  
+  TIPPER_BOT_USER_ID = "98c95beb-0238-425e-b644-317efb4b22a9"
+
+  # Secondary indexes
+  INDEX_BITCOIN_ADDRESS = "BitcoinAddress-index"
+  INDEX_IS_ACTIVE = "IsActive-index"
+
   def self.all
     @resp = db.scan(
       # required
@@ -12,7 +17,7 @@ class User
     resp = db.query(
       # required
       table_name: TABLE_NAME,
-      index_name: "IsActive-index",
+      index_name: INDEX_IS_ACTIVE,
       key_conditions: {
         "IsActive" => {
           attribute_value_list: [
@@ -55,7 +60,7 @@ class User
     resp = db.query(
       # required
       table_name: TABLE_NAME,
-      index_name: "BitcoinAddress-index",
+      index_name: INDEX_BITCOIN_ADDRESS,
       key_conditions: {
         "BitcoinAddress" => {
           attribute_value_list: [
@@ -72,7 +77,7 @@ class User
     db.get_item(
       table_name: TABLE_NAME,
       key: {
-        "TwitterUserID" => "3178504262",
+        "UserID" => TIPPER_BOT_USER_ID,
       },
     ).item
   end
