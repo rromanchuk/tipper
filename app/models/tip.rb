@@ -50,7 +50,7 @@ class Tip
         "FromTwitterUsername": {
           value: fromUser["TwitterUsername"]
         },
-        "FromTwitterPofileImage" => {
+        "FromTwitterProfileImage" => {
           value: fromUser["ProfileImage"]
         },
         "txid" => {
