@@ -44,7 +44,7 @@ class Tip
         "ToTwitterUsername" => {
           value: toUser["TwitterUsername"]
         },
-        "ToTwitterPofileImage" => {
+        "ToTwitterProfileImage" => {
           value: toUser["ProfileImage"]
         },
         "FromTwitterUsername": {
