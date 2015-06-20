@@ -13,7 +13,7 @@ class Favorite
             "FromUserID": currentUser["UserID"],
             "FromTwitterID": currentUser["TwitterUserID"],
             "FromTwitterUsername": currentUser["TwitterUsername"],
-            "FromTwitterPofileImage": currentUser["ProfileImage"],
+            "FromTwitterProfileImage": currentUser["ProfileImage"],
             "ToTwitterID": tweet.user.id.to_s,
             "ToTwitterUsername": tweet.user.screen_name,
             "ToTwitterProfileImage": tweet.user.profile_image_url.to_s,
