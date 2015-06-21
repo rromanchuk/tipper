@@ -48,7 +48,8 @@ class Favorite
                                     ":created_at": tweet.created_at.to_i, 
                                     ":from_twitter_username": currentUser["TwitterUsername"],
                                     ":from_twitter_profile_image": currentUser["ProfileImage"],
-                                    ":to_twitter_profile_image": tweet.user.profile_image_url.to_s },
+                                    ":to_twitter_profile_image": tweet.user.profile_image_url.to_s,
+                                    ":to_twitter_username": tweet.user.screen_name },
       condition_expression: "attribute_not_exists(CreatedAt)")
     resp.attributes
   end
