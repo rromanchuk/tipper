@@ -7,6 +7,8 @@ class Tip
                               "CreatedAt = :created_at, " +
                               "FromTwitterUsername = :from_twitter_username, " +
                               "FromTwitterProfileImage = :from_twitter_profile_image, " +
+                              "FromTwitterID = :from_twitter_id, " + # deprecated
+                              "ToTwitterID = :to_twitter_id, " + # deprecated
                               "ToTwitterUsername = :to_twitter_username, " +
                               "ToTwitterProfileImage = :to_twitter_profile_image, "
 
@@ -40,7 +42,7 @@ class Tip
   def self.new_tip(tweet, fromUser, toUser, txid)
     Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
 
-    update_expression = UPDATE_EXPRESSION + "DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id, ToTwitterID = :to_twitter_id"
+    update_expression = UPDATE_EXPRESSION + "DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id"
     resp = db.update_item(
       # required
       table_name: Tip::TABLE_NAME,
@@ -57,6 +59,7 @@ class Tip
                                     ":created_at": tweet.created_at.to_i,
                                     ":from_twitter_username": fromUser["TwitterUsername"],
                                     ":from_twitter_profile_image": fromUser["ProfileImage"],
+                                    ":from_twitter_id": fromUser["TwitterUserID"],
                                     ":to_twitter_profile_image": toUser["ProfileImage"] ? toUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
                                     ":to_twitter_username": toUser["TwitterUsername"],
                                     ":to_user_id": toUser["UserID"],
