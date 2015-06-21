@@ -99,21 +99,6 @@ class FetchFavoritesWorker
     end
   end
 
-  def receiveUpdateFavorites
-    begin
-      resp = sqs.receive_message(
-        queue_url: update_favorites_queue,
-        wait_time_seconds: 20,
-      )
-      messages = resp.messages.map do |message|
-        { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
-      end
-      messages
-    rescue Aws::SQS::Errors::ServiceError
-    # rescues all errors returned by Amazon Simple Queue Service
-    end
-  end
-
   def process_messages(messages)
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
@@ -123,14 +108,6 @@ class FetchFavoritesWorker
     end
   end
 
-  def process_update_favorites_messages(messages)
-    messages.each do |message|
-      receipt_handle = message[:receipt_handle]
-      json = message[:message]
-      TwitterFavorites.start_for_user(json["UserID"])
-      delete(receipt_handle)
-    end
-  end
 
   def delete(handle)
     resp = sqs.delete_message( queue_url: queue, receipt_handle: handle )

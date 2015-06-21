@@ -41,6 +41,9 @@ class Tip
         "ToTwitterID": {
           value: toUser["TwitterUserID"]
         },
+        "ToUserID": {
+          value: toUser["UserID"]
+        },
         "ToTwitterUsername" => {
           value: toUser["TwitterUsername"]
         },
