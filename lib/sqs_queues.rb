@@ -3,6 +3,10 @@ class SqsQueues
     "https://sqs.us-east-1.amazonaws.com/080383581145/FetchFavorites"
   end
 
+  def self.update_favorites
+    "https://sqs.us-east-1.amazonaws.com/080383581145/UpdateFavorites"
+  end
+
   def self.new_tip
     "https://sqs.us-east-1.amazonaws.com/080383581145/TipperNewTip"
   end

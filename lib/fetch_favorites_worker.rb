@@ -30,8 +30,8 @@ class TwitterFavorites
     @client
   end
 
-  def self.start_for_user(twitterId)
-    user = User.find_by_twitter_id(twitterId)
+  def self.start_for_user(user_id)
+    user = User.find(user_id)
     f = TwitterFavorites.new
     f.client.access_token        = user["TwitterAuthToken"]
     f.client.access_token_secret = user["TwitterAuthSecret"]
@@ -80,6 +80,10 @@ class FetchFavoritesWorker
     @queue ||= SqsQueues.fetch_favorites
   end
 
+  def update_favorites_queue
+    @queue ||= SqsQueues.update_favorites
+  end
+
   def receive
     begin
       resp = sqs.receive_message(
@@ -95,11 +99,35 @@ class FetchFavoritesWorker
     end
   end
 
+  def receiveUpdateFavorites
+    begin
+      resp = sqs.receive_message(
+        queue_url: update_favorites_queue,
+        wait_time_seconds: 20,
+      )
+      messages = resp.messages.map do |message|
+        { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
+      end
+      messages
+    rescue Aws::SQS::Errors::ServiceError
+    # rescues all errors returned by Amazon Simple Queue Service
+    end
+  end
+
   def process_messages(messages)
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
       json = message[:message]
-      TwitterFavorites.start_for_user(json["TwitterUserID"])
+      TwitterFavorites.start_for_user(json["UserID"])
+      delete(receipt_handle)
+    end
+  end
+
+  def process_update_favorites_messages(messages)
+    messages.each do |message|
+      receipt_handle = message[:receipt_handle]
+      json = message[:message]
+      TwitterFavorites.start_for_user(json["UserID"])
       delete(receipt_handle)
     end
   end
