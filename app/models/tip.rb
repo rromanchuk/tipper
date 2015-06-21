@@ -1,6 +1,18 @@
 class Tip
   TABLE_NAME = "TipperTips"
+  UPDATE_EXPRESSION = "SET " +
+                              "Provider = :provider, " +
+                              "TweetID = :tweet_id, " +
+                              "TweetJSON = :tweet_json, " +
+                              "CreatedAt = :created_at, " +
+                              "FromTwitterUsername = :from_twitter_username, " +
+                              "FromTwitterProfileImage = :from_twitter_profile_image, " +
+                              "ToTwitterUsername = :to_twitter_username, " +
+                              "ToTwitterProfileImage = :to_twitter_profile_image, "
 
+
+
+  
   def self.all
     resp = db.scan(
       # required
@@ -27,49 +39,32 @@ class Tip
 
   def self.new_tip(tweet, fromUser, toUser, txid)
     Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
+
+    update_expression = UPDATE_EXPRESSION + "DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id, ToTwitterID = :to_twitter_id"
     resp = db.update_item(
-      table_name: TABLE_NAME,
+      # required
+      table_name: Tip::TABLE_NAME,
       return_values: "ALL_NEW",
+      # required
       key: {
-        "ObjectID" => tweet.id.to_s,
-        "FromUserID" => fromUser["UserID"]
+        "ObjectID" =>  tweet.id.to_s,
+        "FromUserID" => fromUser["UserID"],
       },
-      attribute_updates: {
-        "FromTwitterID": {
-          value: fromUser["TwitterUserID"]
-        },
-        "ToTwitterID": {
-          value: toUser["TwitterUserID"]
-        },
-        "ToUserID": {
-          value: toUser["UserID"]
-        },
-        "ToTwitterUsername" => {
-          value: toUser["TwitterUsername"]
-        },
-        "ToTwitterProfileImage" => {
-          value: toUser["ProfileImage"] ? toUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png"
-        },
-        "FromTwitterUsername": {
-          value: fromUser["TwitterUsername"]
-        },
-        "FromTwitterProfileImage" => {
-          value: fromUser["ProfileImage"]
-        },
-        "txid" => {
-          value: txid
-        },
-        "CreatedAt" => {
-          value: tweet.created_at.to_i
-        },
-        "TweetJSON" => {
-          value: tweet.to_json
-        },
-        "DidLeaveTip" => {
-          value: "X"  # sparse index for nosql, X == true, nil == false
-        }
-      },
-    )
+      update_expression: update_expression,
+      expression_attribute_values: {":provider": "twitter",
+                                    ":tweet_id": tweet.id.to_s,
+                                    ":tweet_json": tweet.to_json,
+                                    ":created_at": tweet.created_at.to_i,
+                                    ":from_twitter_username": fromUser["TwitterUsername"],
+                                    ":from_twitter_profile_image": fromUser["ProfileImage"],
+                                    ":to_twitter_profile_image": ? toUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
+                                    ":to_twitter_username": toUser["TwitterUsername"],
+                                    ":to_user_id": toUser["UserID"],
+                                    ":to_twitter_id": toUser["TwitterUserID"],
+                                    ":did_leave_tip": "X",
+                                    ":txid": txid
+                                   })
+
     User.update_balance(fromUser)
     User.update_balance(toUser)
     resp.attributes
