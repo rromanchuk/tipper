@@ -34,7 +34,7 @@ class Favorite
   def self.update_favorite(tweet, currentUser)
     resp = db.update_item(
       # required
-      table_name: TABLE_NAME,
+      table_name: Tip::TABLE_NAME,
       return_values: "ALL_NEW",
       # required
       key: {
