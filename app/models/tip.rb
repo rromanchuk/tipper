@@ -57,7 +57,7 @@ class Tip
                                     ":created_at": tweet.created_at.to_i,
                                     ":from_twitter_username": fromUser["TwitterUsername"],
                                     ":from_twitter_profile_image": fromUser["ProfileImage"],
-                                    ":to_twitter_profile_image": ? toUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
+                                    ":to_twitter_profile_image": toUser["ProfileImage"] ? toUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
                                     ":to_twitter_username": toUser["TwitterUsername"],
                                     ":to_user_id": toUser["UserID"],
                                     ":to_twitter_id": toUser["TwitterUserID"],
