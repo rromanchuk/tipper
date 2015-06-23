@@ -77,7 +77,7 @@ EventMachine.run {
 
 
 # EventMachine.run {
-#     logger.info "Starting stream for user #{user["TwitterUsername"]}"
+#     logger.info "Starting site stream"
 #     client = Twitter::Streaming::Client.new do |config|
 #       config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
 #       config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
@@ -85,7 +85,10 @@ EventMachine.run {
 
 #     EventMachine.defer {
 #       begin
-#         client.site() do |object|
+#         users = User.find_active
+#         ids = users.items.map{|u| u["TwitterUserID"] }
+#         logger.info "Starting stream for user #{ids}"
+#         client.site(ids) do |object|
 #           case object
 #           when Twitter::Tweet
 #             puts "It's a tweet!"
@@ -107,7 +110,7 @@ EventMachine.run {
 #           end
 #         end
 #       rescue Twitter::Error::Unauthorized => e
-#         logger.info "User #{user["TwitterUsername"]} has invalid token"
+#         logger.info "Twitter::Error::Unauthorized #{e}"
 #         Bugsnag.notify(e, {:severity => "error"})
 #         next
 #       end
