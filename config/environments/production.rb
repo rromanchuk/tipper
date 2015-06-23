@@ -82,7 +82,7 @@ Rails.application.configure do
 
   config.action_mailer.logger = nil
 
-  cred = Aws::SharedCredentials.new
+  cred = Aws::SharedCredentials.new.credentials
   ActionMailer::Base.add_delivery_method :ses, AWS::SES::Base,
   :access_key_id     => cred.access_key_id,
   :secret_access_key => cred.secret_access_key
