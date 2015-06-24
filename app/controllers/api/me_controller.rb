@@ -95,9 +95,6 @@ module Api
         },
         "TwitterUsername" => {
           value: username
-        },
-        "IsActive" => {
-          value: "X"
         }
       }
     end
