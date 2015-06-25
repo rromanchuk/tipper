@@ -10,7 +10,7 @@ class Tip
                               "FromTwitterID = :from_twitter_id, " + # deprecated
                               "ToTwitterID = :to_twitter_id, " + # deprecated
                               "ToTwitterUsername = :to_twitter_username, " +
-                              "ToTwitterProfileImage = :to_twitter_profile_image, "
+                              "ToTwitterProfileImage = :to_twitter_profile_image"
 
 
 
@@ -42,7 +42,7 @@ class Tip
   def self.new_tip(tweet, fromUser, toUser, txid)
     Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
 
-    update_expression = UPDATE_EXPRESSION + "DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id"
+    update_expression = UPDATE_EXPRESSION + ", DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id"
     resp = db.update_item(
       # required
       table_name: Tip::TABLE_NAME,
