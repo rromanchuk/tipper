@@ -56,6 +56,6 @@ EM.run {
   puts "Subscribing to new users..."
   redis.pubsub.subscribe("new_users") { |msg|
     parsed = JSON.parse(msg)
-    FavoritesStream.add(msg['oauth_token'], msg['oauth_token_secret'])
+    FavoritesStream.add(parsed['oauth_token'], parsed['oauth_token_secret'])
   }
 }
