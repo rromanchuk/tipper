@@ -1,0 +1,61 @@
+require "eventmachine"
+require "tweetstream"
+require "em-hiredis"
+
+REDIS_URL = "redis://tipper.7z2sws.0001.use1.cache.amazonaws.com:6379/0"
+
+class FavoritesStream
+  def self.all
+    @all ||= {}
+  end
+
+  def self.add oauth_token, oauth_token_secret
+    raise "duplicate oauth" if all[oauth_token]
+    all[oauth_token] = FavoritesStream.new(oauth_token, oauth_token_secret)
+  end
+
+  def self.remove oauth_token
+    if fs = all[oauth_token]
+      fs.stop
+      all.delete(oauth_token)
+    else
+      raise "stream not found for #{oauth_token}"
+    end
+  end
+
+  def initialize oauth_token, oauth_token_secret
+    @oauth_token = oauth_token
+    @oauth_token_secret = oauth_token_secret
+  end
+
+  def client
+    @client ||= TweetStream::Client.new(consumer_key: "s0L1iFYJxDKdRbPc5ZdKY06b6",
+                                        consumer_secret: "tsPbOcggtZN7CUWdevU1zh1sg4w0Cmn3pN6Wf4cLRCpWd1N6Bv",
+                                        oauth_token: @oauth_token,
+                                        oauth_token_secret: @oauth_token_secret)
+  end
+
+  def start
+    client.on_event(:favorite) do |event|
+      puts event.to_h
+
+      EM.defer {
+        # TODO Send stuff to sqs.
+      }
+    end.userstream
+  end
+
+  def stop
+    client.stop
+  end
+end
+
+EM.run {
+  redis = EM::Hiredis.connect(REDIS_URL)
+
+  puts "Subscribing to new users..."
+  redis.pubsub.subscribe("new_users") { |msg|
+    parsed = JSON.parse(msg)
+    FavoritesStream.add(msg['oauth_token'], msg['oauth_token_secret'])
+  }
+}
