@@ -155,12 +155,9 @@ class User
       key: {
         "UserID" => user["UserID"],
       },
-      attribute_updates: {
-        "BitcoinBalanceBTC" => {
-          value: balance[:btc],
-          action: "PUT",
-        }
-      })
+      update_expression: "SET BitcoinBalanceBTC = :bitcoin_balance_btc",
+      expression_attribute_values: {":bitcoin_balance_btc": balance[:btc]}
+    )
     resp.attributes
   end
 
@@ -173,7 +170,6 @@ class User
     end
 
     twitter_user = client.user(user["TwitterUsername"])
-
     resp = db.update_item(
       # required
       table_name: TABLE_NAME,
@@ -182,16 +178,9 @@ class User
       key: {
         "UserID" => user["UserID"],
       },
-      attribute_updates: {
-        "ProfileImage" => {
-          value: twitter_user.profile_image_url.to_s,
-          action: "PUT",
-        },
-        "Name" => {
-          value: twitter_user.name,
-          action: "PUT",
-        }
-      })
+      update_expression: "SET ProfileImage = :profile_image, Name = :name",
+      expression_attribute_values: {":profile_image": twitter_user.profile_image_url.to_s, "name": twitter_user.name}
+    )
     resp.attributes
   end
 
@@ -206,17 +195,6 @@ class User
   
   def db
     User.db
-  end
-
-  def self.update_users
-    users = User.find_active
-    users.items.each do |user|
-      begin
-        puts User.update_user_with_twitter(user)
-      rescue
-      end
-      sleep 1
-    end
   end
 
 end
