@@ -1,5 +1,14 @@
 class Transaction
   TABLE_NAME = "TipperBitcoinTransactions"
+  UPDATE_EXPRESSION = "SET " +
+                      "amount = :amount, " +
+                      "tip_amount = :tip_amount, " +
+                      "fee = :fee, " +
+                      "time = :time, " +
+                      "confirmations = :confirmations, " +
+                      "category = :category, " +
+                      "details = :details " +
+
 
   def self.create(transaction, fromUser=nil, toUser=nil)
 
