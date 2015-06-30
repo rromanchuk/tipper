@@ -29,15 +29,15 @@ class FavoritesStream
   end
 
   def client
-    @client ||= TweetStream::Client.new(consumer_key: "***REMOVED***",
-                                        consumer_secret: "***REMOVED***",
+    @client ||= TweetStream::Client.new(consumer_key: ENV["TWITTER_CONSUMER_KEY"],
+                                        consumer_secret: ENV["TWITTER_CONSUMER_SECRET"],
                                         oauth_token: @oauth_token,
                                         oauth_token_secret: @oauth_token_secret)
   end
 
   def start
     client.on_event(:favorite) do |event|
-      puts event.to_h
+      puts event.to_yaml
 
       EM.defer {
         # TODO Send stuff to sqs.
@@ -51,6 +51,12 @@ class FavoritesStream
 end
 
 EM.run {
+
+  User.find_active.items.each do |user|
+    puts "Adding active user #{user["TwitterUsername"]}"
+    FavoritesStream.add(user['TwitterAuthToken'], user['TwitterAuthSecret'])
+  end
+
   redis = EM::Hiredis.connect(REDIS_URL)
 
   puts "Subscribing to new users..."

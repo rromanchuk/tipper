@@ -32,7 +32,7 @@ def publish_new_tweet(user)
 end
 
 EventMachine.run {
-  User.all.items.reverse.each do |user|
+  User.find_active.items.reverse.each do |user|
     next unless user["IsActive"] == "X"
     logger.info "Starting stream for user #{user["TwitterUsername"]}"
 
