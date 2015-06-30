@@ -30,10 +30,6 @@ module Api
 
 
       Rails.logger.info "User: #{user.to_yaml}"
-      redis.publish("new_users", {oauth_token: twitter_auth_token, oauth_token_secret: twitter_auth_secret}).errback { |e|
-        p [:publisherror, e]
-      }
-
 
       render json: user
     end
@@ -136,10 +132,6 @@ module Api
 
     def sqs
       @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-    end
-
-    def redis
-      @redis ||= EM::Hiredis.connect(ENV["REDIS"])
     end
 
   end
