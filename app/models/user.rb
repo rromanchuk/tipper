@@ -56,6 +56,23 @@ class User
     ).items.first
   end
 
+  def self.find_by_twitter_token(twitter_token)
+    resp = db.query(
+      # required
+      table_name: TABLE_NAME,
+      index_name: "TwitterAuthToken-index",
+      key_conditions: {
+        "TwitterAuthToken" => {
+          attribute_value_list: [
+            twitter_token, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          ],
+        # required
+          comparison_operator: "EQ",
+        },
+      },
+    ).items.first
+  end
+
   def self.find_by_address(address)
     resp = db.query(
       # required

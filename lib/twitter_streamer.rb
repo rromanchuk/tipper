@@ -2,9 +2,10 @@ require "eventmachine"
 require "tweetstream"
 require "em-hiredis"
 
-REDIS_URL = "redis://tipper.7z2sws.0001.use1.cache.amazonaws.com:6379/0"
+REDIS_URL = ENV["REDIS_URLEDIS"]
 
 class FavoritesStream
+
   def self.all
     @all ||= {}
   end
@@ -35,12 +36,30 @@ class FavoritesStream
                                         oauth_token_secret: @oauth_token_secret)
   end
 
+  def user
+    @user ||= User.find_by_twitter_token(@oauth_token)
+  end
+
+  def self.sqs
+    @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+
+  def self.sqs
+    FavoritesStream.sqs
+  end
+
   def start
     client.on_event(:favorite) do |event|
       puts event.to_yaml
 
       EM.defer {
         # TODO Send stuff to sqs.
+        if event.source.id_str == user["TwitterUserID"] && event.source.id_str != event.target.id_str
+          publish_new_tweet(user)
+          sqs.send_message(queue_url: SqsQueues.new_tip, message_body: { "TweetID": event.target_object.id_str, "FromTwitterID": event.source.id_str, "ToTwitterID": event.target.id_str }.to_json )
+        else
+          puts "Skipping..."
+        end
       }
     end.userstream
   end
@@ -55,6 +74,10 @@ EM.run {
   User.find_active.items.each do |user|
     puts "Adding active user #{user["TwitterUsername"]}"
     FavoritesStream.add(user['TwitterAuthToken'], user['TwitterAuthSecret'])
+  end
+
+  FavoritesStream.all.each do |token, stream|
+    stream.start
   end
 
   redis = EM::Hiredis.connect(REDIS_URL)
