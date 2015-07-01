@@ -182,17 +182,10 @@ class ProcessTipWorker
       logger.info "fromUser:"
       logger.info fromUser.to_yaml
       unless toUser # If the user doesn't exist create a stub account
-        attributes = {
-          "TwitterUserID" => {
-            value: json["ToTwitterID"]
-          },
-          "TwitterUsername" => {
-            value: tweet.user.screen_name
-          },
-        }
-        toUser = User.create_user(attributes)
+        attributes = {":twitter_user_id": json["ToTwitterID"], ":twitter_username": tweet.user.screen_name }
+        toUser = User.create_stub_user(attributes)
       end
-      
+
       logger.info "toUser:"
       logger.info toUser.to_yaml
 
