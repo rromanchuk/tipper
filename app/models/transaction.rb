@@ -7,7 +7,7 @@ class Transaction
                       "time = :time, " +
                       "confirmations = :confirmations, " +
                       "category = :category, " +
-                      "details = :details " +
+                      "details = :details "
 
 
   def self.create(transaction, fromUser=nil, toUser=nil)
