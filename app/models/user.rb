@@ -72,6 +72,7 @@ class User
         },
         update_expression: update_expression,
         expression_attribute_values: update_values)
+
     resp.attributes
   end
 
