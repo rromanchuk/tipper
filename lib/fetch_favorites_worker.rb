@@ -94,8 +94,9 @@ class FetchFavoritesWorker
         { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
       end
       messages
-    rescue Aws::SQS::Errors::ServiceError
-    # rescues all errors returned by Amazon Simple Queue Service
+    rescue Aws::SQS::Errors::ServiceError => e
+      # rescues all errors returned by Amazon Simple Queue Service
+      Bugsnag.notify(e, {:severity => "error"})
     end
   end
 
@@ -103,8 +104,13 @@ class FetchFavoritesWorker
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
       json = message[:message]
-      TwitterFavorites.start_for_user(json["UserID"])
-      delete(receipt_handle)
+      begin
+        TwitterFavorites.start_for_user(json["UserID"])
+        delete(receipt_handle)
+      rescue => e
+        Bugsnag.notify(e, {:severity => "error"})
+        delete(receipt_handle)
+      end
     end
   end
 
