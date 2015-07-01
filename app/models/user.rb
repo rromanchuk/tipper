@@ -134,21 +134,9 @@ class User
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
     attributes = attributes.merge(additional_attributes)
 
-    User.update_user(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes)
+    User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes)
   end
 
-
-  def self.update_user(user_id, attribute_updates)
-    resp = db.update_item(
-      table_name: TABLE_NAME,
-      key: {
-        "UserID" => user_id,
-      },
-      attribute_updates: attribute_updates,
-      return_values: "ALL_NEW"
-    )
-    resp.attributes
-  end
 
   def self.update_balance_by_address(address)
     user = User.find_by_address(address)
@@ -160,7 +148,7 @@ class User
     balance = B.balance(user["BitcoinAddress"])
     attributes = {":bitcoin_balance_btc": balance[:btc]}
     Rails.logger.info "balance is #{balance} bitcoinaddress is #{user["BitcoinAddress"]}"
-    User.update_user(user["UserID"], UPDATE_BALANCE_EXPRESSION, attributes)
+    User.update(user["UserID"], UPDATE_BALANCE_EXPRESSION, attributes)
   end
 
   def self.update_user_with_twitter(user)
@@ -173,7 +161,7 @@ class User
 
     twitter_user = client.user(user["TwitterUsername"])
     attributes = {":profile_image": twitter_user.profile_image_url.to_s, "name": twitter_user.name}
-    User.update_user(user["UserID"], "SET ProfileImage = :profile_image, Name = :name", attributes)
+    User.update(user["UserID"], "SET ProfileImage = :profile_image, Name = :name", attributes)
   end
 
 
