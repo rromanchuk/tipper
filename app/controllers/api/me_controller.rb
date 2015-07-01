@@ -84,7 +84,7 @@ module Api
         ":profile_image": profile_image,
         ":twitter_user_id": twitterId, 
         ":twitter_username": username
-      {
+      }
     end
 
     def fetch_favorites(user_id)
