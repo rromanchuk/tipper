@@ -12,8 +12,9 @@ module Api
       user = User.find_by_twitter_id(twitterId)
       unless user
         user = User.create_user(attributes_to_update)
+        fetch_favorites(user["UserID"])
       else
-        user = User.update_user(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
+        user = User.update(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
       end
 
       Rails.logger.info "User: #{user.to_yaml}"
@@ -28,9 +29,8 @@ module Api
         token_duration: 1)
 
 
-      user = User.update_user(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
+      user = User.update(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
 
-      fetch_favorites(user["UserID"])
       Rails.logger.info "User: #{user.to_yaml}"
 
       render json: user

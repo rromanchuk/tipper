@@ -11,7 +11,7 @@ module Api
 
       current_user["CognitoToken"] = resp.token
       current_user["CognitoIdentity"] = resp.identity_id
-      current_user = User.update_user(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id } )
+      current_user = User.update(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id } )
 
       render json: current_user
     end
