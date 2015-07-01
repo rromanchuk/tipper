@@ -32,7 +32,7 @@ module Api
         token_duration: 1)
 
 
-      user = User.update(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
+      user = User.update(user["UserID"], User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
 
       Rails.logger.info "User: #{user.to_yaml}"
 
