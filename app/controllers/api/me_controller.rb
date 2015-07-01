@@ -10,10 +10,13 @@ module Api
       Rails.logger.info "Find or create for twitterID: #{twitterId}...."
 
       user = User.find_by_twitter_id(twitterId)
+
       unless user
         user = User.create_user(attributes_to_update)
         fetch_favorites(user["UserID"])
       else
+        Rails.logger.info "Found user:"
+        Rails.logger.info user.to_yaml
         user = User.update(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
       end
 
