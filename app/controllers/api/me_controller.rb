@@ -8,13 +8,17 @@ module Api
       valid_twitter_credentials?
 
       Rails.logger.info "Find or create for twitterID: #{twitterId}...."
+
       user = User.find_by_twitter_id(twitterId)
       unless user
         user = User.create_user(attributes_to_update)
+      else
+        user = User.update_user(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
       end
 
       Rails.logger.info "User: #{user.to_yaml}"
 
+      # AWS developer credential service flow
       resp = identity.get_open_id_token_for_developer_identity(
         # required
         identity_pool_id: ENV["AWS_COGNITO_POOL"],
@@ -23,12 +27,10 @@ module Api
         logins: { "com.ryanromanchuk.tipper" => user["UserID"] },
         token_duration: 1)
 
-      user["CognitoToken"] = resp.token
-      user["CognitoIdentity"] = resp.identity_id
-      update_cognito(user)
+
+      user = User.update_user(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
+
       fetch_favorites(user["UserID"])
-
-
       Rails.logger.info "User: #{user.to_yaml}"
 
       render json: user
@@ -76,54 +78,13 @@ module Api
     end
 
     def attributes_to_update
+      {":twitter_auth_token": twitter_auth_token, 
+        ":twitter_auth_secret": twitter_auth_secret, 
+        ":is_active": "X", 
+        ":profile_image": profile_image,
+        ":twitter_user_id": twitterId, 
+        ":twitter_username": username
       {
-        "TwitterAuthToken" => {
-          value: twitter_auth_token
-        },
-        "TwitterAuthSecret" => {
-          value: twitter_auth_secret
-        },
-        "IsActive" => {
-          value: "X"
-        }, 
-        "ProfileImage" => {
-          value: profile_image
-        },
-        "TwitterUserID" => {
-          value: twitterId
-        },
-        "TwitterUsername" => {
-          value: username
-        }
-      }
-    end
-
-    def update_cognito(user)
-      resp = db.update_item(
-        # required
-        table_name: User::TABLE_NAME,
-        # required
-        key: {
-          "UserID" => user["UserID"],
-        },
-        attribute_updates: {
-          "CognitoToken" => {
-            value: user["CognitoToken"],
-            action: "PUT",
-          },
-          "CognitoIdentity" => {
-            value: user["CognitoIdentity"],
-            action: "PUT",
-          },
-          "TwitterAuthSecret" => {
-            value: twitter_auth_secret,
-            action: "PUT",
-          },
-          "TwitterAuthToken" => {
-            value: twitter_auth_token,
-            action: "PUT",
-          }
-        })
     end
 
     def fetch_favorites(user_id)
