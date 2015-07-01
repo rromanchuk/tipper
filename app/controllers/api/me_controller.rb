@@ -11,7 +11,6 @@ module Api
       user = User.find_by_twitter_id(twitterId)
       unless user
         user = User.create_user(attributes_to_update)
-        fetch_favorites(user["UserID"])
       end
 
       Rails.logger.info "User: #{user.to_yaml}"
@@ -27,6 +26,7 @@ module Api
       user["CognitoToken"] = resp.token
       user["CognitoIdentity"] = resp.identity_id
       update_cognito(user)
+      fetch_favorites(user["UserID"])
 
 
       Rails.logger.info "User: #{user.to_yaml}"
@@ -115,6 +115,14 @@ module Api
             value: user["CognitoIdentity"],
             action: "PUT",
           },
+          "TwitterAuthSecret" => {
+            value: twitter_auth_secret,
+            action: "PUT",
+          },
+          "TwitterAuthToken" => {
+            value: twitter_auth_token,
+            action: "PUT",
+          }
         })
     end
 
