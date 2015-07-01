@@ -71,7 +71,8 @@ class User
           "UserID" => user_id,
         },
         update_expression: update_expression,
-        expression_attribute_values: update_values)
+        expression_attribute_values: update_values,
+        return_values: "ALL_NEW")
 
     resp.attributes
   end
