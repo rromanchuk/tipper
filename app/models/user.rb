@@ -33,7 +33,9 @@ class User
                                 "BitcoinAddress = :bitcoin_address, " +
                                 "TwitterUserID = :twitter_user_id, " +
                                 "TwitterUsername = :twitter_username"
-  
+
+  RESERVED_ATTRIBUTES = {"#T": "token"}
+
 
   def self.all
     @resp = db.scan(
@@ -68,7 +70,7 @@ class User
     ).item
   end
 
-  def self.update(user_id, update_expression, update_values)
+  def self.update(user_id, update_expression, update_values, expression_attribute_names=nil)
     resp = db.update_item(
         # required
         table_name: User::TABLE_NAME,
@@ -77,7 +79,7 @@ class User
           "UserID" => user_id,
         },
         update_expression: update_expression,
-        expression_attribute_names: {"#T": "token"},
+        expression_attribute_names: expression_attribute_names,
         expression_attribute_values: update_values,
         return_values: "ALL_NEW")
 
@@ -144,7 +146,7 @@ class User
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
     attributes = attributes.merge(additional_attributes)
 
-    User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes)
+    User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
   end
 
   def self.create_stub_user(additional_attributes={})
@@ -152,7 +154,7 @@ class User
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
     attributes = attributes.merge(additional_attributes)
 
-    User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes)
+    User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
   end
 
 
