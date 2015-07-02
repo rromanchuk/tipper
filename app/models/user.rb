@@ -25,11 +25,11 @@ class User
                       "TwitterUsername = :twitter_username"
 
   UPDATE_NEW_USER_EXPRESSION = UPDATE_EXPRESSION + ", " +
-                      "token = :token_string, " +
+                      "#T = :token, " +
                       "BitcoinAddress = :bitcoin_address "
 
   UPDATE_STUB_USER_EXPRESSION = "SET " +
-                                "token = :token_string, " +
+                                "#T = :token, " +
                                 "BitcoinAddress = :bitcoin_address, " +
                                 "TwitterUserID = :twitter_user_id, " +
                                 "TwitterUsername = :twitter_username"
@@ -77,6 +77,7 @@ class User
           "UserID" => user_id,
         },
         update_expression: update_expression,
+        expression_attribute_names: {"#T": "token"},
         expression_attribute_values: update_values,
         return_values: "ALL_NEW")
 
@@ -140,7 +141,7 @@ class User
 
   def self.create_user(additional_attributes={})
     new_user_id = SecureRandom.uuid
-    attributes = {":token_string": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
+    attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
     attributes = attributes.merge(additional_attributes)
 
     User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes)
@@ -148,7 +149,7 @@ class User
 
   def self.create_stub_user(additional_attributes={})
     new_user_id = SecureRandom.uuid
-    attributes = {":token_string": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
+    attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
     attributes = attributes.merge(additional_attributes)
 
     User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes)
