@@ -13,7 +13,8 @@ module Api
 
       unless user
         user = User.create_user(attributes_to_update)
-        fetch_favorites(user["UserID"])
+        message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+        Redis.current.publish("new_users", message)
       else
         Rails.logger.info "Found user:"
         Rails.logger.info user.to_yaml

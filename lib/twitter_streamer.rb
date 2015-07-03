@@ -19,9 +19,12 @@ class FavoritesStream
   end
 
   def self.add oauth_token, oauth_token_secret
-    raise "duplicate oauth" if all[oauth_token]
-    all[oauth_token] = FavoritesStream.new(oauth_token, oauth_token_secret)
-    all[oauth_token].start
+    if all.has_key?(oauth_token)
+      puts "already have #{oauth_token}, not adding"
+    else
+      all[oauth_token] = FavoritesStream.new(oauth_token, oauth_token_secret)
+      all[oauth_token].start
+    end
   end
 
   def self.remove oauth_token
