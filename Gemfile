@@ -40,6 +40,8 @@ gem 'remote_syslog_logger'
 gem "aws-ses", :require => 'aws/ses'
 gem 'premailer-rails'
 
+gem "redis"
+
 gem "tweetstream"
 gem "em-hiredis"
 
