@@ -11,6 +11,7 @@ require "em-hiredis"
 require "aws-sdk"
 
 require_relative "./sqs_queues"
+require_relative "../app/models/user"
 
 class FavoritesStream
   def self.all
@@ -58,7 +59,9 @@ class FavoritesStream
     EM.defer {
       pp event
       if valid_event? event
-        self.class.sqs.send_message(queue_url: SqsQueues.new_tip, message_body: { "TweetID": event[:target_object][:id_str], "FromTwitterID": event[:source][:id_str], "ToTwitterID": event[:target][:id_str] }.to_json )
+        message = {queue_url: SqsQueues.new_tip, message_body: { "TweetID": event[:target_object][:id_str], "FromTwitterID": event[:source][:id_str], "ToTwitterID": event[:target][:id_str] }.to_json }
+        puts "message to sqs: #{message}"
+        self.class.sqs.send_message(message)
       else
         puts "invalid event, skipping"
       end
@@ -74,18 +77,22 @@ class FavoritesStream
   end
 end
 
+active_users = User.find_active.items
+
 EM.run {
+  # Add existing users.
+  # TODO On larger sets of users use EM::Iterator.
+  active_users.each do |user|
+    if user['TwitterAuthToken'] && user['TwitterAuthSecret']
+      puts "Adding: #{user["TwitterUsername"]}"
+      FavoritesStream.add user['TwitterAuthToken'], user['TwitterAuthSecret']
+    else
+      puts "Skipping (no valid oauth in db): #{user["TwitterUsername"]}"
+    end
+  end
 
-  # User.find_active.items.each do |user|
-  #   puts "Adding active user #{user["TwitterUsername"]}"
-  #   FavoritesStream.add(user['TwitterAuthToken'], user['TwitterAuthSecret'])
-  # end
-
-  # FavoritesStream.all.each do |token, stream|
-  #   stream.start
-  # end
-
-  puts "Subscribing to new users..."
+  # Subscribe to new users.
+  puts "Subscribing to new users"
   redis = EM::Hiredis.connect(ENV["REDIS_URL"])
   redis.pubsub.subscribe("new_users") { |msg|
     parsed = JSON.parse(msg)
