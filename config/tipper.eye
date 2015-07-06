@@ -20,6 +20,13 @@ Eye.application "tipper" do
     stdall "log/favorite_stream.log"
   end
 
+  process "favorite_stream_new" do
+    pid_file "tmp/pids/favorite_stream_new.pid"
+    start_command "bundle exec rails r lib/twitter_streamer.rb"
+    daemonize true
+    stdall "log/favorite_stream_new.log"
+  end
+
   process "fetch_favorites" do
     pid_file "tmp/pids/fetch_favorites.pid"
     start_command "bundle exec rails r lib/fetch_favorites_worker.rb"

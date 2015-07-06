@@ -64,7 +64,7 @@ class FavoritesStream
       if valid_event? event
         message = {queue_url: SqsQueues.new_tip, message_body: { "TweetID": event[:target_object][:id_str], "FromTwitterID": event[:source][:id_str], "ToTwitterID": event[:target][:id_str] }.to_json }
         puts "message to sqs: #{message}"
-        self.class.sqs.send_message(message)
+        #self.class.sqs.send_message(message)
       else
         puts "invalid event, skipping"
       end
