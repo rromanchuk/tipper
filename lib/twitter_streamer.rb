@@ -20,7 +20,7 @@ class FavoritesStream
 
   def self.add oauth_token, oauth_token_secret
     if all.has_key?(oauth_token)
-      puts "already have #{oauth_token}, not adding"
+      Rails.logger.info "already have #{oauth_token}, not adding"
     else
       all[oauth_token] = FavoritesStream.new(oauth_token, oauth_token_secret)
       all[oauth_token].start
@@ -63,10 +63,10 @@ class FavoritesStream
       pp event
       if valid_event? event
         message = {queue_url: SqsQueues.new_tip, message_body: { "TweetID": event[:target_object][:id_str], "FromTwitterID": event[:source][:id_str], "ToTwitterID": event[:target][:id_str] }.to_json }
-        puts "message to sqs: #{message}"
-        #self.class.sqs.send_message(message)
+        Rails.logger.info "message to sqs: #{message}"
+        self.class.sqs.send_message(message)
       else
-        puts "invalid event, skipping"
+        Rails.logger.error "invalid event, skipping"
       end
     }
   end
@@ -87,15 +87,15 @@ EM.run {
   # TODO On larger sets of users use EM::Iterator.
   active_users.each do |user|
     if user['TwitterAuthToken'] && user['TwitterAuthSecret']
-      puts "Adding: #{user["TwitterUsername"]}"
+      Rails.logger.info "Adding: #{user["TwitterUsername"]}"
       FavoritesStream.add user['TwitterAuthToken'], user['TwitterAuthSecret']
     else
-      puts "Skipping (no valid oauth in db): #{user["TwitterUsername"]}"
+      Rails.logger.info "Skipping (no valid oauth in db): #{user["TwitterUsername"]}"
     end
   end
 
   # Subscribe to new users.
-  puts "Subscribing to new users"
+  Rails.logger.info "Subscribing to new users"
   redis = EM::Hiredis.connect(ENV["REDIS_URL"])
   redis.pubsub.subscribe("new_users") { |msg|
     parsed = JSON.parse(msg)
