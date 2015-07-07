@@ -76,7 +76,7 @@ class FavoritesStream
   end
 
   def valid_event? event
-    if object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
+    object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
   end
 
   def stop
