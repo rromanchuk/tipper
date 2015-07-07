@@ -76,7 +76,7 @@ class FavoritesStream
   end
 
   def valid_event? event
-    object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
+    event[:source][:id].to_s == user["TwitterUserID"] && event[:source][:id] != event[:target][:id]
   end
 
   def stop
