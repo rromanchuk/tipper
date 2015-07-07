@@ -48,6 +48,10 @@ class FavoritesStream
                                         oauth_token_secret: @oauth_token_secret)
   end
 
+  def user
+    @user ||= User.find_by_twitter_token(@oauth_token)
+  end
+
   def self.sqs
     @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end
@@ -72,7 +76,7 @@ class FavoritesStream
   end
 
   def valid_event? event
-    event[:source][:id] != event[:target][:id]
+    if object.source.id.to_s == user["TwitterUserID"] && object.source.id.to_s != object.target.id.to_s
   end
 
   def stop
