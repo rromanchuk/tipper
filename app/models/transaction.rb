@@ -7,7 +7,7 @@ class Transaction
                       "time = :time, " +
                       "confirmations = :confirmations, " +
                       "category = :category, " +
-                      "details = :details "
+                      "details = :details"
 
 
   def self.create(transaction, fromUser=nil, toUser=nil)
@@ -21,42 +21,47 @@ class Transaction
       category = "external_withdrawal"
     end
 
-    attributes = {
-      "amount" => {
-        value: transaction["amount"]
-      },
-      "tip_amount" => {
-        value: B::TIP_AMOUNT
-      },
-      "fee" => {
-        value: transaction["fee"]
-      },
-      "time" => {
-        value: transaction["time"]
-      },
-      "confirmations" => {
-        value: transaction["confirmations"]
-      },
-      "category" => {
-        value: category
-      },
-      "details" => {
-        value: transaction["details"].to_json
-      }
-    }
+    # attributes = {
+    #   "amount" => {
+    #     value: transaction["amount"]
+    #   },
+    #   "tip_amount" => {
+    #     value: B::TIP_AMOUNT
+    #   },
+    #   "fee" => {
+    #     value: transaction["fee"]
+    #   },
+    #   "time" => {
+    #     value: transaction["time"]
+    #   },
+    #   "confirmations" => {
+    #     value: transaction["confirmations"]
+    #   },
+    #   "category" => {
+    #     value: category
+    #   },
+    #   "details" => {
+    #     value: transaction["details"].to_json
+    #   }
+    # }
+
+    update_expression = UPDATE_EXPRESSION
+    attribute_values = {":amount": transaction["amount"],
+                        ":tip_amount", B::TIP_AMOUNT,
+                        ":fee": transaction["fee"], ":time",
+                        ":time": transaction["time"],
+                        ":confirmations": transaction["confirmations"],
+                        ":category": category,
+                        ":details": transaction["details"].to_json}
 
     if fromUser
-      attributes["FromUserID"] = {value: fromUser["UserID"]}
-      attributes["FromTwitterID"] = {value: fromUser["TwitterUserID"]}
-      attributes["FromTwitterUsername"] = {value: fromUser["TwitterUsername"]}
-      attributes["FromBitcoinAddress"] = { value: fromUser["BitcoinAddress"]}
+      update_expression = update_expression + ", FromUserID = :from_user_id, FromTwitterID = :from_twitter_id, FromTwitterUsername = :from_twitter_username, FromBitcoinAddress = :from_bitcoin_address"
+      attribute_values.merge({":from_user_id" = fromUser["UserID"], ":from_twitter_id": fromUser["TwitterUserID"], ":from_twitter_username": fromUser["TwitterUsername"], ":from_bitcoin_address": fromUser["BitcoinAddress"]})
     end
 
     if toUser
-      attributes["ToUserID"] = {value: toUser["UserID"] }
-      attributes["ToTwitterID"] = {value: toUser["TwitterUserID"] }
-      attributes["ToTwitterUsername"] = { value: toUser["TwitterUsername"] }
-      attributes["ToBitcoinAddress"] = { value: toUser["BitcoinAddress"] }
+      update_expression = update_expression + ", ToUserID = :to_user_id, ToTwitterID = :to_twitter_id, ToTwitterUsername = :to_twitter_username, ToBitcoinAddress = :to_bitcoin_address"
+      attribute_values.merge({":to_user_id" = toUser["UserID"], ":to_twitter_id": toUser["TwitterUserID"], ":to_twitter_username": toUser["TwitterUsername"], ":to_bitcoin_address": toUser["BitcoinAddress"]})
     end
 
     resp = db.update_item(
@@ -64,8 +69,9 @@ class Transaction
       key: {
         "txid" => transaction["txid"],
       },
-      attribute_updates: attributes,
-      return_values: "ALL_NEW"
+      return_values: "ALL_NEW", 
+      update_expression: update_expression,
+      expression_attribute_values: attribute_values,
     )
 
     resp.attributes
