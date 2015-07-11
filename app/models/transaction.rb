@@ -4,11 +4,12 @@ class Transaction
                       "amount = :amount, " +
                       "tip_amount = :tip_amount, " +
                       "fee = :fee, " +
-                      "time = :time, " +
+                      "#T = :time, " +
                       "confirmations = :confirmations, " +
                       "category = :category, " +
                       "details = :details"
 
+  RESERVED_ATTRIBUTES = {"#T": "token"}
 
   def self.create(transaction, fromUser=nil, toUser=nil)
 
@@ -72,6 +73,7 @@ class Transaction
       return_values: "ALL_NEW", 
       update_expression: update_expression,
       expression_attribute_values: attribute_values,
+      expression_attribute_names: RESERVED_ATTRIBUTES
     )
 
     resp.attributes
