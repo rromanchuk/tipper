@@ -48,7 +48,7 @@ class Transaction
     update_expression = UPDATE_EXPRESSION
     attribute_values = {":amount": transaction["amount"],
                         ":tip_amount", B::TIP_AMOUNT,
-                        ":fee": transaction["fee"], ":time",
+                        ":fee": transaction["fee"],
                         ":time": transaction["time"],
                         ":confirmations": transaction["confirmations"],
                         ":category": category,
@@ -56,7 +56,7 @@ class Transaction
 
     if fromUser
       update_expression = update_expression + ", FromUserID = :from_user_id, FromTwitterID = :from_twitter_id, FromTwitterUsername = :from_twitter_username, FromBitcoinAddress = :from_bitcoin_address"
-      attribute_values.merge({":from_user_id" = fromUser["UserID"], ":from_twitter_id": fromUser["TwitterUserID"], ":from_twitter_username": fromUser["TwitterUsername"], ":from_bitcoin_address": fromUser["BitcoinAddress"]})
+      attribute_values.merge({":from_user_id": fromUser["UserID"], ":from_twitter_id": fromUser["TwitterUserID"], ":from_twitter_username": fromUser["TwitterUsername"], ":from_bitcoin_address": fromUser["BitcoinAddress"]})
     end
 
     if toUser
