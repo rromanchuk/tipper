@@ -47,7 +47,7 @@ class Transaction
 
     update_expression = UPDATE_EXPRESSION
     attribute_values = {":amount": transaction["amount"],
-                        ":tip_amount", B::TIP_AMOUNT,
+                        ":tip_amount": B::TIP_AMOUNT,
                         ":fee": transaction["fee"],
                         ":time": transaction["time"],
                         ":confirmations": transaction["confirmations"],
