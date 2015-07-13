@@ -25,6 +25,7 @@ class User
                       "TwitterUsername = :twitter_username"
 
   UPDATE_NEW_USER_EXPRESSION = UPDATE_EXPRESSION + ", " +
+                      "CreatedAt = :created_at, " +
                       "#T = :token, " +
                       "BitcoinAddress = :bitcoin_address "
 
@@ -143,7 +144,7 @@ class User
 
   def self.create_user(additional_attributes={})
     new_user_id = SecureRandom.uuid
-    attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress }
+    attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress, ":created_at": Time.now.to_i }
     attributes = attributes.merge(additional_attributes)
 
     User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)

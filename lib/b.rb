@@ -2,7 +2,9 @@
 class B
 
   FUND_FROM_ACCOUNT = "tipper_reserves"
+  RESERVES_ADDRESS = "***REMOVED***"
   NEW_USER_ACCOUNT = "tipper_users"
+
   # http://bitcoindenominations.org/
   TIP_AMOUNT = 0.0005  # 12/cents
   FEE_AMOUNT = 0.00001

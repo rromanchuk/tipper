@@ -39,7 +39,7 @@ class Tip
   def self.new_tip(tweet, fromUser, toUser, txid)
     Rails.logger.info "new_tip tweetId:#{tweet.id.to_s}, from:#{fromUser["TwitterUsername"]}, to:#{toUser["TwitterUsername"]}, txid:#{txid}"
 
-    update_expression = UPDATE_EXPRESSION + ", DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id"
+    update_expression = UPDATE_EXPRESSION + ", DidLeaveTip = :did_leave_tip, txid = :txid, ToUserID = :to_user_id, TippedAt = :tipped_at"
     resp = db.update_item(
       # required
       table_name: Tip::TABLE_NAME,
@@ -62,7 +62,8 @@ class Tip
                                     ":to_user_id": toUser["UserID"],
                                     ":to_twitter_id": toUser["TwitterUserID"],
                                     ":did_leave_tip": "X",
-                                    ":txid": txid
+                                    ":txid": txid,
+                                    ":tipped_at": Time.now.to_i
                                    })
 
     User.update_balance(fromUser)
