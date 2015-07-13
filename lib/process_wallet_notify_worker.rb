@@ -75,7 +75,7 @@ class ProcessWalletNotifications
         notify_admins(tx)
       end
       delete(receipt_handle)
-
+      
       transaction["details"].each do |detail|
         user = User.update_balance_by_address(detail["address"])
       end

@@ -10,6 +10,7 @@ module UserAuthenticatable
 
   def update_balance
     Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
+    
     resp = db.update_item(
       # required
       table_name: User::TABLE_NAME,
@@ -28,7 +29,6 @@ module UserAuthenticatable
         }
       })
   end
-
 
   def authenticate_user_from_token
     Rails.logger.info "authenticate_user_from_token #{user}"
@@ -65,11 +65,11 @@ module UserAuthenticatable
       end
     end
   end
-  
+
   def balance
     @balance ||= B.balance(bitcoin_address)
   end
-  
+
   def user
     @user ||= User.find_by_twitter_id(twitter_id)
   end

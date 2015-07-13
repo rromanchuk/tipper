@@ -12,9 +12,6 @@ class Tip
                               "ToTwitterUsername = :to_twitter_username, " +
                               "ToTwitterProfileImage = :to_twitter_profile_image"
 
-
-
-  
   def self.all
     resp = db.scan(
       # required

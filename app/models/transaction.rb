@@ -22,29 +22,6 @@ class Transaction
       category = "external_withdrawal"
     end
 
-    # attributes = {
-    #   "amount" => {
-    #     value: transaction["amount"]
-    #   },
-    #   "tip_amount" => {
-    #     value: B::TIP_AMOUNT
-    #   },
-    #   "fee" => {
-    #     value: transaction["fee"]
-    #   },
-    #   "time" => {
-    #     value: transaction["time"]
-    #   },
-    #   "confirmations" => {
-    #     value: transaction["confirmations"]
-    #   },
-    #   "category" => {
-    #     value: category
-    #   },
-    #   "details" => {
-    #     value: transaction["details"].to_json
-    #   }
-    # }
 
     update_expression = UPDATE_EXPRESSION
     attribute_values = {":amount": transaction["amount"],
@@ -57,12 +34,12 @@ class Transaction
 
     if fromUser
       update_expression = update_expression + ", FromUserID = :from_user_id, FromTwitterID = :from_twitter_id, FromTwitterUsername = :from_twitter_username, FromBitcoinAddress = :from_bitcoin_address"
-      attribute_values.merge({":from_user_id": fromUser["UserID"], ":from_twitter_id": fromUser["TwitterUserID"], ":from_twitter_username": fromUser["TwitterUsername"], ":from_bitcoin_address": fromUser["BitcoinAddress"]})
+      attribute_values = attribute_values.merge({":from_user_id": fromUser["UserID"], ":from_twitter_id": fromUser["TwitterUserID"], ":from_twitter_username": fromUser["TwitterUsername"], ":from_bitcoin_address": fromUser["BitcoinAddress"]})
     end
 
     if toUser
       update_expression = update_expression + ", ToUserID = :to_user_id, ToTwitterID = :to_twitter_id, ToTwitterUsername = :to_twitter_username, ToBitcoinAddress = :to_bitcoin_address"
-      attribute_values.merge({":to_user_id": toUser["UserID"], ":to_twitter_id": toUser["TwitterUserID"], ":to_twitter_username": toUser["TwitterUsername"], ":to_bitcoin_address": toUser["BitcoinAddress"] })
+      attribute_values = attribute_values.merge({":to_user_id": toUser["UserID"], ":to_twitter_id": toUser["TwitterUserID"], ":to_twitter_username": toUser["TwitterUsername"], ":to_bitcoin_address": toUser["BitcoinAddress"] })
     end
 
     resp = db.update_item(
