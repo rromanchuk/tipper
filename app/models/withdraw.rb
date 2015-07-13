@@ -33,7 +33,7 @@ class Withdraw
     attribute_values = {":twitter_username": fromUser["TwitterUsername"],
                         ":amount": transaction["amount"],
                         ":fee": transaction["fee"],
-                        ":time", transaction["time"],
+                        ":time": transaction["time"],
                         ":confirmations": transaction["confirmations"],
                         ":to_bitcoin_address": toBitcoinAddress,
                         ":details": transaction["details"].to_json,
