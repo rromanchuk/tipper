@@ -181,11 +181,13 @@ class B
         return nil
       end
 
-      # Transaction fees
+      # Transaction fees, noop here, just for logging
       numInputs = unspents.length
       bytes = 148 * numInputs + 34 * 2 + 10
       transaction_fee = (bytes / 1000) * 0.0001
       Rails.logger.info "transaction_fee: #{transaction_fee}"
+
+
       transaction_fee = FEE_AMOUNT
       Rails.logger.info "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
 
@@ -205,7 +207,7 @@ class B
       Rails.logger.info "senderBTCBalance: #{senderBTCBalance}, amount_to_send_back_to_self: #{amount_to_send_back_to_self}, amount_to_send_to_other_user: #{amount_to_send_to_other_user}, transaction_fee: #{transaction_fee}"
 
       # Generate the transaction
-      rawtx = client.createrawtransaction(unspents, {fromAddress=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
+      rawtx = client.createrawtransaction(unspents, {RESERVES_ADDRESS=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
       Rails.logger.info "rawtx:#{rawtx}"
 
       # Sign the transaction
