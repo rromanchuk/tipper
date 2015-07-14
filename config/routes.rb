@@ -24,6 +24,7 @@ Rails.application.routes.draw do
         get 'addresses'
         get 'network'
         get 'balance'
+        get 'reserve'
       end
 
       member do 

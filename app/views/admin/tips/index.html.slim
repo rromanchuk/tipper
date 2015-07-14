@@ -4,8 +4,10 @@ table.table
       th FromTwitterUsername
       th ToTwitterUsername
       th txid
+      th Tipped at
   - @paginated_tips.items.each do |item|
     tr
       td = link_to item["FromTwitterUsername"],  admin_user_path(id: item["FromTwitterID"])
       td = link_to item["ToTwitterUsername"], admin_user_path(id: item["ToTwitterID"])
       td = link_to item["txid"], "https://blockchain.info/tx/#{item["txid"]}"
+      td = time_ago_in_words(Time.at(item["TippedAt"]))

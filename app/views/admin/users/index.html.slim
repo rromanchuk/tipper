@@ -4,8 +4,10 @@ table.table
       th TwitterUsername
       th Bitcoin Address
       th BTC
+      th Created At
   - @paginated_users.items.each do |item|
     tr
       td = link_to item["TwitterUsername"], admin_user_path(id: item["TwitterUserID"])
       td = link_to item["BitcoinAddress"], "https://blockchain.info/address/#{item["BitcoinAddress"]}"
       td = item["BitcoinBalanceBTC"]
+      td = time_ago_in_words(Time.at(item["CreatedAt"]))

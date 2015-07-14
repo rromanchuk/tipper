@@ -20,19 +20,25 @@ class Tip
   end
 
   def self.active
+    # resp = client.query({
+    #   table_name: "TableName", # required
+    #   index_name: "IndexName",
+    #   conditional_operator: "AND", # accepts AND, OR
+    #   scan_index_forward: true,
+    #   key_condition_expression: " = :hashval AND rangeAttributeName = :rangeval",
+
+    #   expression_attribute_values: {
+    #     "ExpressionAttributeValueVariable" => "value", # value <Hash,Array,String,Numeric,Boolean,IO,Set,nil>
+    #   },
+    # })
+
     resp = db.query(
       # required
       table_name: TABLE_NAME,
-      index_name: "DidLeaveTip-index",
-      key_conditions: {
-        "DidLeaveTip" => {
-          attribute_value_list: [
-            "X", #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
-          ],
-        # required
-          comparison_operator: "EQ",
-        },
-      },
+      index_name: "DidLeaveTip-TippedAt-index",
+      scan_index_forward: false,
+      key_condition_expression: "DidLeaveTip = :did_leave_tip AND TippedAt > :rangeval",
+      expression_attribute_values: {":did_leave_tip": "X", ":rangeval": 0}
     )
   end
 

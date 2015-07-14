@@ -24,6 +24,10 @@ class Admin::BitcoinAccountsController < Admin::BaseController
     @network = B.client.getpeerinfo
   end
 
+  def reserve
+    @unspents = B.unspent(B::RESERVES_ADDRESS)
+  end
+
   protected
 
 end

@@ -10,9 +10,10 @@ module UserAuthenticatable
 
   def update_balance
     Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
-    
+
     update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
     update_values = {":bitcoin_balance_btc": balance[:btc], ":updated_at": Time.now.to_i, ":is_active": "X"}
+
     resp = db.update_item(
       # required
       table_name: User::TABLE_NAME,

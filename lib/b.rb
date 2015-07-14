@@ -28,8 +28,6 @@ class B
     FUND_AMOUNT_UBTC.to_i
   end
 
-
-
   def self.totalBalance
     s = Satoshi.new(client.balance)
     {satoshi: s.to_i, mbtc: s.to_mbtc, btc: s.to_btc}
