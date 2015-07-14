@@ -164,7 +164,62 @@ class B
   end
 
   def self.fundUser(address)
-    client.sendfrom(FUND_FROM_ACCOUNT, address, FUND_AMOUNT)
+    begin
+      Rails.logger.info "fundUser from #{RESERVES_ADDRESS} -> #{address}"
+
+      # Get the total avail inputs from the snders address with at least 1 confirmation
+      unspents = client.listunspent(0, 9999999, [RESERVES_ADDRESS])
+      Rails.logger.info "unspents: #{unspents}"
+
+      # Sum all of the amounts
+      amounts_array = unspents.map {|a| a["amount"] }
+      Rails.logger.info "amounts_array: #{amounts_array}"
+      senderBTCBalance = amounts_array.inject(:+)
+      Rails.logger.info "senderBTCBalance: #{senderBTCBalance}"
+      unless senderBTCBalance
+        NotifyAdmin.reserves_depleted
+        return nil
+      end
+
+      # Transaction fees
+      numInputs = unspents.length
+      bytes = 148 * numInputs + 34 * 2 + 10
+      transaction_fee = (bytes / 1000) * 0.0001
+      Rails.logger.info "transaction_fee: #{transaction_fee}"
+      transaction_fee = FEE_AMOUNT
+      Rails.logger.info "numInputs: #{numInputs}, bytes: #{bytes}, transaction_fee: #{transaction_fee}"
+
+
+      # The amount of btc to send to the receiving user
+      amount_to_send_to_other_user = FUND_AMOUNT
+
+      # Does the user have enough money? 
+      if senderBTCBalance < (transaction_fee + amount_to_send_to_other_user)
+        Rails.logger.info "User does not have a large enough balance to perform this transaction"
+        NotifyAdmin.reserves_depleted
+        return nil
+      end
+
+      # Calculate the amount that needs to be sent back to the sender after using avail inputs
+      amount_to_send_back_to_self = senderBTCBalance - amount_to_send_to_other_user - transaction_fee
+      Rails.logger.info "senderBTCBalance: #{senderBTCBalance}, amount_to_send_back_to_self: #{amount_to_send_back_to_self}, amount_to_send_to_other_user: #{amount_to_send_to_other_user}, transaction_fee: #{transaction_fee}"
+
+      # Generate the transaction
+      rawtx = client.createrawtransaction(unspents, {fromAddress=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
+      Rails.logger.info "rawtx:#{rawtx}"
+
+      # Sign the transaction
+      signedTx = client.signrawtransaction(rawtx, unspents)
+      Rails.logger.info "signedTx: #{signedTx}"
+
+      # Broadcast transaction on the network
+      tx = client.sendrawtransaction(signedTx["hex"])
+      NotifyAdmin.fund_event
+    rescue => e
+      Bugsnag.notify(e, {:severity => "error"})
+      tx = nil
+    end
+    tx
   end
 
 end

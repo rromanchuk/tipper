@@ -19,6 +19,14 @@ class NotifyAdmin
 
   end
 
+  def self.reserves_depleted
+
+  end
+
+  def self.fund_event
+
+  end
+
   private
 
   def self.sns

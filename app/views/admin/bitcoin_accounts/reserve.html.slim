@@ -1,0 +1,24 @@
+h2 listunspent
+
+table.table
+  caption The listunspent RPC returns an array of unspent transaction outputs belonging to this wallet. Note: as of Bitcoin Core 0.10.0, outputs affecting watch-only addresses will be returned; see the spendable field in the results described below.
+  thead
+    tr
+      th txid
+      th vout
+      th Address
+      th account
+      th scriptPubKey
+      th Amount
+      th Confirmations
+      th Spendable?
+  - @unspents.each do |unspent|
+    tr
+      td = unspent["txid"]
+      td = unspent["vout"]
+      td = unspent["address"]
+      td = unspent["acount"]
+      td = unspent["scriptPubKey"]
+      td = unspent["amount"]
+      td = unspent["confirmations"]
+      td = unspent["spendable"]
