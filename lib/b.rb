@@ -207,7 +207,7 @@ class B
       Rails.logger.info "senderBTCBalance: #{senderBTCBalance}, amount_to_send_back_to_self: #{amount_to_send_back_to_self}, amount_to_send_to_other_user: #{amount_to_send_to_other_user}, transaction_fee: #{transaction_fee}"
 
       # Generate the transaction
-      rawtx = client.createrawtransaction(unspents, {RESERVES_ADDRESS=>amount_to_send_back_to_self, toAddress => amount_to_send_to_other_user})
+      rawtx = client.createrawtransaction(unspents, {RESERVES_ADDRESS=>amount_to_send_back_to_self, address => amount_to_send_to_other_user})
       Rails.logger.info "rawtx:#{rawtx}"
 
       # Sign the transaction
