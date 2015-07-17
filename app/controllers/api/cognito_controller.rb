@@ -9,11 +9,13 @@ module Api
         logins: { "com.ryanromanchuk.tipper" => user_id },
         token_duration: 1)
 
-      current_user["CognitoToken"] = resp.token
-      current_user["CognitoIdentity"] = resp.identity_id
-      current_user = User.update(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id } )
+      Rails.logger.info "CognitoController::Create token: #{resp.token} identity: #{resp.identity_id}"
 
-      render json: current_user
+      user = User.update(user_id, User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id } )
+      Rails.logger.info "CognitoController::Create returning user:"
+      Rails.logger.info user.to_yaml
+
+      render json: user
     end
 
     private
