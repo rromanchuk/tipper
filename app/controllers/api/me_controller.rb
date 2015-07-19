@@ -15,13 +15,14 @@ module Api
         user = User.create_user(attributes_to_update)
         message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
         NotifyAdmin.new_user(user["TwitterUsername"])
-        Redis.current.publish("new_users", message)
       else
         Rails.logger.info "Found user:"
         Rails.logger.info user.to_yaml
         user = User.update(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
       end
 
+      # Tokens may have changed, this user's stream may need to be restarted
+      Redis.current.publish("new_users", message)
       Rails.logger.info "User: #{user.to_yaml}"
 
       # AWS developer credential service flow
