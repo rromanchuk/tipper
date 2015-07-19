@@ -4,7 +4,7 @@ class NotifyUser
     return unless user["EndpointArn"]
     message = "Opps, we can't process your twitter stream until you login again."
     apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
-    send(apns_payload, user["EndpointArn"])
+    send(apns_payload, user["EndpointArn"], message)
   end
 
   def self.problem_tipping_user(user)
@@ -14,7 +14,7 @@ class NotifyUser
                     "user" => { "TwitterUserID" => user["TwitterUserID"] },
                     "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
 
-    send(apns_payload, user["EndpointArn"])
+    send(apns_payload, user["EndpointArn"], message)
   end
 
   def self.notify_receiver(fromUser, toUser, favorite)
@@ -25,7 +25,7 @@ class NotifyUser
                                 "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
                                 "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
                                 "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-    send(apns_payload, user["EndpointArn"])
+    send(apns_payload, user["EndpointArn"], message)
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
@@ -37,10 +37,10 @@ class NotifyUser
                                   "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
                                   "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
 
-    send(apns_payload, user["EndpointArn"])
+    send(apns_payload, user["EndpointArn"], message)
   end
 
-  def self.send(payload, endpoint)
+  def self.send(payload, endpoint, message)
     begin 
       resp = sns.publish(
         target_arn: endpoint,
