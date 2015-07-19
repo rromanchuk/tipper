@@ -25,7 +25,7 @@ class NotifyUser
                                 "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
                                 "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
                                 "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-    send(apns_payload, user["EndpointArn"], message)
+    send(apns_payload, toUser["EndpointArn"], message)
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
@@ -37,7 +37,7 @@ class NotifyUser
                                   "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
                                   "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
 
-    send(apns_payload, user["EndpointArn"], message)
+    send(apns_payload, fromUser["EndpointArn"], message)
   end
 
   def self.send(payload, endpoint, message)
