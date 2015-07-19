@@ -216,7 +216,6 @@ class B
 
       # Broadcast transaction on the network
       tx = client.sendrawtransaction(signedTx["hex"])
-      NotifyAdmin.fund_event
     rescue => e
       Bugsnag.notify(e, {:severity => "error"})
       tx = nil

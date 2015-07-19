@@ -29,6 +29,10 @@ class ProcessTipWorker
     @queue ||= SqsQueues.new_tip
   end
 
+  def tipper_bot
+    @tipper_bot ||= TipperBot.new
+  end
+
   def logger
     @logger ||= begin 
       _logger = Rails.logger
@@ -50,16 +54,6 @@ class ProcessTipWorker
       config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
       config.access_token        = fromUser["TwitterAuthToken"]
       config.access_token_secret = fromUser["TwitterAuthSecret"]
-    end
-  end
-
-  def tipper_bot_client
-    tipper_bot = User.find_tipper_bot
-    @tipper_bot_client ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
-      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
-      config.access_token        = tipper_bot["TwitterAuthToken"]
-      config.access_token_secret = tipper_bot["TwitterAuthSecret"]
     end
   end
 
@@ -157,12 +151,6 @@ class ProcessTipWorker
     end
   end
 
-  def post_on_twitter(fromUser, toUser)
-    return if fromUser["TwitterUsername"] == "rromanchuk"
-    message = "@#{fromUser["TwitterUsername"]} just sent @#{toUser["TwitterUsername"]} #{B::TIP_AMOUNT_UBTC.to_i}μBTC"
-    tipper_bot_client.update(message)
-  end
-
   def process_messages(messages)
     messages.each do |message|
       receipt_handle = message[:receipt_handle]
@@ -185,7 +173,7 @@ class ProcessTipWorker
       unless toUser # If the user doesn't exist create a stub account
         attributes = {":twitter_user_id": json["ToTwitterID"], ":twitter_username": tweet.user.screen_name }
         toUser = User.create_stub_user(attributes)
-        
+
       end
 
       logger.info "toUser:"
@@ -207,7 +195,7 @@ class ProcessTipWorker
         notify_sender(fromUser, toUser, favorite)
         notify_receiver(fromUser, toUser, favorite)
 
-        post_on_twitter(fromUser, toUser)
+        tipper_bot.post_tip_on_twitter(fromUser, toUser, txid)
       else
         # Send failure notifications, delete the sqs receipt so we don't keep retrying
         publish_from_problem(fromUser)

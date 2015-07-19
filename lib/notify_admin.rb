@@ -6,8 +6,8 @@ class NotifyAdmin
     send "[ADMIN] New user: #{username}"
   end
 
-  def self.new_stub_user
-    send "[ADMIN] New sub user"
+  def self.new_stub_user(username)
+    send "[ADMIN] New stub user #{username}"
   end
 
   def self.external_deposit

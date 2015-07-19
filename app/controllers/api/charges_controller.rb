@@ -19,8 +19,10 @@ module Api
         :currency    => 'usd'
       )
 
-      fund_account
+      txid = fund_account
       NotifyAdmin.fund_event(current_user["TwitterUsername"])
+      TipperBot.post_fund_on_twitter(current_user["TwitterUsername"], txid)
+
       render json: current_user
     end
 
@@ -36,6 +38,10 @@ module Api
 
     def sqs
       @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+    end
+
+    def tipper_bot
+      @tipper_bot ||= TipperBot.new
     end
 
   end
