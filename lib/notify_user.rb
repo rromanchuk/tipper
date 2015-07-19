@@ -2,10 +2,9 @@ class NotifyUser
 
   def self.auth_token_expired(user)
     return unless user["EndpointArn"]
-    begin
-      message = "Opps, we can't process your twitter stream until you login again."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
-      send(apns_payload, user["EndpointArn"])
+    message = "Opps, we can't process your twitter stream until you login again."
+    apns_payload = { "aps" => { "alert" => message, "badge" => 1 } }.to_json
+    send(apns_payload, user["EndpointArn"])
   end
 
   def self.problem_tipping_user(user)
@@ -18,22 +17,21 @@ class NotifyUser
     send(apns_payload, user["EndpointArn"])
   end
 
-
   def self.notify_receiver(fromUser, toUser, favorite)
     return unless toUser["EndpointArn"]
-      message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 },
-                                  "type" => "tip_received",
-                                  "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
-                                  "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
-                                  "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-      send(apns_payload, user["EndpointArn"])
+    message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
+    apns_payload = { "aps" => { "alert" => message, "badge" => 1 },
+                                "type" => "tip_received",
+                                "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
+                                "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
+                                "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
+    send(apns_payload, user["EndpointArn"])
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
     return unless fromUser["EndpointArn"]
-      message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 },
+    message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
+    apns_payload = { "aps" => { "alert" => message, "badge" => 1 },
                                   "type" => "tip_sent",
                                   "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"},
                                   "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },

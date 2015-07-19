@@ -95,6 +95,7 @@ EM.run {
       FavoritesStream.add user['TwitterAuthToken'], user['TwitterAuthSecret']
     else
       Rails.logger.info "Skipping (no valid oauth in db): #{user["TwitterUsername"]}"
+      NotifyUser.auth_token_expired(user)
     end
   end
 
