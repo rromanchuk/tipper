@@ -50,10 +50,10 @@ class NotifyUser
         message: {"default" => message, "APNS_SANDBOX": payload, "APNS": payload }.to_json
       )
     rescue Aws::SNS::Errors::EndpointDisabled
-      logger.error "Aws::SNS::Errors::EndpointDisabled"
+      Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
       # TODO: remove user's endpoint from dynamo, it's invalid
     rescue Aws::SNS::Errors::InvalidParameter => e
-      logger.error "Aws::SNS::Errors::InvalidParameter"
+      Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
       Bugsnag.notify(e, {:severity => "error"})
     end
   end
