@@ -20,6 +20,7 @@ module Api
       )
 
       fund_account
+      NotifyAdmin.fund_event(current_user["TwitterUsername"])
       render json: current_user
     end
 

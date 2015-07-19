@@ -185,6 +185,7 @@ class ProcessTipWorker
       unless toUser # If the user doesn't exist create a stub account
         attributes = {":twitter_user_id": json["ToTwitterID"], ":twitter_username": tweet.user.screen_name }
         toUser = User.create_stub_user(attributes)
+        
       end
 
       logger.info "toUser:"
