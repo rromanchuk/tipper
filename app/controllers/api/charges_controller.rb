@@ -21,7 +21,7 @@ module Api
 
       txid = fund_account
       NotifyAdmin.fund_event(current_user["TwitterUsername"])
-      TipperBot.post_fund_on_twitter(current_user["TwitterUsername"], txid)
+      tipper_bot.post_fund_on_twitter(current_user["TwitterUsername"], txid)
 
       render json: current_user
     end
