@@ -91,7 +91,7 @@ class ProcessTipWorker
       # Fetch the tweet object
       tweet = tweetObject(fromUser, json["TweetID"])
       unless tweet
-        publish_from_problem(fromUser)
+        NotifyUser.problem_tipping_user(fromUser)
         delete(receipt_handle)
         next
       end
@@ -126,7 +126,7 @@ class ProcessTipWorker
         tipper_bot.post_tip_on_twitter(fromUser, toUser, txid)
       else
         # Send failure notifications, delete the sqs receipt so we don't keep retrying
-        publish_from_problem(fromUser)
+        NotifyUser.problem_tipping_user(fromUser)
       end
       delete(receipt_handle)
     end
