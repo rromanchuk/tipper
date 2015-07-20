@@ -24,6 +24,14 @@ footer {
   bottom: 0;
   width: 100%;
   position: fixed;
+  .container {
+    height: 100%;
+    a {
+      vertical-align: middle;
+      display: table-cell;
+      line-height: 60px;
+    }
+  }
 }
 
 .tweet-box {
