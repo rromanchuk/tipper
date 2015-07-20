@@ -107,6 +107,7 @@ class ProcessFundWorker
         transaction = B.client.gettransaction(txid)
         transaction = Transaction.create(transaction, nil, toUser)
         notify_receiver(toUser)
+        TipperBot.new.post_fund_on_twitter(toUser["TwitterUsername"], txid)
       else
         # do not delete message on failure
       end

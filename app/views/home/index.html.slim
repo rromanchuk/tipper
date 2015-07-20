@@ -10,13 +10,12 @@
         a href="https://itunes.apple.com/us/app/tipper-micro-payments/id986575823?ls=1&mt=8" 
           = image_tag('download.svg')
   .row
-  .row.show-grid.tweet-box
-    .col-md-2.col-md-offset-2
-      = image_tag('phone.jpg')
-    .col-md-4
+  .row.tweet-box
+    .col-md-7.col-md-offset-2
+      = image_tag('phone.jpg', class: "pull-left")
       p Tipper answers the biggest question for the average Bitcoin user: "What do I do with it?"
       p Users are able to quickly load a Bitcoin wallet and begin sending Micro Payments between real people for digital actions taken on other networks like Twitter
-      a class="twitter-timeline" href="https://twitter.com/tipperbot" data-widget-id="616399072379809793" width="600" Tweets by @tipperbot
+      a class="twitter-timeline" href="https://twitter.com/tipperbot" data-widget-id="616399072379809793" Tweets by @tipperbot
 
 javascript:
   !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
