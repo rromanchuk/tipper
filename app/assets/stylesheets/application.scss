@@ -3,14 +3,14 @@
 @import "bootstrap";
 
 @font-face {
-  font-family: 'New Cicle';
-  src: url('New Cicle Fina.ttf') format('truetype');
+  font-family: 'Bariol';
+  src: url('Bariol.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
 }
 
 body {
-  font-family: "Avenir Next", Times, serif;
+  font-family: "Bariol", Times, serif;
 }
 
 .logo {
@@ -34,6 +34,7 @@ footer {
 .header {
   img {
     padding-left: 160px;
+    padding-top: 20px;
   }
   .jumbotron {
     background-color: transparent;
@@ -46,14 +47,22 @@ footer {
     }
   }
   h1 {
-    font-size: 2.25em; 
+    font-size: 2.750em; 
   }
   h2 {
-    font-size: 1.37em;
+    font-size: 1.5em;
+    margin-top:0px;
   }
   color: white;
   background-color: #6DBA94;
   min-height: 300px;
+}
+
+.tweet-box {
+  font-size: 1.125em;
+  h3 {
+
+  }
 }
 
 .display-table {
