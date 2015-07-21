@@ -13,7 +13,6 @@ module Api
 
       unless user
         user = User.create_user(attributes_to_update)
-        message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
         NotifyAdmin.new_user(user["TwitterUsername"])
       else
         Rails.logger.info "Found user:"
@@ -22,6 +21,7 @@ module Api
       end
 
       # Tokens may have changed, this user's stream may need to be restarted
+      message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
       Redis.current.publish("new_users", message)
       Rails.logger.info "User: #{user.to_yaml}"
 

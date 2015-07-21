@@ -103,7 +103,9 @@ EM.run {
   Rails.logger.info "Subscribing to new users"
   redis = EM::Hiredis.connect(ENV["REDIS_URL"])
   redis.pubsub.subscribe("new_users") { |msg|
+    Rails.logger.info "Found new user: #{msg}"
     parsed = JSON.parse(msg)
+    Rails.logger.info "Parsed redis message: #{parsed}"
     FavoritesStream.add(parsed['oauth_token'], parsed['oauth_token_secret'])
   }
 }
