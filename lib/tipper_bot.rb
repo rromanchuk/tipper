@@ -1,7 +1,7 @@
 class TipperBot
 
-  def post_tip_on_twitter(fromUser, toUser, txid)
-    message = "@#{fromUser["TwitterUsername"]} just sent @#{toUser["TwitterUsername"]} #{B::TIP_AMOUNT_UBTC.to_i}μBTC  https://blockchain.info/tx/#{txid}"
+  def post_tip_on_twitter(fromUser, toUser, txid, tweet_id)
+    message = "@#{fromUser["TwitterUsername"]} just tipped @#{toUser["TwitterUsername"]} #{B::TIP_AMOUNT_UBTC.to_i}μBTC for twitter.com/#{toUser["TwitterUsername"]}/status/#{tweet_id} transaction: blockchain.info/tx/#{txid}"
     tipper_bot_client.update(message)
   end
 

@@ -123,7 +123,7 @@ class ProcessTipWorker
         NotifyUser.notify_sender(fromUser, toUser, favorite)
         NotifyUser.notify_receiver(fromUser, toUser, favorite)
 
-        tipper_bot.post_tip_on_twitter(fromUser, toUser, txid)
+        tipper_bot.post_tip_on_twitter(fromUser, toUser, txid, tweet.id.to_s)
       else
         # Send failure notifications, delete the sqs receipt so we don't keep retrying
         NotifyUser.problem_tipping_user(fromUser)
