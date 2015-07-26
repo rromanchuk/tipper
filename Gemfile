@@ -45,6 +45,9 @@ gem "redis"
 gem "tweetstream"
 gem "em-hiredis"
 
+gem 'ember-rails'
+gem 'ember-source'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
