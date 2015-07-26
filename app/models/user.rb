@@ -30,7 +30,7 @@ class User
                       "BitcoinAddress = :bitcoin_address "
 
   UPDATE_STUB_USER_EXPRESSION = "SET " +
-                                "#T = :token, " +,
+                                "#T = :token, " +
                                 "CreatedAt = :created_at, " +
                                 "BitcoinAddress = :bitcoin_address, " +
                                 "TwitterUserID = :twitter_user_id, " +
