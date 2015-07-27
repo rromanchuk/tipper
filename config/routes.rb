@@ -31,6 +31,7 @@ Rails.application.routes.draw do
         get 'unspent'
       end
     end
+    root to: 'users#index'
   end
 
   if Rails.env.development?
