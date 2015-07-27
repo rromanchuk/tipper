@@ -4,7 +4,7 @@ class User
 
   # Secondary indexes
   INDEX_BITCOIN_ADDRESS = "BitcoinAddress-index"
-  INDEX_IS_ACTIVE = "IsActive-index"
+  INDEX_IS_ACTIVE = "IsActive-CreatedAt-index"
   INDEX_TWITTER_TOKEN = "TwitterAuthToken-index"
   INDEX_TWITTER_USERID = "TwitterUserID-index"
 
