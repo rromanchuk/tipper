@@ -51,6 +51,7 @@ class User
       # required
       table_name: TABLE_NAME,
       index_name: INDEX_IS_ACTIVE,
+      scan_index_forward: false,
       key_conditions: {
         "IsActive" => {
           attribute_value_list: [
