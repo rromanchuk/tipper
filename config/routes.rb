@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :charges, only: [:create]
     resources :cognito, only: [:create]
     resources :user, only: [:show]
+    post 'disconnect' => 'users#disconnect'
   end
 
 
