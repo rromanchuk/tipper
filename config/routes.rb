@@ -4,6 +4,7 @@ Rails.application.routes.draw do
     resource :me,                  only: [:create, :show, :index], controller: 'me'
     resources :charges, only: [:create]
     resources :cognito, only: [:create]
+    resources :user, only: [:show]
   end
 
 
@@ -42,6 +43,6 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'home#index'
+  #root 'home#index'
 
 end
