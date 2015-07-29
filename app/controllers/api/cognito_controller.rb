@@ -1,3 +1,4 @@
+# DEPRECATED
 module Api
   class CognitoController < Api::BaseController
     def create

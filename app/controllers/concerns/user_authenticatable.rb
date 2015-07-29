@@ -29,7 +29,7 @@ module UserAuthenticatable
   def authenticate_user_from_token
     #Rails.logger.info "authenticate_user_from_token #{user}"
     Rails.logger.info "#{user["token"]} != #{auth_token}"
-    raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token
+    raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token && user["TwitterAuthToken"] != auth_token
     update_balance
     user
   rescue ActionController::InvalidAuthenticityToken => e
