@@ -61,9 +61,9 @@ class ProcessWithdrawBalanceWorker
     #test_event
     EventMachine.run do
       EM.add_periodic_timer(25.0) do
-        logger.info "Ready to process tasks.."
+        #logger.info "Ready to process tasks.."
         messages = receive
-        logger.info "Found message #{messages}"
+        #logger.info "Found message #{messages}"
         process_messages(messages)
       end
     end
