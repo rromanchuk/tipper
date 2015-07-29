@@ -3,6 +3,7 @@ module Api
   class MeController < Api::BaseController
     skip_before_filter :require_user!, only: [:create]
 
+    # Deprecated
     def create
 
       valid_twitter_credentials?
@@ -36,6 +37,33 @@ module Api
 
 
       user = User.update(user["UserID"], User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
+
+      Rails.logger.info "User: #{user.to_yaml}"
+
+      render json: user
+    end
+
+    
+    def register
+      valid_twitter_credentials?
+
+      Rails.logger.info "Find or create for twitterID: #{twitterId}...."
+
+      user = User.find_by_twitter_id(twitterId)
+
+      unless user
+        user = User.create_user(attributes_to_update)
+        NotifyAdmin.new_user(user["TwitterUsername"])
+      else
+        Rails.logger.info "Found user:"
+        Rails.logger.info user.to_yaml
+        user = User.update(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
+      end
+
+      # Tokens may have changed, this user's stream may need to be restarted
+      message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+      Redis.current.publish("new_users", message)
+      Rails.logger.info "User: #{user.to_yaml}"
 
       Rails.logger.info "User: #{user.to_yaml}"
 

@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
   namespace :api, path: '/', defaults: { format: 'json' } do
     get 'settings' => 'settings#index'
+    post 'register' => 'me#register'
     resource :me,                  only: [:create, :show, :index], controller: 'me'
     resources :charges, only: [:create]
     resources :cognito, only: [:create]
+    resources :address, only: [:create]
     resources :user, only: [:show]
     post 'disconnect' => 'users#disconnect'
   end
