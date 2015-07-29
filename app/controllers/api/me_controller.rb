@@ -1,7 +1,7 @@
 
 module Api
   class MeController < Api::BaseController
-    skip_before_filter :require_user!, only: [:create]
+    skip_before_filter :require_user!, only: [:create, :register]
 
     # Deprecated
     def create
@@ -43,7 +43,7 @@ module Api
       render json: user
     end
 
-    
+
     def register
       valid_twitter_credentials?
 
