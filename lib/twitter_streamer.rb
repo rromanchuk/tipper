@@ -108,4 +108,12 @@ EM.run {
     Rails.logger.info "Parsed redis message: #{parsed}"
     FavoritesStream.add(parsed['oauth_token'], parsed['oauth_token_secret'])
   }
+
+  Rails.logger.info "Subscribing to user diconnect events"
+  redis.pubsub.subscribe("disconnect_user") { |msg|
+    Rails.logger.info "Disconnecting user: #{msg}"
+    parsed = JSON.parse(msg)
+    Rails.logger.info "Parsed redis message: #{parsed}"
+    FavoritesStream.remove(parsed['oauth_token'])
+  }
 }

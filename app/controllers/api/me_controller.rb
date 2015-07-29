@@ -43,6 +43,11 @@ module Api
       render json: user
     end
 
+    def disconnect
+      message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+      Redis.current.publish("disconnect_user", message)
+      render json: {}
+    end
 
     def register
       valid_twitter_credentials?
