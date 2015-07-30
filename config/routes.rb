@@ -3,6 +3,7 @@ Rails.application.routes.draw do
     get 'settings' => 'settings#index'
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
+    post 'connect' => 'me#connect'
 
     resource :me,                  only: [:create, :show, :index], controller: 'me'
     resources :charges, only: [:create]

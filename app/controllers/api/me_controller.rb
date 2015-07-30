@@ -49,6 +49,12 @@ module Api
       render json: {}
     end
 
+    def connect
+      message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+      Redis.current.publish("new_users", message)
+      render json: {}
+    end
+
     def register
       valid_twitter_credentials?
 
