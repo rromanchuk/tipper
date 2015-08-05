@@ -61,7 +61,7 @@ class Tip
                                     ":tweet_json": tweet.to_json,
                                     ":created_at": tweet.created_at.to_i,
                                     ":from_twitter_username": fromUser["TwitterUsername"],
-                                    ":from_twitter_profile_image": fromUser["ProfileImage"],
+                                    ":from_twitter_profile_image": fromUser["ProfileImage"] ? fromUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
                                     ":from_twitter_id": fromUser["TwitterUserID"],
                                     ":to_twitter_profile_image": toUser["ProfileImage"] ? toUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
                                     ":to_twitter_username": toUser["TwitterUsername"],

@@ -56,6 +56,9 @@ class ProcessTipWorker
   def tweetObject(fromUser, tweetId)
     begin
       restClientForUser(fromUser).status(tweetId)
+    rescue Twitter::Error::Unauthorized => e
+      Bugsnag.notify(e, {:severity => "error"})
+      nil
     rescue Twitter::Error::Forbidden => e
       Bugsnag.notify(e, {:severity => "error"})
       nil
