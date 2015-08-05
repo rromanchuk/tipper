@@ -2,12 +2,22 @@ class TipperBot
 
   def post_tip_on_twitter(fromUser, toUser, txid, tweet_id)
     message = "@#{fromUser["TwitterUsername"]} just tipped @#{toUser["TwitterUsername"]} #{B::TIP_AMOUNT_UBTC.to_i}μBTC for twitter.com/#{toUser["TwitterUsername"]}/status/#{tweet_id} transaction: blockchain.info/tx/#{txid}"
-    tipper_bot_client.update(message)
+    begin
+      tipper_bot_client.update(message)
+    rescue Twitter::Error::Unauthorized => e
+      Bugsnag.notify(e, {:severity => "error"})
+      nil
+    end
   end
 
   def post_fund_on_twitter(username, txid)
     message = "@#{username} Transfer of #{B::FUND_AMOUNT_UBTC.to_i}μBTC complete. https://blockchain.info/tx/#{txid}"
-    tipper_bot_client.update(message)
+    begin
+      tipper_bot_client.update(message)
+    rescue Twitter::Error::Unauthorized => e
+      Bugsnag.notify(e, {:severity => "error"})
+      nil
+    end
   end
 
   def tipper_bot_client
