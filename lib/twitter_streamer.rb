@@ -48,7 +48,7 @@ class FavoritesStream
                                         oauth_token_secret: @oauth_token_secret).on_error do |message|
                                           Rails.logger.info "[ERROR]: #{message}"
                                         end.on_reconnect do |timeout, retries|
-                                          Rails.logger.info "[RECONNECT]: timeout: #{message}, retries: #{retries}"
+                                          Rails.logger.info "[RECONNECT]: timeout: #{timeout}, retries: #{retries}"
                                         end
   end
 
