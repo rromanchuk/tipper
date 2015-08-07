@@ -45,7 +45,11 @@ class FavoritesStream
     @client ||= TweetStream::Client.new(consumer_key: ENV["TWITTER_CONSUMER_KEY"],
                                         consumer_secret: ENV["TWITTER_CONSUMER_SECRET"],
                                         oauth_token: @oauth_token,
-                                        oauth_token_secret: @oauth_token_secret)
+                                        oauth_token_secret: @oauth_token_secret).on_error do |message|
+                                          Rails.logger.info "[ERROR]: #{message}"
+                                        end.on_reconnect do |timeout, retries|
+                                          Rails.logger.info "[RECONNECT]: timeout: #{message}, retries: #{retries}"
+                                        end
   end
 
   def user
