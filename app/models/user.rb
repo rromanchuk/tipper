@@ -195,7 +195,7 @@ class User
 
   end
 
-  def find_last_seen_and_update(user)
+  def self.find_last_seen_and_update(user)
     client = Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
       config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]

@@ -72,7 +72,7 @@ class FavoritesPoller
     FavoritesPoller.lambda.invoke({
       function_name: "PollUserFavorites", # required
       invocation_type: "Event", # accepts Event, RequestResponse, DryRun
-      payload: {since_id: user["LastTipId"], consumer_key: ENV["TWITTER_CONSUMER_KEY"], consumer_secret: ENV["TWITTER_CONSUMER_SECRET"], token: @oauth_token, secret: @oauth_token_secret, userId: user["UserID"], twitterId: user["TwitterUserID"]}.to_json,
+      payload: {since_id: user["LastSeenID"], consumer_key: ENV["TWITTER_CONSUMER_KEY"], consumer_secret: ENV["TWITTER_CONSUMER_SECRET"], token: @oauth_token, secret: @oauth_token_secret, userId: user["UserID"], twitterId: user["TwitterUserID"]}.to_json,
     })
   end
 
