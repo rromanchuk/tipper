@@ -20,16 +20,17 @@ exports.handler = function(event, context) {
   var twitterId = event.twitterId;
   var consumerKey = event.consumer_key;
   var consumerSecret = event.consumer_secret;
+  var sinceId = event.since_id;
 
   var client = new Twitter({
-    consumer_key: consumer_key,
-    consumer_secret: consumer_secret,
+    consumer_key: consumerKey,
+    consumer_secret: consumerSecret,
     access_token_key: token,
     access_token_secret: secret
   });
 
 
-  client.get('favorites/list', {"user_id": twitterId, "count": 200}, function(error, tweets, response) {
+  client.get('favorites/list', {"user_id": twitterId, "count": 200, "since_id": sinceId}, function(error, tweets, response) {
 		console.log("Number of tweets ----->" + tweets.length);
     if(error) {
       console.log(error);
