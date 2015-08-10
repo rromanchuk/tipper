@@ -12,6 +12,9 @@ class User
   UPDATE_BALANCE_EXPRESSION = "SET " +
                               "BitcoinBalanceBTC = :bitcoin_balance_btc"
 
+  UPDATE_LAST_TIP_EXPRESSION = "SET " +
+                              "LastTipId = :last_tip_id"
+
   UPDATE_COGNITO_EXPRESSION = "SET " +
                       "CognitoToken = :cognito_token, " +
                       "CognitoIdentity = :cognito_identity"
@@ -71,6 +74,10 @@ class User
         "UserID" => user_id,
       },
     ).item
+  end
+
+  def self.update_last_tip_id(user_id)
+    update(user_id, )
   end
 
   def self.update(user_id, update_expression, update_values, expression_attribute_names=nil)
