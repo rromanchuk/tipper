@@ -18,10 +18,12 @@ exports.handler = function(event, context) {
   var secret = event.secret;
   var userId = event.userId;
   var twitterId = event.twitterId;
+  var consumerKey = event.consumer_key;
+  var consumerSecret = event.consumer_secret;
 
   var client = new Twitter({
-    consumer_key: '***REMOVED***',
-    consumer_secret: 'iJDZtadyNK6BwXB49xszyBI6y748iERGEmUQM3veXNlcmKzqwJ',
+    consumer_key: consumer_key,
+    consumer_secret: consumer_secret,
     access_token_key: token,
     access_token_secret: secret
   });
