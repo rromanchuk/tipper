@@ -12,7 +12,7 @@ require "aws-sdk"
 require_relative "./sqs_queues"
 require_relative "../app/models/user"
 
-class FavoritesStream
+class FavoritesPoller
   def self.all
     @all ||= {}
   end
@@ -21,7 +21,7 @@ class FavoritesStream
     if all.has_key?(oauth_token)
       Rails.logger.info "already have #{oauth_token}, not adding"
     else
-      all[oauth_token] = FavoritesStream.new(oauth_token, oauth_token_secret)
+      all[oauth_token] = FavoritesPoller.new(oauth_token, oauth_token_secret)
       all[oauth_token].start
     end
   end
@@ -58,7 +58,7 @@ class FavoritesStream
   end
 
   def self.lambda
-    @lambda ||= Lambda::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+    @lambda ||= Aws::Lambda::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
   end
 
   def start
@@ -69,10 +69,10 @@ class FavoritesStream
   end
 
   def publish
-    self.lambda.invoke({
+    FavoritesPoller.lambda.invoke({
       function_name: "PollUserFavorites", # required
       invocation_type: "Event", # accepts Event, RequestResponse, DryRun
-      payload: {consumer_key: ENV["TWITTER_CONSUMER_KEY"], consumer_secret: ENV["TWITTER_CONSUMER_SECRET"], token: @oauth_token, secret: @oauth_token_secret, userId: user["UserID"], twitterId: user["TwitterUserID"]},
+      payload: {consumer_key: ENV["TWITTER_CONSUMER_KEY"], consumer_secret: ENV["TWITTER_CONSUMER_SECRET"], token: @oauth_token, secret: @oauth_token_secret, userId: user["UserID"], twitterId: user["TwitterUserID"]}.to_json,
     })
   end
 
@@ -89,7 +89,7 @@ EM.run {
   active_users.each do |user|
     if user['TwitterAuthToken'] && user['TwitterAuthSecret']
       Rails.logger.info "Adding: #{user["TwitterUsername"]}"
-      FavoritesStream.add user['TwitterAuthToken'], user['TwitterAuthSecret']
+      FavoritesPoller.add user['TwitterAuthToken'], user['TwitterAuthSecret']
     else
       Rails.logger.info "Skipping (no valid oauth in db): #{user["TwitterUsername"]}"
       NotifyUser.auth_token_expired(user)
@@ -103,7 +103,7 @@ EM.run {
     Rails.logger.info "Found new user: #{msg}"
     parsed = JSON.parse(msg)
     Rails.logger.info "Parsed redis message: #{parsed}"
-    FavoritesStream.add(parsed['oauth_token'], parsed['oauth_token_secret'])
+    FavoritesPoller.add(parsed['oauth_token'], parsed['oauth_token_secret'])
   }
 
   Rails.logger.info "Subscribing to user diconnect events"
@@ -111,6 +111,8 @@ EM.run {
     Rails.logger.info "Disconnecting user: #{msg}"
     parsed = JSON.parse(msg)
     Rails.logger.info "Parsed redis message: #{parsed}"
-    FavoritesStream.remove(parsed['oauth_token'])
+    FavoritesPoller.remove(parsed['oauth_token'])
   }
 }
+
+
