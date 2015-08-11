@@ -74,7 +74,7 @@ class Tip
 
     User.update_balance(fromUser)
     User.update_balance(toUser)
-    User.update_last_tip_id(fromUser["UserID"], tweet.id.to_s)
+    #User.update_last_tip_id(fromUser["UserID"], tweet.id.to_s)
     resp.attributes
   end
 

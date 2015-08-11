@@ -12,8 +12,8 @@ class User
   UPDATE_BALANCE_EXPRESSION = "SET " +
                               "BitcoinBalanceBTC = :bitcoin_balance_btc"
 
-  UPDATE_LAST_TIP_EXPRESSION = "SET " +
-                              "LastSeenID = :last_seen_id"
+  # UPDATE_LAST_TIP_EXPRESSION = "SET " +
+  #                             "LastSeenID = :last_seen_id"
 
   UPDATE_COGNITO_EXPRESSION = "SET " +
                       "CognitoToken = :cognito_token, " +
@@ -76,9 +76,9 @@ class User
     ).item
   end
 
-  def self.update_last_tip_id(user_id, last_seen_id)
-    update(user_id, UPDATE_LAST_TIP_EXPRESSION, {":last_seen_id": last_seen_id})
-  end
+  # def self.update_last_tip_id(user_id, last_seen_id)
+  #   update(user_id, UPDATE_LAST_TIP_EXPRESSION, {":last_seen_id": last_seen_id})
+  # end
 
   def self.update(user_id, update_expression, update_values, expression_attribute_names=nil)
     resp = db.update_item(
@@ -147,15 +147,23 @@ class User
     ).items.first
   end
 
-  def self.update_all_last_tip_ids
-    User.find_active.items.each do |user|
-      Rails.logger.info "Updating last tip id #{user["TwitterUsername"]}"
-      begin
-        User.find_last_seen_and_update(user)
-      rescue => e
+  # def self.update_all_last_tip_ids
+  #   User.find_active.items.each do |user|
+  #     Rails.logger.info "Updating last tip id #{user["TwitterUsername"]}"
+  #     begin
+  #       User.find_last_seen_and_update(user)
+  #     rescue => e
 
-      end
-    end
+  #     end
+  #   end
+  # end
+
+  def self.turn_off_automatic_tipping(user)
+    self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {automatic_tipping_enabled: false})
+  end
+
+  def self.turn_on_automatic_tipping(user)
+    self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {automatic_tipping_enabled: true})
   end
 
   def self.find_tipper_bot
@@ -167,7 +175,6 @@ class User
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress, ":created_at": Time.now.to_i }
     attributes = attributes.merge(additional_attributes)
     User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
-    find_last_seen_and_update
   end
 
   def self.create_stub_user(additional_attributes={})
@@ -177,7 +184,6 @@ class User
 
     User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
   end
-
 
   def self.update_balance_by_address(address)
     user = User.find_by_address(address)
@@ -206,21 +212,19 @@ class User
     twitter_user = client.user(user["TwitterUsername"])
     attributes = {":profile_image": twitter_user.profile_image_url.to_s, "name": twitter_user.name}
     User.update(user["UserID"], "SET ProfileImage = :profile_image, Name = :name", attributes)
-
   end
 
-  def self.find_last_seen_and_update(user)
-    begin
-      client = User.client_for_user(user)
-      if favorite = client.favorites({screen_name:user["TwitterUsername"], since_id: 9999999999999, count: 1}).first
-        Rails.logger.info "Last favorite id #{favorite.id.to_s}"
-        User.update_last_tip_id(user["UserID"], favorite.id.to_s)
-      end
-    rescue => e
-      nil
-    end
-  end
-
+  # def self.find_last_seen_and_update(user)
+  #   begin
+  #     client = User.client_for_user(user)
+  #     if favorite = client.favorites({screen_name:user["TwitterUsername"], since_id: 9999999999999, count: 1}).first
+  #       Rails.logger.info "Last favorite id #{favorite.id.to_s}"
+  #       User.update_last_tip_id(user["UserID"], favorite.id.to_s)
+  #     end
+  #   rescue => e
+  #     nil
+  #   end
+  # end
 
   def self.userExists?(twitter_id)
     !find(twitter_id).item.nil?

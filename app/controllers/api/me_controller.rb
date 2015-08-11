@@ -45,12 +45,15 @@ module Api
 
     def disconnect
       message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+      User.turn_off_automatic_tipping(user)
       Redis.current.publish("disconnect_user", message)
       render json: {}
     end
 
     def connect
+      fetch_favorites
       message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+      User.turn_on_automatic_tipping(user)
       Redis.current.publish("new_users", message)
       render json: {}
     end
@@ -80,7 +83,6 @@ module Api
 
       render json: user
     end
-
 
     def show
       render json: current_user
@@ -132,8 +134,8 @@ module Api
       }
     end
 
-    def fetch_favorites(user_id)
-      sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId, "UserID":  user_id }.to_json )
+    def fetch_favorites
+      sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId, "UserID":  user["UserID"] }.to_json )
     end
 
     def db

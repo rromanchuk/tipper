@@ -28,7 +28,8 @@ class Favorite
                                     ":from_twitter_id": currentUser["TwitterUserID"],
                                     ":to_twitter_id": tweet.user.id.to_s,
                                     ":to_twitter_profile_image": tweet.user.profile_image_url.to_s,
-                                    ":to_twitter_username": tweet.user.screen_name })
+                                    ":to_twitter_username": tweet.user.screen_name
+                                    })
     resp.attributes
   end
 

@@ -62,7 +62,7 @@ class FavoritesPoller
   end
 
   def start
-    EM.add_periodic_timer(120.0) do
+    EM.add_periodic_timer(rand(60..160)) do
       Rails.logger.info "About to invoke lambda for #{user["TwitterUsername"]}"
       publish
     end
@@ -87,7 +87,7 @@ EM.run {
   # Add existing users.
   # TODO On larger sets of users use EM::Iterator.
   active_users.each do |user|
-    if user['TwitterAuthToken'] && user['TwitterAuthSecret']
+    if user['TwitterAuthToken'] && user['TwitterAuthSecret'] && user['AutomaticTippingEnabled']
       Rails.logger.info "Adding: #{user["TwitterUsername"]}"
       FavoritesPoller.add user['TwitterAuthToken'], user['TwitterAuthSecret']
     else

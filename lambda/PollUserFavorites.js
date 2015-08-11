@@ -29,20 +29,17 @@ exports.handler = function(event, context) {
     access_token_secret: secret
   });
 
-  if (!sinceId) {
-    context.fail('No sinceId given. Bailing...');
-  }
 
-  client.get('favorites/list', {"user_id": twitterId, "count": 20, "since_id": sinceId}, function(error, tweets, response) {
-		console.log("Number of tweets ----->" + tweets.length);
+  client.get('favorites/list', {"user_id": twitterId, "count": 5, "since_id": 99999999999999}, function(error, tweets, response) {
     if(error) {
       console.log(error);
       context.fail('Favorites fetch failed');
     } else {
+      console.log("Number of tweets: " + tweets.length);
       async.eachSeries(tweets, function iterator(item, callback) {
         var params = {};
         var hashRangeKey = {"ObjectID": item["id_str"], "FromUserID": userId};
-        console.log("Found favorites " + item["text"]);
+        console.log("Found favorite: " + item["text"]);
         console.log("Looking for up tip from dynamo");
         console.log(hashRangeKey);
         params.TableName = "TipperTips";
@@ -53,21 +50,20 @@ exports.handler = function(event, context) {
               console.log(err, err.stack); // an error occurred
               context.fail('dynamodb.getItem failed');
           } else {
-              console.log(data.Item)
               if ('Item' in data) {
-                  console.log("Tip already exists...")
-                  callback(null, item);
+                console.log("Tip already exists bailing...")
+                console.log("Found tip: " + data.Item["FromTwitterUsername"] + " -> " + data.Item["ToTwitterUsername"]) 
+                callback(null, item);
               } else {
-                  console.log("New tip found... ")
+                  console.log("Tip not found, must be a new tip, send to SQS queue for processing")
                   var message = { "TweetID": item["id_str"], "FromTwitterID": twitterId, "ToTwitterID": item["user"]["id_str"] };
-                  console.log("About to send sqs");
                   console.log(message);
                   var params = {"QueueUrl": "***REMOVED***", "MessageBody": JSON.stringify(message) };
-                  sqs.sendMessage(params, function(err, data) {
-                     if (err) console.log(err, err.stack); // an error occurred
-                     else     console.log(data);           // successful response
-                     callback(null, item);
-                  });
+                  // sqs.sendMessage(params, function(err, data) {
+                  //    if (err) console.log(err, err.stack); // an error occurred
+                  //    else     console.log(data);           // successful response
+                  //    callback(null, item);
+                  // });
                   callback(null, item);
               }
           }
