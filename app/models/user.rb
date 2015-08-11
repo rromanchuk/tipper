@@ -147,6 +147,13 @@ class User
     ).items.first
   end
 
+  def self.update_all_last_tip_ids
+    User.find_active.each do |user|
+      Rails.logger.info "Updating last tip id #{user["TwitterUsername"]}"
+      User.find_last_seen_and_update(user)
+    end
+  end
+
   def self.find_tipper_bot
     User.find(TIPPER_BOT_USER_ID)
   end
@@ -203,6 +210,7 @@ class User
       config.access_token_secret = user["TwitterAuthSecret"]
     end
     if favorite = client.favorites({screen_name:user["TwitterUsername"], since_id: 9999999999999, count: 1}).first
+      Rails.logger.info "Last favorite id #{favorite.id.to_s}"
       User.update_last_tip_id(user["UserID"], favorite.id.to_s)
     end
   end
