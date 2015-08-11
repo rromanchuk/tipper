@@ -159,11 +159,11 @@ class User
   # end
 
   def self.turn_off_automatic_tipping(user)
-    self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {automatic_tipping_enabled: false})
+    self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {":automatic_tipping_enabled": false})
   end
 
   def self.turn_on_automatic_tipping(user)
-    self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {automatic_tipping_enabled: true})
+    self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {":automatic_tipping_enabled": true})
   end
 
   def self.find_tipper_bot
