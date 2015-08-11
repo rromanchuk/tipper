@@ -148,9 +148,13 @@ class User
   end
 
   def self.update_all_last_tip_ids
-    User.find_active.each do |user|
+    User.find_active.items.each do |user|
       Rails.logger.info "Updating last tip id #{user["TwitterUsername"]}"
-      User.find_last_seen_and_update(user)
+      begin
+        User.find_last_seen_and_update(user)
+      rescue => e
+
+      end
     end
   end
 
@@ -188,14 +192,17 @@ class User
     User.update(user["UserID"], UPDATE_BALANCE_EXPRESSION, attributes)
   end
 
-  def self.update_user_with_twitter(user)
-    client = Twitter::REST::Client.new do |config|
+  def self.client_for_user(user)
+    Twitter::REST::Client.new do |config|
       config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
       config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
       config.access_token        = user["TwitterAuthToken"]
       config.access_token_secret = user["TwitterAuthSecret"]
     end
+  end
 
+  def self.update_user_with_twitter(user)
+    client = User.client_for_user(user)
     twitter_user = client.user(user["TwitterUsername"])
     attributes = {":profile_image": twitter_user.profile_image_url.to_s, "name": twitter_user.name}
     User.update(user["UserID"], "SET ProfileImage = :profile_image, Name = :name", attributes)
@@ -203,15 +210,14 @@ class User
   end
 
   def self.find_last_seen_and_update(user)
-    client = Twitter::REST::Client.new do |config|
-      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
-      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
-      config.access_token        = user["TwitterAuthToken"]
-      config.access_token_secret = user["TwitterAuthSecret"]
-    end
-    if favorite = client.favorites({screen_name:user["TwitterUsername"], since_id: 9999999999999, count: 1}).first
-      Rails.logger.info "Last favorite id #{favorite.id.to_s}"
-      User.update_last_tip_id(user["UserID"], favorite.id.to_s)
+    begin
+      client = User.client_for_user(user)
+      if favorite = client.favorites({screen_name:user["TwitterUsername"], since_id: 9999999999999, count: 1}).first
+        Rails.logger.info "Last favorite id #{favorite.id.to_s}"
+        User.update_last_tip_id(user["UserID"], favorite.id.to_s)
+      end
+    rescue => e
+      nil
     end
   end
 

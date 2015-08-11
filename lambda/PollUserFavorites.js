@@ -29,8 +29,11 @@ exports.handler = function(event, context) {
     access_token_secret: secret
   });
 
+  if (!sinceId) {
+    context.fail('No sinceId given. Bailing...');
+  }
 
-  client.get('favorites/list', {"user_id": twitterId, "count": 2, "since_id": sinceId}, function(error, tweets, response) {
+  client.get('favorites/list', {"user_id": twitterId, "count": 20, "since_id": sinceId}, function(error, tweets, response) {
 		console.log("Number of tweets ----->" + tweets.length);
     if(error) {
       console.log(error);
