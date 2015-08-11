@@ -13,11 +13,18 @@ Eye.application "tipper" do
     stop_signals [:TERM, 5.seconds, :KILL]
   end
 
-  process "favorite_stream_new" do
-    pid_file "tmp/pids/favorite_stream_new.pid"
-    start_command "bundle exec rails r lib/twitter_streamer.rb"
+  # process "favorite_stream_new" do
+  #   pid_file "tmp/pids/favorite_stream_new.pid"
+  #   start_command "bundle exec rails r lib/twitter_streamer.rb"
+  #   daemonize true
+  #   stdall "log/favorite_stream_new.log"
+  # end
+
+  process "favorite_poller" do
+    pid_file "tmp/pids/favorite_poller.pid"
+    start_command "bundle exec rails r lib/twitter_poller.rb"
     daemonize true
-    stdall "log/favorite_stream_new.log"
+    stdall "log/favorite_poller.log"
   end
 
   process "fetch_favorites" do
