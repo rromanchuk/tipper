@@ -62,7 +62,7 @@ class FavoritesPoller
   end
 
   def start
-    EM.add_periodic_timer(rand(60..160)) do
+    EM.add_periodic_timer(rand(100..160)) do
       Rails.logger.info "About to invoke lambda for #{user["TwitterUsername"]}"
       publish
     end
@@ -72,7 +72,7 @@ class FavoritesPoller
     FavoritesPoller.lambda.invoke({
       function_name: "PollUserFavorites", # required
       invocation_type: "Event", # accepts Event, RequestResponse, DryRun
-      payload: {twitter_username: user["TwitterUsername"], since_id: user["LastSeenID"], consumer_key: ENV["TWITTER_CONSUMER_KEY"], consumer_secret: ENV["TWITTER_CONSUMER_SECRET"], token: @oauth_token, secret: @oauth_token_secret, userId: user["UserID"], twitterId: user["TwitterUserID"]}.to_json,
+      payload: {twitter_username: user["TwitterUsername"], consumer_key: ENV["TWITTER_CONSUMER_KEY"], consumer_secret: ENV["TWITTER_CONSUMER_SECRET"], token: @oauth_token, secret: @oauth_token_secret, userId: user["UserID"], twitterId: user["TwitterUserID"]}.to_json,
     })
   end
 

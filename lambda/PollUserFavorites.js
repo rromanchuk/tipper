@@ -20,7 +20,6 @@ exports.handler = function(event, context) {
   var twitterId = event.twitterId;
   var consumerKey = event.consumer_key;
   var consumerSecret = event.consumer_secret;
-  var sinceId = event.since_id;
 
   var client = new Twitter({
     consumer_key: consumerKey,
@@ -59,11 +58,11 @@ exports.handler = function(event, context) {
                   var message = { "TweetID": item["id_str"], "FromTwitterID": twitterId, "ToTwitterID": item["user"]["id_str"] };
                   console.log(message);
                   var params = {"QueueUrl": "***REMOVED***", "MessageBody": JSON.stringify(message) };
-                  // sqs.sendMessage(params, function(err, data) {
-                  //    if (err) console.log(err, err.stack); // an error occurred
-                  //    else     console.log(data);           // successful response
-                  //    callback(null, item);
-                  // });
+                  sqs.sendMessage(params, function(err, data) {
+                     if (err) console.log(err, err.stack); // an error occurred
+                     else     console.log(data);           // successful response
+                     callback(null, item);
+                  });
                   callback(null, item);
               }
           }
