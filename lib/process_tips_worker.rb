@@ -128,6 +128,7 @@ class ProcessTipWorker
 
         tipper_bot.post_tip_on_twitter(fromUser, toUser, txid, tweet.id.to_s)
       else
+        Favorite.update_favorite(tweet, fromUser)
         # Send failure notifications, delete the sqs receipt so we don't keep retrying
         NotifyUser.problem_tipping_user(fromUser)
       end
