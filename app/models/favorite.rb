@@ -24,7 +24,7 @@ class Favorite
                                     ":tweet_json": tweet.to_json,
                                     ":created_at": tweet.created_at.to_i,
                                     ":from_twitter_username": currentUser["TwitterUsername"],
-                                    ":from_twitter_profile_image":  ? currentUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
+                                    ":from_twitter_profile_image":  currentUser["ProfileImage"] ? currentUser["ProfileImage"] : "https://a0.twimg.com/sticky/default_profile_images/default_profile_6_normal.png",
                                     ":from_twitter_id": currentUser["TwitterUserID"],
                                     ":to_twitter_id": tweet.user.id.to_s,
                                     ":to_twitter_profile_image": tweet.user.profile_image_url.to_s,
