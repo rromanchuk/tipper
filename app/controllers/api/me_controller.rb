@@ -135,7 +135,7 @@ module Api
     end
 
     def fetch_favorites
-      sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": twitterId, "UserID":  user["UserID"] }.to_json )
+      Redis.current.publish("fetch_favorites", {"UserID": user["UserID"]}.to_json)
     end
 
     def db

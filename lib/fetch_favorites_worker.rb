@@ -51,73 +51,14 @@ class TwitterFavorites
 end
 
 
-
-class FetchFavoritesWorker
-  def initialize
-    #test_event
-    logger.info "Starting event machine for FetchFavorites"
-    EventMachine.run do
-      EM.add_periodic_timer(25.0) do
-        #logger.info "Ready to process tasks.."
-        messages = receive
-        #logger.info "Found message #{messages}"
-        process_messages(messages)
-      end
-    end
-  end
-
-  def test_event
-    sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": "***REMOVED***" }.to_json )
-    sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": "***REMOVED***" }.to_json )
-    sqs.send_message(queue_url: SqsQueues.fetch_favorites, message_body: { "TwitterUserID": "11916702" }.to_json )
-  end
-
-  def sqs
-    @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-  end
-
-  def queue
-    @queue ||= SqsQueues.fetch_favorites
-  end
-
-  def update_favorites_queue
-    @queue ||= SqsQueues.update_favorites
-  end
-
-  def receive
-    begin
-      resp = sqs.receive_message(
-        queue_url: queue,
-        wait_time_seconds: 20,
-      )
-      messages = resp.messages.map do |message|
-        { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
-      end
-      messages
-    rescue Aws::SQS::Errors::ServiceError => e
-      # rescues all errors returned by Amazon Simple Queue Service
-      Bugsnag.notify(e, {:severity => "error"})
-    end
-  end
-
-  def process_messages(messages)
-    messages.each do |message|
-      receipt_handle = message[:receipt_handle]
-      json = message[:message]
-      begin
-        TwitterFavorites.start_for_user(json["UserID"])
-        delete(receipt_handle)
-      rescue => e
-        Bugsnag.notify(e, {:severity => "error"})
-        delete(receipt_handle)
-      end
-    end
-  end
-
-
-  def delete(handle)
-    resp = sqs.delete_message( queue_url: queue, receipt_handle: handle )
-  end
-end
-
-FetchFavoritesWorker.new
+EM.run {
+  # Subscribe to new users.
+  Rails.logger.info "Subscribing to favorites fetcher"
+  redis = EM::Hiredis.connect(ENV["REDIS_URL"])
+  redis.pubsub.subscribe("fetch_favorites") { |msg|
+    Rails.logger.info "Found fetch favorite event: #{msg}"
+    parsed = JSON.parse(msg)
+    Rails.logger.info "Parsed redis message: #{parsed}"
+    TwitterFavorites.start_for_user(parsed["UserID"])
+  }
+}
