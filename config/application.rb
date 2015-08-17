@@ -35,7 +35,7 @@ module Tipper
 
     config.middleware.insert_before 0, "Rack::Cors" do
       allow do
-        origins 'api.twilio.com'
+        origins 'api.twilio.com', "www.downloadtipper.com", 'downloadtipper.com'
         resource '*', :headers => :any, :methods => [:get, :post, :options]
       end
     end
