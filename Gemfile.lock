@@ -200,6 +200,7 @@ GEM
     puma (2.11.3)
       rack (>= 1.1, < 2.0)
     rack (1.6.4)
+    rack-cors (0.4.0)
     rack-test (0.6.3)
       rack (>= 1.0)
     rails (4.2.2)
@@ -347,6 +348,7 @@ DEPENDENCIES
   newrelic_rpm
   premailer-rails
   puma
+  rack-cors
   rails (= 4.2.2)
   redis
   remote_syslog_logger
@@ -362,3 +364,6 @@ DEPENDENCIES
   twitter
   uglifier (>= 1.3.0)
   web-console (~> 2.0)
+
+BUNDLED WITH
+   1.10.6

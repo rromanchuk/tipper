@@ -41,6 +41,7 @@ gem "aws-ses", :require => 'aws/ses'
 gem 'premailer-rails'
 
 gem "redis"
+gem 'rack-cors', :require => 'rack/cors'
 
 gem "tweetstream"
 gem "em-hiredis"
