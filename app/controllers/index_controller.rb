@@ -8,7 +8,7 @@ class IndexController < ApplicationController
     if auth_hash
       redirect_to "/?code=#{auth_hash[:extra][:access_token]}"
     else
-      redirect_to "/"
+      redirect_to "https://www.downloadtipper.com"
     end
   end
 
