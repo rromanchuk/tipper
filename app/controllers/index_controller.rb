@@ -5,7 +5,11 @@ class IndexController < ApplicationController
   end
 
   def session
-    redirect_to "/?code=#{auth_hash[:extra][:access_token]}"
+    if auth_hash
+      redirect_to "/?code=#{auth_hash[:extra][:access_token]}"
+    else
+      redirect_to "/"
+    end
   end
 
 
