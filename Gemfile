@@ -45,6 +45,8 @@ gem 'rack-cors', :require => 'rack/cors'
 
 gem "tweetstream"
 gem "em-hiredis"
+
+gem 'omniauth-twitter'
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
