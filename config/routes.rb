@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get '/auth/:provider/callback', to: 'index#session'
+
   namespace :api, path: '/', defaults: { format: 'json' } do
     get 'settings' => 'settings#index'
     post 'register' => 'me#register'
