@@ -1,7 +1,7 @@
 require 'active_model'
 
 class Me
-  include ActiveModel::Serialization
+  include ActiveModel::Serializers
   include ActiveModel::Model
   
   def initialize(user_from_dynamo={})
