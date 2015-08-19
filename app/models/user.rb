@@ -1,5 +1,5 @@
 class User
-  include ActiveModel::Serializers::JSON
+  #include ActiveModel::Serializers::JSON
   
   attr_accessor :user_id, :bitcoin_address, :twitter_user_id, :twitter_username, :profile_image
 
