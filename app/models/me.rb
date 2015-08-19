@@ -12,8 +12,16 @@ class Me
     @profile_image = user_from_dynamo["ProfileImage"]
   end
 
-  def attributes
-    {'userId': user_id, 'twitterUserId': twitter_user_id, 'twitterUsername': twitter_username, 'bitcoinAddress': bitcoin_address, 'profileImage': profile_image}
+  def as_json(options={})
+    camelize_keys(super(options))
+  end
+
+  private
+  def camelize_keys(hash)
+    values = hash.map do |key, value|
+      [key.camelize(:lower), value]
+    end
+    Hash[values]
   end
 
 end
