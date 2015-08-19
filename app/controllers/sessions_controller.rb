@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   def create
-    #redirect_to '/'
+    redirect_to '/'
   end
 
   protected
