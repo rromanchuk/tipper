@@ -14,7 +14,7 @@ class User
   end
 
   def attributes
-    {'me': {'userId': user_id, 'twitterUserId': twitter_user_id, 'twitterUsername': twitter_username, 'bitcoinAddress': bitcoin_address, 'profileImage': profile_image}}
+    {'userId': user_id, 'twitterUserId': twitter_user_id, 'twitterUsername': twitter_username, 'bitcoinAddress': bitcoin_address, 'profileImage': profile_image}
   end
   
   TABLE_NAME = "TipperUsers"
