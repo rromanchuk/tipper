@@ -7,7 +7,7 @@ class SessionsController < ApplicationController
   protected
 
   def find_or_create
-    Rails.logger.info "Find or create for twitterID: #{twitterId}...."
+    Rails.logger.info "Find or create for twitterID: #{twitter_id}...."
 
     user = User.find_by_twitter_id(twitter_id)
 
@@ -66,11 +66,11 @@ class SessionsController < ApplicationController
   end
 
   def attributes_to_update
-    {":twitter_auth_token": twitter_auth_token, 
-      ":twitter_auth_secret": twitter_auth_secret, 
-      ":is_active": "X", 
+    {":twitter_auth_token": twitter_auth_token,
+      ":twitter_auth_secret": twitter_auth_secret,
+      ":is_active": "X",
       ":profile_image": profile_image,
-      ":twitter_user_id": twitter_id, 
+      ":twitter_user_id": twitter_id,
       ":twitter_username": twitter_username
     }
   end
