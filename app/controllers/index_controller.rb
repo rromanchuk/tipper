@@ -4,13 +4,13 @@ class IndexController < ApplicationController
     render text: Redis.current.get(rev)
   end
 
-  def session
-    if auth_hash
-      redirect_to "/?code=#{auth_hash[:extra][:access_token]}"
-    else
-      redirect_to "https://www.downloadtipper.com"
-    end
-  end
+  # def session
+  #   if auth_hash
+  #     redirect_to "/?code=#{auth_hash[:extra][:access_token]}"
+  #   else
+  #     redirect_to "https://www.downloadtipper.com"
+  #   end
+  # end
 
 
   protected
