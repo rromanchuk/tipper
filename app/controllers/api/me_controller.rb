@@ -79,13 +79,12 @@ module Api
       Redis.current.publish("new_users", message)
       Rails.logger.info "User: #{user.to_yaml}"
 
-      Rails.logger.info "User: #{user.to_yaml}"
 
       render json: user
     end
 
     def show
-      render json: current_user
+      render json: User.new(current_user)
     end
 
     private
