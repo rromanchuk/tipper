@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   def create
-    Rails.logger.info auth_hash[:provider].to_yaml
-    redirect_to "/?code=#{auth_hash[:provider][:token]}"
+    Rails.logger.info auth_hash.to_json
+    redirect_to "/?code=#{auth_hash[:token]}"
   end
 
   protected
