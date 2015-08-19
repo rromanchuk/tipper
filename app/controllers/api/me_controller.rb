@@ -84,7 +84,7 @@ module Api
     end
 
     def show
-      render json: Me.new(current_user)
+      render json: Me.new(current_user), root: true
     end
 
     private
