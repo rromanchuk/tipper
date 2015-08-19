@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
   def create
+    Rails.logger.info auth_hash.to_yaml
     redirect_to '/'
   end
 
