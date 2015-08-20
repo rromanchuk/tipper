@@ -62,7 +62,7 @@ class FavoritesPoller
   end
 
   def start
-    EM.add_periodic_timer(rand(100..160)) do
+    @timer = EM.add_periodic_timer(rand(100..160)) do
       Rails.logger.info "About to invoke lambda for #{user["TwitterUsername"]}"
       publish
     end
@@ -77,7 +77,7 @@ class FavoritesPoller
   end
 
   def stop
-    client.stop
+    @timer.cancel
   end
 end
 
