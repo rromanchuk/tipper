@@ -6,21 +6,4 @@ class IndexController < ApplicationController
     index_text = index_text.gsub('CSRF-TOKEN', form_authenticity_token)
     render text: index_text
   end
-
-  # def session
-  #   if auth_hash
-  #     redirect_to "/?code=#{auth_hash[:extra][:access_token]}"
-  #   else
-  #     redirect_to "https://www.downloadtipper.com"
-  #   end
-  # end
-
-
-  protected
-
-  def auth_hash
-    request.env['omniauth.auth']
-  end
-
-
 end

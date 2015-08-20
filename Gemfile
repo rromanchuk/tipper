@@ -39,7 +39,7 @@ gem 'foreman'
 gem 'remote_syslog_logger'
 gem "aws-ses", :require => 'aws/ses'
 gem 'premailer-rails'
-
+gem 'twilio-ruby'
 gem "redis"
 gem 'rack-cors', :require => 'rack/cors'
 

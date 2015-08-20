@@ -10,6 +10,7 @@ Rails.application.routes.draw do
     post 'connect' => 'me#connect'
 
     resource :me,                  only: [:create, :show, :index], controller: 'me'
+    resource :tip, only: [:show]
     resources :charges, only: [:create]
     resources :cognito, only: [:create]
     resources :address, only: [:create]
@@ -51,7 +52,7 @@ Rails.application.routes.draw do
 
   get '/privacy' => 'index#index'
   get '/login'   => 'index#index'
-
+  post '/logout' => 'inex#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

@@ -1,5 +1,6 @@
 class Tip
   TABLE_NAME = "TipperTips"
+  TXID_INDEX = "txid-TippedAt-index"
   UPDATE_EXPRESSION = "SET " +
                               "Provider = :provider, " +
                               "TweetID = :tweet_id, " +
@@ -88,6 +89,23 @@ class Tip
           "FromUserID" => from_id
         },
       ).item
+  end
+
+  def self.find_by_txid(txid)
+    resp = db.query(
+      # required
+      table_name: TABLE_NAME,
+      index_name: TXID_INDEX,
+      key_conditions: {
+        "txid" => {
+          attribute_value_list: [
+            txid, #<Hash,Array,String,Numeric,Boolean,nil,IO,Set>,
+          ],
+        # required
+          comparison_operator: "EQ",
+        },
+      },
+    ).items.first
   end
 
   def self.db
