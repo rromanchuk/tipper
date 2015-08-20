@@ -21,6 +21,6 @@ class SmsController < ApplicationController
   end
 
   def to
-    params.require(:to)
+    params.require(:sms).permit(:to)
   end
 end
