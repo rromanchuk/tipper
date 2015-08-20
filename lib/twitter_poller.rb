@@ -87,9 +87,12 @@ EM.run {
   # Add existing users.
   # TODO On larger sets of users use EM::Iterator.
   active_users.each do |user|
-    if user['TwitterAuthToken'] && user['TwitterAuthSecret'] && user['AutomaticTippingEnabled']
+    Rails.logger.info "TwitterAuthToken: #{user['TwitterAuthToken']}, TwitterAuthSecret: #{user['TwitterAuthSecret']}, AutomaticTippingEnabled: #{user['AutomaticTippingEnabled']}"
+    if user['TwitterAuthToken'] && user['TwitterAuthSecret'] && user['AutomaticTippingEnabled'] == true
       Rails.logger.info "Adding: #{user["TwitterUsername"]}"
       FavoritesPoller.add user['TwitterAuthToken'], user['TwitterAuthSecret']
+    elsif user['AutomaticTippingEnabled']
+      Rails.logger.info "User has automatic tipping disabled"
     else
       Rails.logger.info "Skipping (no valid oauth in db): #{user["TwitterUsername"]}"
       NotifyUser.auth_token_expired(user)
