@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#create'
 
   namespace :api, path: '/', defaults: { format: 'json' } do
-    get 'settings' => 'settings#index'
+    get '/settings' => 'settings#index'
+    get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
     post 'connect' => 'me#connect'
@@ -48,11 +49,14 @@ Rails.application.routes.draw do
   end
 
 
+  get '/privacy' => 'index#index'
+  get '/login'   => 'index#index'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  match "*path", to: "index#index", via: :all
+  #match "*path", to: "index#index", via: :all
+  
   root 'index#index'
 end
