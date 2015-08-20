@@ -49,7 +49,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/devel/emails"
   end
 
-  post '/sms'    => 'sms#send'
+  post '/sms'    => 'sms#download'
   get '/privacy' => 'index#index'
   get '/login'   => 'index#index'
   post '/logout' => 'inex#index'

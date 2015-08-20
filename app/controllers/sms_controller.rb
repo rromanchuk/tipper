@@ -1,7 +1,7 @@
 require 'twilio-ruby'
 class SmsController < ApplicationController
   
-  def send
+  def download
     twilio.messages.create(
       from: '+16604198197',
       to: to,
