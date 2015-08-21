@@ -49,10 +49,11 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/devel/emails"
   end
 
-  post '/sms'    => 'sms#download'
-  get '/privacy' => 'index#index'
-  get '/login'   => 'index#index'
-  post '/logout' => 'inex#index'
+  post '/sms'           => 'sms#download'
+  get '/tip/:tip_id'    => 'index#index'
+  get '/privacy'        => 'index#index'
+  get '/login'          => 'index#index'
+  post '/logout'        => 'inex#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
