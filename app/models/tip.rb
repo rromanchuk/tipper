@@ -3,7 +3,7 @@ require 'active_model'
 class Tip
   include ActiveModel::Serializers
   include ActiveModel::Model
-  
+
   TABLE_NAME = "TipperTips"
   TXID_INDEX = "txid-TippedAt-index"
   UPDATE_EXPRESSION = "SET " +
@@ -19,12 +19,15 @@ class Tip
                               "ToTwitterProfileImage = :to_twitter_profile_image"
 
   def initialize(tip_from_dynamo)
-    @id = tip_from_dynamo["txid"]
-    @txid = tip_from_dynamo["txid"]
-    @from_twitter_id = tip_from_dynamo["FromTwitterID"]
-    @to_twitter_id = tip_from_dynamo["ToTwitterID"]
-    @from_twitter_username = tip_from_dynamo["FromTwitterUsername"]
-    @to_twitter_username = tip_from_dynamo["ToTwitterUsername"]
+    @id                         = tip_from_dynamo["txid"]
+    @txid                       = tip_from_dynamo["txid"]
+    @from_twitter_id            = tip_from_dynamo["FromTwitterID"]
+    @to_twitter_id              = tip_from_dynamo["ToTwitterID"]
+    @from_twitter_username      = tip_from_dynamo["FromTwitterUsername"]
+    @to_twitter_username        = tip_from_dynamo["ToTwitterUsername"]
+    @to_twitter_profile_image   = tip_from_dynamo["ToTwitterProfileImage"]
+    @from_twitter_profile_image = tip_from_dynamo["FromTwitterProfileImage"]
+    @object_id                  = tip_from_dynamo["ObjectID"]
   end
 
   def as_json(options={})
