@@ -46,7 +46,7 @@ class SessionsController < ApplicationController
   end
 
   def twitter_auth_token
-    auth_hash[:credentials][:token]
+    auth_hash[:creden tials][:token]
   end
 
   def twitter_auth_secret
