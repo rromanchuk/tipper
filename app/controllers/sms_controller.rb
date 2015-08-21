@@ -4,7 +4,7 @@ class SmsController < ApplicationController
   def download
     twilio.messages.create(
       from: '+16604198197',
-      to: to,
+      to: E164.normalize(to),
       body: body
     )
     render json: {'sms': {body: body, id: to, to: to, from: from}}
