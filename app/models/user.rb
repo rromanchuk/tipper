@@ -6,7 +6,7 @@ class User
 
   TABLE_NAME = "TipperUsers"
   TIPPER_BOT_USER_ID = "98c95beb-0238-425e-b644-317efb4b22a9"
-
+  DEFAULT_PHOTO = "https://abs.twimg.com/sticky/default_profile_images/default_profile_6_normal.png"
   # Secondary indexes
   INDEX_BITCOIN_ADDRESS = "BitcoinAddress-index"
   INDEX_IS_ACTIVE = "IsActive-CreatedAt-index"
