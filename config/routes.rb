@@ -9,12 +9,12 @@ Rails.application.routes.draw do
     delete 'disconnect' => 'me#disconnect'
     post 'connect' => 'me#connect'
 
-    resource :me,                  only: [:create, :show, :index], controller: 'me'
-    resource :tip, only: [:show]
-    resources :charges, only: [:create]
-    resources :cognito, only: [:create]
-    resources :address, only: [:create]
-    resources :user, only: [:show]
+    resource :me,                   only: [:create, :show, :index], controller: 'me'
+    resources :tips,                only: [:show]
+    resources :charges,             only: [:create]
+    resources :cognito,             only: [:create]
+    resources :address,             only: [:create]
+    resources :user,                only: [:show]
   end
 
 
