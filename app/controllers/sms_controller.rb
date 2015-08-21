@@ -3,13 +3,13 @@ require 'e164'
 class SmsController < ApplicationController
   
   def download
-    to_number = toParam
+    to_number = params[:sms][:to]
     twilio.messages.create(
       from: '+16604198197',
       to: E164.normalize(to_number),
       body: body
     )
-    render json: {'sms': {body: body, id: to, to: to, from: from}}
+    render json: {'sms': {body: body, id: to_number, to: to_number, from: from}}
   end
 
   private
@@ -20,9 +20,5 @@ class SmsController < ApplicationController
 
   def twilio
     @twilio ||= Twilio::REST::Client.new ENV["TWILIO_ACCOUNT_SID"], ENV["TWILIO_AUTH_TOKEN"]
-  end
-
-  def toParam
-    params.require(:sms).permit(:to)
   end
 end
