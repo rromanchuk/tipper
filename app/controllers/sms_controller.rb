@@ -3,10 +3,10 @@ require 'e164'
 class SmsController < ApplicationController
   
   def download
-    to_number = params[:sms][:to]
+    to_number = Phony.normalize(params[:sms][:to])
     twilio.messages.create(
       from: '+16604198197',
-      to: E164.normalize(to_number),
+      to: to_number,
       body: body
     )
     render json: {'sms': {body: body, id: to_number, to: to_number, from: from}}

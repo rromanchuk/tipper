@@ -40,7 +40,7 @@ gem 'remote_syslog_logger'
 gem "aws-ses", :require => 'aws/ses'
 gem 'premailer-rails'
 
-gem 'e164'
+gem 'phony'
 gem 'twilio-ruby'
 
 gem "redis"
