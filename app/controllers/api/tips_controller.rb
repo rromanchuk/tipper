@@ -3,7 +3,7 @@ module Api
     skip_before_filter :require_user!
 
     def show
-      render json: Tip.new(tip)
+      render json: {tip: Tip.new(tip)}
     end
 
     def tip
