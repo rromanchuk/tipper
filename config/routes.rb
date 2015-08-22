@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
     resource :me,                   only: [:create, :show, :index], controller: 'me'
     resources :tips,                only: [:show]
+    resources :transactions,        only: [:show]
     resources :charges,             only: [:create]
     resources :cognito,             only: [:create]
     resources :address,             only: [:create]

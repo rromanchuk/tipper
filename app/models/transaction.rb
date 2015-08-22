@@ -1,4 +1,9 @@
+require 'active_model'
+
 class Transaction
+  include ActiveModel::Serializers
+  include ActiveModel::Model
+
   TABLE_NAME = "TipperBitcoinTransactions"
   UPDATE_EXPRESSION = "SET " +
                       "amount = :amount, " +
@@ -10,6 +15,26 @@ class Transaction
                       "details = :details"
 
   RESERVED_ATTRIBUTES = {"#T": "time"}
+
+  def initialize(transaction)
+    @id                         = transaction.hash
+    @txid                       = transaction.hash
+    @relayed_by                 = transaction.relayed_by
+    @size                       = transaction.size
+    @time                       = transaction.time
+  end
+
+  def as_json(options={})
+    camelize_keys(super(options))
+  end
+
+  def camelize_keys(hash)
+    values = hash.map do |key, value|
+      [key.camelize(:lower), value]
+    end
+    Hash[values]
+  end
+
 
   def self.create(transaction, fromUser=nil, toUser=nil)
 
