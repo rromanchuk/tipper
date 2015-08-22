@@ -22,6 +22,7 @@ class Transaction
     @relayed_by                 = transaction.relayed_by
     @size                       = transaction.size
     @time                       = transaction.time
+    @tip_id                     = transaction.hash
   end
 
   def as_json(options={})

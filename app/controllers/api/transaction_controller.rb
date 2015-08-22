@@ -6,6 +6,7 @@ module Api
       render json: {transaction: Transaction.new(transaction)}
     end
 
+    protected
     def transaction
       @transaction ||= Blockchain::get_tx(params[:id])
     end
