@@ -29,7 +29,7 @@ class Tip
     @to_twitter_profile_image   = tip_from_dynamo["ToTwitterProfileImage"]
     @from_twitter_profile_image = tip_from_dynamo["FromTwitterProfileImage"]
     @object_id                  = tip_from_dynamo["ObjectID"]
-    @transaction_id             = tip_from_dynamo["txid"]
+    @transaction                = tip_from_dynamo["txid"]
   end
 
   def as_json(options={})
