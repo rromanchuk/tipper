@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     resources :charges,             only: [:create]
     resources :cognito,             only: [:create]
     resources :address,             only: [:create]
-    resources :user,                only: [:show]
+    resources :users,               only: [:show]
   end
 
 
