@@ -71,7 +71,7 @@ class Transaction
     transaction = B.client.gettransaction(txid)
     trasaction_from_blockchain = Blockchain::get_tx(txid) # Backfill more info
   
-    update_expression = update_expression + ", relayed_by = :relayed_by, size = :size, inputs = :inputs, outputs = :outputs"
+    update_expression = UPDATE_EXPRESSION + ", relayed_by = :relayed_by, size = :size, inputs = :inputs, outputs = :outputs"
     attribute_values = {":amount": transaction["amount"],
                         ":tip_amount": B::TIP_AMOUNT,
                         ":fee": transaction["fee"],
