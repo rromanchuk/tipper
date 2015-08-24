@@ -29,7 +29,7 @@ class Tip
     @transaction                = tip_from_dynamo["txid"]
     @from_user                  = tip_from_dynamo["FromUserID"]
     @to_user                    = tip_from_dynamo["ToUserID"]
-    @tipped_at                  = Time.at(tip_from_dynamo["TippedAt"].to_s).to_datetime.iso8601
+    @tipped_at                  = Time.at(tip_from_dynamo["TippedAt"]).to_datetime.iso8601
   end
 
   def self.all
