@@ -20,4 +20,12 @@ class Settings
     ).item
   end
 
+  def self.db
+    @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+  
+  def db
+    Settings.db
+  end
+
 end
