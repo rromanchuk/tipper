@@ -24,6 +24,10 @@ class Transaction
     @confirmations              = transaction["confirmations"]
     @tip                        = transaction["txid"]
     @time                       = Time.at(transaction["time"]).to_datetime.iso8601
+    @relayed_by                 = transaction["relayed_by"]
+    @size                       = transaction["size"]
+    @inputs                     = transaction["inputs"]
+    @outputs                    = transaction["outputs"]
   end
 
   def self.create(transaction, fromUser=nil, toUser=nil)
@@ -65,13 +69,20 @@ class Transaction
 
   def self.update_transaction(txid)
     transaction = B.client.gettransaction(txid)
+    trasaction_from_blockchain = Blockchain::get_tx(txid) # Backfill more info
+  
+    update_expression = update_expression + ", relayed_by = :relayed_by, size = :size, inputs = :inputs, outputs = :outputs"
     attribute_values = {":amount": transaction["amount"],
                         ":tip_amount": B::TIP_AMOUNT,
                         ":fee": transaction["fee"],
                         ":time": transaction["time"],
                         ":confirmations": transaction["confirmations"],
                         ":category": get_category_type(transaction),
-                        ":details": transaction["details"].to_json}
+                        ":details": transaction["details"].to_json,
+                        ":relayed_by": trasaction_from_blockchain.relayed_by,
+                        ":size": trasaction_from_blockchain.size,
+                        ":inputs": trasaction_from_blockchain.inputs.to_json,
+                        ":outputs": trasaction_from_blockchain.outputs.to_json}
 
     resp = db.update_item(
       table_name: TABLE_NAME,
@@ -79,7 +90,7 @@ class Transaction
         "txid" => txid,
       },
       return_values: "ALL_NEW", 
-      update_expression: UPDATE_EXPRESSION,
+      update_expression: update_expression,
       expression_attribute_values: attribute_values,
       expression_attribute_names: RESERVED_ATTRIBUTES
     )
