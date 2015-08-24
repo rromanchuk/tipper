@@ -51,7 +51,7 @@ Rails.application.routes.draw do
   end
 
   post '/sms'           => 'sms#download'
-  get '/tip/:tip_id'    => 'index#index'
+  get '/tip/:tip_id'    => 'index#index', as: 'tip'
   get '/privacy'        => 'index#index'
   get '/login'          => 'index#index'
   post '/logout'        => 'inex#index'
