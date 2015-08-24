@@ -23,6 +23,7 @@ class Transaction
     @tip_amount                 = transaction["tip_amount"]
     @confirmations              = transaction["confirmations"]
     @tip                        = transaction["txid"]
+    @time                       = Time.at(transaction["time"]).to_datetime.iso8601
   end
 
   def self.create(transaction, fromUser=nil, toUser=nil)
