@@ -25,15 +25,7 @@ class Transaction
 
   def self.create(transaction, fromUser=nil, toUser=nil)
 
-    category = nil
-    if transaction["amount"] == 0
-      category = "internal_tip"
-    elsif transaction["amount"] > 0
-      category = "external_deposit"
-    elsif transaction["amount"] < 0
-      category = "external_withdrawal"
-    end
-
+    category = get_category_type(transaction)
 
     update_expression = UPDATE_EXPRESSION
     attribute_values = {":amount": transaction["amount"],
@@ -75,7 +67,7 @@ class Transaction
                         ":fee": transaction["fee"],
                         ":time": transaction["time"],
                         ":confirmations": transaction["confirmations"],
-                        ":category": category,
+                        ":category": get_category_type(transaction),
                         ":details": transaction["details"].to_json}
 
     resp = db.update_item(
@@ -90,6 +82,18 @@ class Transaction
     )
 
     resp.attributes
+  end
+
+  def self.get_category_type(transaction)
+    category = nil
+    if transaction["amount"] == 0
+      category = "internal_tip"
+    elsif transaction["amount"] > 0
+      category = "external_deposit"
+    elsif transaction["amount"] < 0
+      category = "external_withdrawal"
+    end
+    category
   end
 
 
