@@ -1,8 +1,6 @@
-require 'active_model'
 
 class Transaction
-  include ActiveModel::Serializers
-  include ActiveModel::Model
+  include EmberModel
 
   TABLE_NAME = "TipperBitcoinTransactions"
   UPDATE_EXPRESSION = "SET " +
@@ -24,18 +22,6 @@ class Transaction
     @time                       = transaction.time
     @tip                        = transaction.hash
   end
-
-  def as_json(options={})
-    camelize_keys(super(options))
-  end
-
-  def camelize_keys(hash)
-    values = hash.map do |key, value|
-      [key.camelize(:lower), value]
-    end
-    Hash[values]
-  end
-
 
   def self.create(transaction, fromUser=nil, toUser=nil)
 

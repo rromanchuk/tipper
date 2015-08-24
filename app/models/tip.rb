@@ -1,8 +1,5 @@
-require 'active_model'
-
 class Tip
-  include ActiveModel::Serializers
-  include ActiveModel::Model
+  include EmberModel
 
   TABLE_NAME = "TipperTips"
   TXID_INDEX = "txid-TippedAt-index"
@@ -30,10 +27,6 @@ class Tip
     @from_twitter_profile_image = tip_from_dynamo["FromTwitterProfileImage"]
     @object_id                  = tip_from_dynamo["ObjectID"]
     @transaction                = tip_from_dynamo["txid"]
-  end
-
-  def as_json(options={})
-    camelize_keys(super(options))
   end
 
   def self.all
@@ -138,13 +131,4 @@ class Tip
   def db
     Tip.db
   end
-
-  private
-  def camelize_keys(hash)
-    values = hash.map do |key, value|
-      [key.camelize(:lower), value]
-    end
-    Hash[values]
-  end
-
 end

@@ -1,9 +1,6 @@
-require 'active_model'
-
 class Me
-  include ActiveModel::Serializers
-  include ActiveModel::Model
-  
+  include EmberModel
+
   def initialize(user_from_dynamo={})
     @id = user_from_dynamo["UserID"]
     @bitcoin_address = user_from_dynamo["BitcoinAddress"]
@@ -11,18 +8,6 @@ class Me
     @twitter_username = user_from_dynamo["TwitterUsername"]
     @profile_image = user_from_dynamo["ProfileImage"]
     @user_id = user_from_dynamo["UserID"]
-  end
-
-  def as_json(options={})
-    camelize_keys(super(options))
-  end
-
-  private
-  def camelize_keys(hash)
-    values = hash.map do |key, value|
-      [key.camelize(:lower), value]
-    end
-    Hash[values]
   end
 
 end
