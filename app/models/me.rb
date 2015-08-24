@@ -8,6 +8,7 @@ class Me
     @twitter_username = user_from_dynamo["TwitterUsername"]
     @profile_image = user_from_dynamo["ProfileImage"]
     @user_id = user_from_dynamo["UserID"]
+    @bitcoin_balance_btc = user_from_dynamo["BitcoinBalanceBTC"]
   end
 
 end
