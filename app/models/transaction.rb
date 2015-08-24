@@ -21,6 +21,7 @@ class Transaction
     @fee                        = transaction["fee"]
     @txid                       = transaction["txid"]
     @tip_amount                 = transaction["tip_amount"]
+    @confirmations              = transaction["confirmations"]
     @tip                        = transaction["txid"]
   end
 
