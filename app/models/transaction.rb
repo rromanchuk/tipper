@@ -21,6 +21,7 @@ class Transaction
     @fee                        = transaction["fee"]
     @txid                       = transaction["txid"]
     @tip_amount                 = transaction["tip_amount"]
+    @tip                        = transaction["txid"]
   end
 
   def self.create(transaction, fromUser=nil, toUser=nil)
