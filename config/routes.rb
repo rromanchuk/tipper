@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   get '/auth/:provider/callback', to: 'sessions#create'
 
   namespace :api, path: '/', defaults: { format: 'json' } do
-    get '/settings' => 'settings#index'
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
@@ -16,6 +15,7 @@ Rails.application.routes.draw do
     resources :cognito,             only: [:create]
     resources :address,             only: [:create]
     resources :users,               only: [:show]
+    resources :settings,            only: [:show, :index]
   end
 
 

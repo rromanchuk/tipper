@@ -40,18 +40,6 @@ class Tip
   end
 
   def self.active
-    # resp = client.query({
-    #   table_name: "TableName", # required
-    #   index_name: "IndexName",
-    #   conditional_operator: "AND", # accepts AND, OR
-    #   scan_index_forward: true,
-    #   key_condition_expression: " = :hashval AND rangeAttributeName = :rangeval",
-
-    #   expression_attribute_values: {
-    #     "ExpressionAttributeValueVariable" => "value", # value <Hash,Array,String,Numeric,Boolean,IO,Set,nil>
-    #   },
-    # })
-
     resp = db.query(
       # required
       table_name: TABLE_NAME,
@@ -94,7 +82,6 @@ class Tip
 
     User.update_balance(fromUser)
     User.update_balance(toUser)
-    #User.update_last_tip_id(fromUser["UserID"], tweet.id.to_s)
     resp.attributes
   end
 
