@@ -15,12 +15,12 @@ class Transaction
   RESERVED_ATTRIBUTES = {"#T": "time"}
 
   def initialize(transaction)
-    @id                         = transaction.hash
-    @txid                       = transaction.hash
-    @relayed_by                 = transaction.relayed_by
-    @size                       = transaction.size
-    @time                       = transaction.time
-    @tip                        = transaction.hash
+    @id                         = transaction["txid"]
+    @amount                     = transaction["amount"]
+    @details                    = transaction["details"]
+    @fee                        = transaction["fee"]
+    @txid                       = transaction["txid"]
+    @tip_amount                 = transaction["tip_amount"]
   end
 
   def self.create(transaction, fromUser=nil, toUser=nil)
@@ -68,12 +68,45 @@ class Transaction
     resp.attributes
   end
 
+  def self.update_transaction(txid)
+    transaction = B.client.gettransaction(txid)
+    attribute_values = {":amount": transaction["amount"],
+                        ":tip_amount": B::TIP_AMOUNT,
+                        ":fee": transaction["fee"],
+                        ":time": transaction["time"],
+                        ":confirmations": transaction["confirmations"],
+                        ":category": category,
+                        ":details": transaction["details"].to_json}
+
+    resp = db.update_item(
+      table_name: TABLE_NAME,
+      key: {
+        "txid" => txid,
+      },
+      return_values: "ALL_NEW", 
+      update_expression: UPDATE_EXPRESSION,
+      expression_attribute_values: attribute_values,
+      expression_attribute_names: RESERVED_ATTRIBUTES
+    )
+
+    resp.attributes
+  end
+
 
   def self.all
     resp = db.scan(
       # required
       table_name: TABLE_NAME,
     )
+  end
+
+  def self.find(txid)
+    db.get_item(
+      table_name: TABLE_NAME,
+      key: {
+        "txid" => txid,
+      },
+    ).item
   end
 
   def self.db

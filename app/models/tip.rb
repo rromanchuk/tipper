@@ -27,8 +27,9 @@ class Tip
     @from_twitter_profile_image = tip_from_dynamo["FromTwitterProfileImage"]
     @object_id                  = tip_from_dynamo["ObjectID"]
     @transaction                = tip_from_dynamo["txid"]
-    @fromUser                   = tip_from_dynamo["FromUserID"]
-    @toUser                     = tip_from_dynamo["ToUserID"]
+    @from_user                  = tip_from_dynamo["FromUserID"]
+    @to_user                    = tip_from_dynamo["ToUserID"]
+    @tipped_at                  = tip_from_dynamo["TippedAt"]
   end
 
   def self.all

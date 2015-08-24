@@ -8,7 +8,7 @@ module Api
 
     protected
     def transaction
-      @transaction ||= Blockchain::get_tx(params[:id])
+      @transaction ||= Transaction.update_transaction(params[:id])
     end
   end
 end
