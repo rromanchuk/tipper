@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
     Redis.current.publish("new_users", message)
     Rails.logger.info "User: #{user.to_yaml}"
 
-    resp = client.get_id({
+    resp = identity.get_id({
       account_id: "080383581145", # required
       identity_pool_id: ENV["AWS_COGNITO_POOL"],
       logins: {
