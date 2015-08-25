@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   def create
     Rails.logger.info auth_hash.to_json
     find_or_create
-    redirect_to "/?code=#{auth_hash[:credentials][:token]}&uid=#{twitter_id}"
+    redirect_to "https://www.downloadtipper.com/?code=#{auth_hash[:credentials][:token]}&uid=#{twitter_id}"
   end
 
   protected
