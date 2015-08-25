@@ -34,9 +34,10 @@ class TwitterFavorites
     user = User.find(user_id)
     if user["TwittterDeepCrawledAt"]
       logger.info "Skipping deep crawl. Already performed on #{user["TwittterDeepCrawledAt"]}"
+      return
     end
     User.deep_crawl_started(user)
-    
+
     f = TwitterFavorites.new
     f.client.access_token        = user["TwitterAuthToken"]
     f.client.access_token_secret = user["TwitterAuthSecret"]
