@@ -11,24 +11,10 @@ class SessionsController < ApplicationController
     Rails.logger.info "Find or create for twitterID: #{twitter_id}...."
 
     user = User.find_by_twitter_id(twitter_id)
-    cognito_resp = nil
     unless user
       user = User.create_user(attributes_to_update)
-      cognito_resp = identity.get_id({
-        account_id: "080383581145", # required
-        identity_pool_id: ENV["AWS_COGNITO_POOL"],
-        logins: {
-          "api.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
-        },
-      })
       NotifyAdmin.new_user(user["TwitterUsername"])
     else
-      cognito_resp = identity.get_open_id_token({
-        identity_id: user["CognitoIdentity"], # required
-        logins: {
-          "api.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
-        },
-      })
       Rails.logger.info "Found user:"
       Rails.logger.info user.to_yaml
       user = User.update(user["UserID"], User::UPDATE_EXPRESSION, attributes_to_update)
@@ -39,10 +25,27 @@ class SessionsController < ApplicationController
     Redis.current.publish("new_users", message)
     Rails.logger.info "User: #{user.to_yaml}"
 
-    
-
-    user = User.update(user["UserID"], User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": cognito_resp.token, ":cognito_identity": cognito_resp.identity_id} )
+    user = User.update(user["UserID"], User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": cognito_credentials.token, ":cognito_identity": cognito_credentials.identity_id} )
     Rails.logger.info "User: #{user.to_yaml}"
+  end
+
+  def cognito_credentials
+    @cognito_credentials ||= begin
+      identity_id = identity.get_id({
+        account_id: "080383581145", # required
+        identity_pool_id: ENV["AWS_COGNITO_POOL"],
+        logins: {
+          "api.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
+        },
+      }).identity_id
+
+      open_id_resp = identity.get_open_id_token({
+        identity_id: identity_id, # required
+        logins: {
+          "api.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
+        },
+      })
+    end
   end
 
   def identity
