@@ -9,5 +9,5 @@ table.table
     tr
       td = link_to item["FromTwitterUsername"],  admin_user_path(id: item["FromTwitterID"])
       td = link_to item["ToTwitterUsername"], admin_user_path(id: item["ToTwitterID"])
-      td = link_to item["txid"], tip_path(item["txid"], subdomain: false)
+      td = link_to item["txid"], tip_url(item["txid"], subdomain: false)
       td = time_ago_in_words(Time.at(item["TippedAt"]))
