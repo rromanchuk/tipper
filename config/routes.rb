@@ -54,7 +54,7 @@ Rails.application.routes.draw do
   get '/tip/:tip_id'    => 'index#index', as: 'tip'
   get '/privacy'        => 'index#index'
   get '/login'          => 'index#index'
-  post '/logout'        => 'inex#index'
+  post '/logout'        => 'index#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
