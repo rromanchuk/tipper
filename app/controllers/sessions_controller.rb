@@ -23,7 +23,7 @@ class SessionsController < ApplicationController
       })
       NotifyAdmin.new_user(user["TwitterUsername"])
     else
-      cognito_resp = client.get_credentials_for_identity({
+      cognito_resp = identity.get_credentials_for_identity({
         identity_id: user["CognitoIdentity"], # required
         logins: {
           "www.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
