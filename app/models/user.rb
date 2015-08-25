@@ -154,6 +154,10 @@ class User
     ).items.first
   end
 
+  def self.deep_crawl_started(user)
+    self.update(user["UserID"], "SET TwittterDeepCrawledAt = :twitter_deep_crawled_at", {":twitter_deep_crawled_at": Time.now.to_i})
+  end
+
   def self.turn_off_automatic_tipping(user)
     self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {":automatic_tipping_enabled": false})
   end

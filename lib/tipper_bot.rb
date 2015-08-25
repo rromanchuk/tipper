@@ -20,6 +20,16 @@ class TipperBot
     end
   end
 
+  def post_onboarding_fund(username, txid)
+    message = "@#{username} Transfer of #{B::FUND_AMOUNT_UBTC.to_i}μBTC complete. https://blockchain.info/tx/#{txid}"
+    begin
+      tipper_bot_client.update(message)
+    rescue Twitter::Error::Unauthorized => e
+      Bugsnag.notify(e, {:severity => "error"})
+      nil
+    end
+  end
+
   def tipper_bot_client
     @tipper_bot_client ||= begin
       tipper_bot = User.find_tipper_bot
