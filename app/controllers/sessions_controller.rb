@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
         account_id: "080383581145", # required
         identity_pool_id: ENV["AWS_COGNITO_POOL"],
         logins: {
-          "www.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
+          "api.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
         },
       })
       NotifyAdmin.new_user(user["TwitterUsername"])
@@ -26,7 +26,7 @@ class SessionsController < ApplicationController
       cognito_resp = identity.get_open_id_token({
         identity_id: user["CognitoIdentity"], # required
         logins: {
-          "www.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
+          "api.twitter.com" => "#{twitter_auth_token};#{twitter_auth_secret}",
         },
       })
       Rails.logger.info "Found user:"
