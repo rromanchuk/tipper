@@ -177,7 +177,6 @@ class User
     new_user_id = SecureRandom.uuid
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress, ":created_at": Time.now.to_i }
     attributes = attributes.merge(additional_attributes)
-
     User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
   end
 
@@ -203,11 +202,24 @@ class User
     end
   end
 
-  def self.update_user_with_twitter(user)
-    client = User.client_for_user(user)
-    twitter_user = client.user(user["TwitterUsername"])
-    attributes = {":profile_image": twitter_user.profile_image_url.to_s, "name": twitter_user.name}
-    User.update(user["UserID"], "SET ProfileImage = :profile_image, Name = :name", attributes)
+  def self.client_for_app
+    Twitter::REST::Client.new do |config|
+      config.consumer_key        = ENV["TWITTER_CONSUMER_KEY"]
+      config.consumer_secret     = ENV["TWITTER_CONSUMER_SECRET"]
+    end
+  end
+
+  def self.update_user_with_twitter(user, is_stub=false)
+    begin
+      client = is_stub ? User.client_for_app : User.client_for_user(user)
+      twitter_user = client.user(screenname: user["TwitterUsername"], include_entities: false)
+      puts twitter_user.profile_image_url_https.to_s
+      attributes = {":profile_image": twitter_user.profile_image_url_https.to_s, ":twitter_username": twitter_user.screen_name}
+      User.update(user["UserID"], "SET ProfileImage = :profile_image, TwitterUsername = :twitter_username", attributes)
+    rescue => e
+      raise e
+      Rails.logger.error "User::update_user_with_twitter failed"
+    end
   end
 
   def self.userExists?(twitter_id)

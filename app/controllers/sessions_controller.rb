@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
   def create
     Rails.logger.info auth_hash.to_json
+    find_or_create
     redirect_to "/?code=#{auth_hash[:credentials][:token]}&uid=#{twitter_id}"
   end
 
@@ -33,8 +34,8 @@ class SessionsController < ApplicationController
       },
     })
 
-      user = User.update(user["UserID"], User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
-      Rails.logger.info "User: #{user.to_yaml}"
+    user = User.update(user["UserID"], User::UPDATE_COGNITO_EXPRESSION, {":cognito_token": resp.token, ":cognito_identity": resp.identity_id} )
+    Rails.logger.info "User: #{user.to_yaml}"
   end
 
   def identity
