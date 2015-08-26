@@ -99,6 +99,10 @@ class AutoFavoriter
     end
   end
 
+  def user
+    @user
+  end
+
   def user_client
     @user_client ||= User.client_for_user(@user)
   end
