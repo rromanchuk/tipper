@@ -133,7 +133,7 @@ EM.run {
   redis.pubsub.subscribe("auto_favorite_new_user") {|msg|
     Rails.logger.info "[REDIS] Onboarding new user by favoriting some tweets: #{msg}"
     parsed = JSON.parse(msg)
-    AutoFavoriter.new(msg["UserID"]).start
+    AutoFavoriter.new(parsed["UserID"]).start
   }
 
   redis.pubsub.subscribe("new_users") { |msg|
