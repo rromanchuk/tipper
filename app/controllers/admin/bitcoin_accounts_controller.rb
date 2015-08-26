@@ -1,7 +1,9 @@
 class Admin::BitcoinAccountsController < Admin::BaseController
   
   def balance
-    @balance = B.totalBalance
+    @wallet_balance = B.totalBalance
+    @tipperbot_balance = B.balance(B::TIPPERBOT_ADDRESS)
+    @reserves_balance = B.balance(B::RESERVES_ADDRESS)
   end
 
   def index
@@ -26,6 +28,7 @@ class Admin::BitcoinAccountsController < Admin::BaseController
 
   def reserve
     @unspents = B.unspent(B::RESERVES_ADDRESS)
+    @tipperbot_unspents = B.unspent(B::TIPPERBOT_ADDRESS)
   end
 
   protected

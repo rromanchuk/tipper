@@ -1,1 +1,10 @@
-pre = JSON.pretty_generate(@balance)
+h2 Current balance and reserves
+
+h3 Entire wallet balance
+pre = JSON.pretty_generate(@wallet_balance)
+
+h3 Reserves balance
+pre = JSON.pretty_generate(@reserves_balance)
+
+h3 @tipperbot balance
+pre = JSON.pretty_generate(@tipperbot_balance)

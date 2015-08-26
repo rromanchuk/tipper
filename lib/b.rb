@@ -3,6 +3,7 @@ class B
 
   FUND_FROM_ACCOUNT = "tipper_reserves"
   RESERVES_ADDRESS = "***REMOVED***"
+  TIPPERBOT_ADDRESS = "***REMOVED***"
   NEW_USER_ACCOUNT = "tipper_users"
 
   # http://bitcoindenominations.org/
