@@ -18,3 +18,8 @@ Logs and pids  are located in capistrano shared folder
 
 #### Start monitoring
 `leye load` from current release path
+
+
+## Resources
+
+***REMOVED***- Administration
