@@ -154,6 +154,7 @@ class User
     ).items.first
   end
 
+  # Flag setters
   def self.deep_crawl_started(user)
     self.update(user["UserID"], "SET TwittterDeepCrawledAt = :twitter_deep_crawled_at", {":twitter_deep_crawled_at": Time.now.to_i})
   end
@@ -164,6 +165,10 @@ class User
 
   def self.turn_on_automatic_tipping(user)
     self.update(user["UserID"], "SET AutomaticTippingEnabled = :automatic_tipping_enabled", {":automatic_tipping_enabled": true})
+  end
+
+  def self.tipped_from_us(user)
+    self.update(user["UserID"], "SET TippedFromUsAt = :tipped_from_us_at", {":tipped_from_as_at": Time.now.to_i})
   end
 
   def self.find_tipper_bot

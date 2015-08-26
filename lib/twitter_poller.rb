@@ -81,6 +81,33 @@ class FavoritesPoller
   end
 end
 
+class AutoFavoriter
+  
+  def initialize(user_id)
+    @user = User.find(user_id)
+    User.tipped_from_us(@user)
+  end
+
+  def start
+    # Find three of the new user's tweets
+    tweets = user_client.user_timeline(user["TwitterUsername"], count: 3)
+
+    # Have tipper bot favorite them
+    tweets.each do |tweet|
+      tipper_bot_client.favorite(tweet.id)
+      sleep 6
+    end
+  end
+
+  def user_client
+    @user_client ||= User.client_for_user(@user)
+  end
+
+  def tipper_bot_client
+    @tipper_bot_client ||= User.client_for_user(User.find_tipper_bot)
+  end
+end
+
 active_users = User.find_active.items
 
 EM.run {
@@ -102,18 +129,23 @@ EM.run {
   # Subscribe to new users.
   Rails.logger.info "Subscribing to new users"
   redis = EM::Hiredis.connect(ENV["REDIS_URL"])
-  redis.pubsub.subscribe("new_users") { |msg|
-    Rails.logger.info "Found new user: #{msg}"
+  
+  redis.pubsub.subscribe("auto_favorite_new_user") {|msg|
+    Rails.logger.info "[REDIS] Onboarding new user by favoriting some tweets: #{msg}"
     parsed = JSON.parse(msg)
-    Rails.logger.info "Parsed redis message: #{parsed}"
+    AutoFavoriter.new(msg["UserID"]).start
+  }
+
+  redis.pubsub.subscribe("new_users") { |msg|
+    Rails.logger.info "[REDIS] Turning on favorites poller for user: #{msg}"
+    parsed = JSON.parse(msg)
     FavoritesPoller.add(parsed['oauth_token'], parsed['oauth_token_secret'])
   }
 
   Rails.logger.info "Subscribing to user diconnect events"
   redis.pubsub.subscribe("disconnect_user") { |msg|
-    Rails.logger.info "Disconnecting user: #{msg}"
+    Rails.logger.info "[REDIS] Disconnecting user: #{msg}"
     parsed = JSON.parse(msg)
-    Rails.logger.info "Parsed redis message: #{parsed}"
     FavoritesPoller.remove(parsed['oauth_token'])
   }
 }
