@@ -168,7 +168,7 @@ class User
   end
 
   def self.tipped_from_us(user)
-    self.update(user["UserID"], "SET TippedFromUsAt = :tipped_from_us_at", {":tipped_from_as_at": Time.now.to_i})
+    self.update(user["UserID"], "SET TippedFromUsAt = :tipped_from_us_at", {":tipped_from_us_at": Time.now.to_i})
   end
 
   def self.find_tipper_bot
