@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   
   get '/auth/:provider/callback', to: 'sessions#create'
 
-  namespace :api, path: '/', defaults: { format: 'json' } do
+  namespace :api, path: '/', :constraints => { :format => /(js|json)/ } do
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
