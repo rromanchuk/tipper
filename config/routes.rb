@@ -18,6 +18,22 @@ Rails.application.routes.draw do
     resources :settings,            only: [:show, :index]
   end
 
+  namespace :api, defaults: { format: 'json' } do
+    get '/me/refresh' => 'me#show'
+    post 'register' => 'me#register'
+    delete 'disconnect' => 'me#disconnect'
+    post 'connect' => 'me#connect'
+
+    resource :me,                   only: [:create, :show, :index], controller: 'me'
+    resources :tips,                only: [:show]
+    resources :transactions,        only: [:show]
+    resources :charges,             only: [:create]
+    resources :cognito,             only: [:create]
+    resources :address,             only: [:create]
+    resources :users,               only: [:show]
+    resources :settings,            only: [:show, :index]
+  end
+
 
   namespace :admin, path: '/', constraints: { subdomain: /wwwadmin.*/ } do
     resources :users,  only: [:index, :show]
