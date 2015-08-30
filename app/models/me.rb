@@ -9,6 +9,7 @@ class Me
     @profile_image = user_from_dynamo["ProfileImage"]
     @user_id = user_from_dynamo["UserID"]
     @bitcoin_balance_btc = user_from_dynamo["BitcoinBalanceBTC"]
+    @automatic_tipping_enabled = user_from_dynamo["AutomaticTippingEnabled"]
   end
 
 end
