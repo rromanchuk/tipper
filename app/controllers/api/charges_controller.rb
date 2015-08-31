@@ -1,5 +1,8 @@
 module Api
   class ChargesController < Api::BaseController
+
+    rescue_from Stripe::CardError, :with => :raise_card_error
+
     def new
     end
 
@@ -19,6 +22,7 @@ module Api
         :currency    => 'usd'
       )
 
+
       fund_account
       NotifyAdmin.fund_event(current_user["TwitterUsername"])
 
@@ -26,6 +30,10 @@ module Api
     end
 
     private
+
+    def raise_card_error(error)
+      render :json => {:error => error.message}, :status => :internal_server_error
+    end
 
     def amount
       params.require(:amount)

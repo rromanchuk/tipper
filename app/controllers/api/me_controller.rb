@@ -3,7 +3,10 @@ module Api
   class MeController < Api::BaseController
     skip_before_filter :require_user!, only: [:create, :register]
 
-    # Deprecated
+    
+    def tips
+
+    end
 
     def disconnect
       message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
@@ -21,6 +24,7 @@ module Api
       render json: {}
     end
 
+    # Deprecated
     def register
       valid_twitter_credentials?
 

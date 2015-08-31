@@ -90,7 +90,7 @@ class AutoFavoriter
 
   def start
     # Find three of the new user's tweets
-    tweets = user_client.user_timeline(user["TwitterUsername"], count: 3)
+    tweets = user_client.user_timeline(user["TwitterUsername"], {count: 3, exclude_replies: true, include_rts: false})
 
     # Have tipper bot favorite them
     tweets.each do |tweet|

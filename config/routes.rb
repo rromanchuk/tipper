@@ -2,13 +2,12 @@ Rails.application.routes.draw do
   
   get '/auth/:provider/callback', to: 'sessions#create'
 
-  namespace :api, path: '/', defaults: { format: 'json' } do
+  namespace :api, path: '/', :constraints => { :format => /(js|json)/ } do
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
     post 'connect' => 'me#connect'
 
-    resource :me,                   only: [:create, :show, :index], controller: 'me'
     resources :tips,                only: [:show]
     resources :transactions,        only: [:show]
     resources :charges,             only: [:create]
@@ -24,13 +23,15 @@ Rails.application.routes.draw do
     delete 'disconnect' => 'me#disconnect'
     post 'connect' => 'me#connect'
 
-    resource :me,                   only: [:create, :show, :index], controller: 'me'
+    resource  :me,                   only: [:create, :show, :index], controller: 'me'
     resources :tips,                only: [:show]
     resources :transactions,        only: [:show]
     resources :charges,             only: [:create]
     resources :cognito,             only: [:create]
     resources :address,             only: [:create]
-    resources :users,               only: [:show]
+    resources :users,               only: [:show] do 
+      resources :tips, only: [:show]
+    end 
     resources :settings,            only: [:show, :index]
   end
 
@@ -45,7 +46,7 @@ Rails.application.routes.draw do
       end
     end
 
-    resources :bitcoin_accounts do 
+    resources :bitcoin_accounts do
       collection do 
         get 'index'
         get 'recent'
@@ -71,6 +72,7 @@ Rails.application.routes.draw do
   get '/privacy'        => 'index#index'
   get '/login'          => 'index#index'
   post '/logout'        => 'index#index'
+  get '/me'             => 'index#index'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

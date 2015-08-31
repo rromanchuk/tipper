@@ -9,6 +9,9 @@ class Settings
     @fee_amount = settings_from_dynamo["FeeAmount"]
     @fund_amount = settings_from_dynamo["FundAmount"]
     @tip_amount = settings_from_dynamo["TipAmount"]
+    @tip_amount = settings_from_dynamo["TipAmount"]
+    # FIXME
+    @market_price = JSON.parse(open("https://api.coinbase.com/v1/prices/buy.json?qty=#{@fund_amount}").read)["amount"]
   end
 
   def self.find(version)
