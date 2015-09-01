@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
     post 'connect' => 'me#connect'
+    post '/sms'           => 'sms#download'
 
     resource  :me,                   only: [:create, :show, :index], controller: 'me'
     resources :tips,                only: [:show]
@@ -67,7 +68,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/devel/emails"
   end
 
-  post '/sms'           => 'sms#download'
+  
   get '/tip/:tip_id'    => 'index#index', as: 'tip'
   get '/privacy'        => 'index#index'
   get '/login'          => 'index#index'
