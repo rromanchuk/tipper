@@ -1,7 +1,7 @@
 require 'twilio-ruby'
 module Api
-  class SmsController < ApplicationController
-    
+  class SmsController < Api::BaseController
+    skip_before_filter :require_user!
     def download
       to_number = Phony.normalize(params[:sms][:to])
       twilio.account.messages.create({from: from, to: to_number, body: body})
