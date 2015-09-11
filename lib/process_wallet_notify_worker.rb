@@ -42,7 +42,7 @@ EM.run {
   redis.pubsub.subscribe("wallet_notify") {|msg|
     Rails.logger.info "[REDIS] Wallet notify event from bitcoind: #{msg}"
     json = JSON.parse(msg)
-    
+
     transaction = B.client.gettransaction(json["txid"])
     tx = Transaction.create(transaction)
     if tx["confirmations"] == 0
