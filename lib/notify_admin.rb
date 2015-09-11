@@ -1,7 +1,6 @@
 class NotifyAdmin
   TOPIC = "arn:aws:sns:us-east-1:080383581145:AdminNotification"
 
-
   def self.new_user(username)
     send "[ADMIN] New user: #{username}"
   end
@@ -24,6 +23,10 @@ class NotifyAdmin
 
   def self.fund_event(username)
     send "[ADMIN] Fund event: #{username}"
+  end
+
+  def self.wallet_notify(transaction)
+    send "[ADMIN] wallet_notify event"
   end
 
   def self.send(message)

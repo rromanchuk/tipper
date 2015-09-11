@@ -15,17 +15,7 @@ require_relative "../app/models/user"
 
 
 def notify_admins(tx)
-  begin
-    message = "#{tx["category"]}: #{tx["amount"]}"
-    resp = sns.publish(
-      topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
-      message_structure: "json",
-      message: {"default" => message, "sms": message }.to_json
-    )
-  rescue Aws::SNS::Errors::EndpointDisabled
-    Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
-  end
-
+  NotifyAdmin.wallet_notify(tx)
   AdminMailer.wallet_notify(tx).deliver_now
 end
 
@@ -44,6 +34,7 @@ EM.run {
     json = JSON.parse(msg)
 
     transaction = B.client.gettransaction(json["txid"])
+    Rails.logger.info transaction.to_yaml
     tx = Transaction.create(transaction)
     if tx["confirmations"] == 0
       notify_admins(tx)
