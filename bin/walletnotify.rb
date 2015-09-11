@@ -1,18 +1,5 @@
 #!/usr/bin/env ruby
-require "bundler/setup"
 
-require "dotenv"
-Dotenv.load
-
-require "pp"
-
-require "eventmachine"
-require "tweetstream"
-require "em-hiredis"
-require "aws-sdk"
-
-require_relative "./sqs_queues"
-require_relative "../app/models/user"
 
 ARGV[0]
 
