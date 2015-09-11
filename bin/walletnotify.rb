@@ -1,5 +1,8 @@
 #!/usr/bin/env ruby
+require "dotenv"
+Dotenv.load
 
+require "redis"
 
 ARGV[0]
 
