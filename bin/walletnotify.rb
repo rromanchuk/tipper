@@ -1,15 +1,20 @@
 #!/usr/bin/env ruby
-require 'aws-sdk'
+require "bundler/setup"
 
-def sns
-  @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-end
+require "dotenv"
+Dotenv.load
 
-def sqs
-  sqs = Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-end
+require "pp"
 
+require "eventmachine"
+require "tweetstream"
+require "em-hiredis"
+require "aws-sdk"
+
+require_relative "./sqs_queues"
+require_relative "../app/models/user"
 
 ARGV[0]
 
-sqs.send_message(queue_url: "***REMOVED***", message_body: { "txid": ARGV[0] }.to_json )
+message = { "txid": ARGV[0] }.to_json
+Redis.current.publish("wallet_notify", message)
