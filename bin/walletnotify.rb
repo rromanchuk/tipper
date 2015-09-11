@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require "dotenv"
+require 'json'
 Dotenv.load
 
 require "redis"
