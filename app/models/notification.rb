@@ -7,7 +7,7 @@ class Notification
   UPDATE_EXPRESSION = "SET " +
                       "Type = :type, " +
                       "Text = :text, " +
-                      "CreatedAt = :created_at " +
+                      "CreatedAt = :created_at "
 
 
   def self.create(user_id, type, text)
