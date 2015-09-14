@@ -5,7 +5,7 @@ class Notification
 
 
   UPDATE_EXPRESSION = "SET " +
-                      "Type = :type, " +
+                      "NotificationType = :type, " +
                       "Text = :text, " +
                       "CreatedAt = :created_at "
 
