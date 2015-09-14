@@ -17,6 +17,7 @@ class Notification
         # required
         key: {
           "UserID" => user_id,
+          "CreatedAt" => Time.now.to_i
         },
         update_expression: UPDATE_EXPRESSION,
         expression_attribute_values: {":type": type, ":text": text, ":created_at": Time.now.to_i},
