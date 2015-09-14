@@ -6,9 +6,7 @@ class Notification
 
   UPDATE_EXPRESSION = "SET " +
                       "NotificationType = :type, " +
-                      "NotificationText = :text, " +
-                      "CreatedAt = :created_at "
-
+                      "NotificationText = :text, "
 
   def self.create(user_id, type, text)
     resp = db.update_item(
@@ -20,7 +18,7 @@ class Notification
           "CreatedAt" => Time.now.to_i
         },
         update_expression: UPDATE_EXPRESSION,
-        expression_attribute_values: {":type": type, ":text": text, ":created_at": Time.now.to_i},
+        expression_attribute_values: {":type": type, ":text": text},
         return_values: "ALL_NEW")
 
     resp.attributes
