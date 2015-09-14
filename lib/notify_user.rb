@@ -27,7 +27,7 @@ class NotifyUser
                                   "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
       send(apns_payload, toUser["EndpointArn"], message)
     end
-    Notification.create(toUser["UserID", "user_received_tip", message)
+    Notification.create(toUser["UserID"], "user_received_tip", message)
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
@@ -41,7 +41,7 @@ class NotifyUser
 
       send(apns_payload, fromUser["EndpointArn"], message)
     end
-    Notification.create(fromUser["UserID", "user_sent_tip", message)
+    Notification.create(fromUser["UserID"], "user_sent_tip", message)
   end
 
   def self.send(payload, endpoint, message)
