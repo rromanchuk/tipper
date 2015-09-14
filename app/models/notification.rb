@@ -6,7 +6,7 @@ class Notification
 
   UPDATE_EXPRESSION = "SET " +
                       "NotificationType = :type, " +
-                      "NotificationText = :text, "
+                      "NotificationText = :text "
 
   def self.create(user_id, type, text)
     resp = db.update_item(
