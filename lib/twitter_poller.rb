@@ -31,7 +31,7 @@ class FavoritesPoller
       fs.stop
       all.delete(oauth_token)
     else
-      raise "stream not found for #{oauth_token}"
+      Rails.logger.error "stream not found for #{oauth_token}"
     end
   end
 
