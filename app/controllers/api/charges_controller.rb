@@ -32,6 +32,7 @@ module Api
     private
 
     def raise_card_error(error)
+      Bugsnag.notify(error, {:severity => "error"})
       render :json => {:error => error.message}, :status => :internal_server_error
     end
 
@@ -40,12 +41,7 @@ module Api
     end
 
     def fund_account
-      sqs.send_message(queue_url: SqsQueues.fund, message_body: current_user.to_json )
+      Redis.current.publish("fund_event", current_user.to_json)
     end
-
-    def sqs
-      @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-    end
-
   end
 end
