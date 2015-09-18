@@ -60,6 +60,13 @@ class NotifyUser
     Notification.create(user["UserID"], "fund_event", message)
   end
 
+  def self.notify_withdrawal(user)
+    if user["EndpointArn"]
+
+    end
+    Notification.create(user["UserID"], "withdrawal_event", message)
+  end
+
   def self.send(payload, endpoint, message)
     begin 
       resp = sns.publish(

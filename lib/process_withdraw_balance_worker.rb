@@ -20,24 +20,6 @@ class ProcessWithdrawBalanceWorker
     end
   end
 
-  def notify_sender(fromUser)
-    return unless fromUser["EndpointArn"]
-    begin
-      message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
-      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
-      resp = sns.publish(
-        target_arn: fromUser["EndpointArn"],
-        message_structure: "json",
-        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
-      )
-    rescue Aws::SNS::Errors::EndpointDisabled
-      logger.error "Aws::SNS::Errors::EndpointDisabled"
-    rescue Aws::SNS::Errors::InvalidParameter => e
-      logger.error "Aws::SNS::Errors::InvalidParameter"
-      Bugsnag.notify(e, {:severity => "error"})
-    end
-  end
-
   def notify_sender_fail(fromUser)
     return unless fromUser["EndpointArn"]
     begin
@@ -98,7 +80,7 @@ class ProcessWithdrawBalanceWorker
       txid = B.withdraw(fromBitcoinAddress, toBitcoinAddress)
       if txid
         Withdraw.create(fromUser, toBitcoinAddress, txid)
-        notify_sender(fromUser)
+        NotifyUser.notify_withdrawal(fromUser)
       else
         notify_sender_fail(fromUser)
       end
