@@ -1,90 +1,46 @@
-class ProcessWalletNotifications
-  def logger
-    @logger ||= begin
-      _logger = Rails.logger
-      _logger.progname = "process_wallet_notification_worker"
-      _logger
-    end
-  end
+require "bundler/setup"
 
-  def queue
-    @queue ||= SqsQueues.wallet_notify
-  end
+require "dotenv"
+Dotenv.load
 
-  def sqs
-    @sqs ||= Aws::SQS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-  end
+require "pp"
 
-  def sns
-    @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-  end
+require "eventmachine"
+require "tweetstream"
+require "em-hiredis"
+require "aws-sdk"
 
-  def notify_admins(tx)
-    begin
-      message = "#{tx["category"]}: #{tx["amount"]}"
-      resp = sns.publish(
-        topic_arn: "arn:aws:sns:us-east-1:080383581145:WalletTransaction",
-        message_structure: "json",
-        message: {"default" => message, "sms": message }.to_json
-      )
-    rescue Aws::SNS::Errors::EndpointDisabled
-      logger.error "Aws::SNS::Errors::EndpointDisabled"
-    end
+require_relative "./sqs_queues"
+require_relative "../app/models/user"
 
-    AdminMailer.wallet_notify(tx).deliver_now
-  end
 
-  def initialize
-    logger.info "Starting event machine for ProcessWalletNotifications"
-    #test_event
-    EventMachine.run do
-      EM.add_periodic_timer(25.0) do
-        #logger.info "Ready to process tasks.."
-        messages = receive
-        #logger.info "Found message #{messages}"
-        process_messages(messages)
-      end
-    end
-  end
-
-  def receive
-    begin
-      resp = sqs.receive_message(
-        queue_url: queue,
-        wait_time_seconds: 20,
-      )
-      messages = resp.messages.map do |message|
-        { receipt_handle: message.receipt_handle, message: JSON.parse(message.body) }
-      end
-      messages
-    rescue Aws::SQS::Errors::ServiceError => e
-      # rescues all errors returned by Amazon Simple Queue Service
-      Bugsnag.notify(e, {:severity => "error"})
-    end
-  end
-
-  def process_messages(messages)
-    messages.each do |message|
-      receipt_handle = message[:receipt_handle]
-      json = message[:message]
-      logger.info "process_messages: #{json}"
-
-      transaction = B.client.gettransaction(json["txid"])
-      tx = Transaction.create(transaction)
-      if tx["confirmations"] == 0
-        notify_admins(tx)
-      end
-      delete(receipt_handle)
-      
-      transaction["details"].each do |detail|
-        user = User.update_balance_by_address(detail["address"])
-      end
-    end
-  end
-
-  def delete(handle)
-    resp = sqs.delete_message( queue_url: queue, receipt_handle: handle )
-  end
-
+def notify_admins(tx)
+  NotifyAdmin.wallet_notify(tx)
+  AdminMailer.wallet_notify(tx).deliver_now
 end
-ProcessWalletNotifications.new
+
+def sns
+  @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+end
+
+
+EM.run {
+  # Subscribe to new users.
+  Rails.logger.info "Subscribing to wallet_notify events"
+  redis = EM::Hiredis.connect(ENV["REDIS_URL"])
+
+  redis.pubsub.subscribe("wallet_notify") {|msg|
+    Rails.logger.info "[REDIS] Wallet notify event from bitcoind: #{msg}"
+    json = JSON.parse(msg)
+
+    transaction = B.client.gettransaction(json["txid"])
+    Rails.logger.info transaction.to_yaml
+    tx = Transaction.create(transaction)
+    if tx["confirmations"] == 0
+      notify_admins(tx)
+    end
+    transaction["details"].each do |detail|
+      user = User.update_balance_by_address(detail["address"])
+    end
+  }
+}
