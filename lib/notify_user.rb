@@ -54,15 +54,22 @@ class NotifyUser
       apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, 
                                   "type" => "funds_deposited", 
                                   "message" => {"title" => "Transfer complete", "subtitle" => message, "type" => "success"}, 
-                                  "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] }, 
+                                  "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] }, 
                                  }.to_json
     end
     Notification.create(user["UserID"], "fund_event", message)
   end
 
   def self.notify_withdrawal(user)
+    message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
     if user["EndpointArn"]
-
+      message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
+      resp = sns.publish(
+        target_arn: fromUser["EndpointArn"],
+        message_structure: "json",
+        message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
+      )
     end
     Notification.create(user["UserID"], "withdrawal_event", message)
   end
