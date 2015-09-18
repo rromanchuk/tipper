@@ -8,13 +8,15 @@ class NotifyUser
   end
 
   def self.problem_tipping_user(user)
-    return unless user["EndpointArn"]
     message = "Opps, we weren't able to send the tip. Low balance?"
-    apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 },
-                    "user" => { "TwitterUserID" => user["TwitterUserID"] },
-                    "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
+    if user["EndpointArn"]
+        apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?", "badge" => 1 },
+                      "user" => { "TwitterUserID" => user["TwitterUserID"] },
+                      "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
+        send(apns_payload, user["EndpointArn"], message)
+    end
 
-    send(apns_payload, user["EndpointArn"], message)
+    Notification.create(user["UserID"], "low_balance", message)
   end
 
   def self.notify_receiver(fromUser, toUser, favorite)
