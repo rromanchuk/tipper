@@ -29,11 +29,8 @@ class NotifyUser
                                   "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
       send(apns_payload, toUser["EndpointArn"], message)
     end
-    begin
-      Notification.create(toUser["UserID"], "user_received_tip", message)
-    rescue => e
-
-    end
+    
+    Notification.create(toUser["UserID"], "user_received_tip", message)
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
@@ -47,17 +44,20 @@ class NotifyUser
 
       send(apns_payload, fromUser["EndpointArn"], message)
     end
-    begin
-      Notification.create(fromUser["UserID"], "user_sent_tip", message)
-    rescue => e
-    end
+    
+    Notification.create(fromUser["UserID"], "user_sent_tip", message)
   end
 
   def self.notify_fund_event(user)
     message =  "Your deposit of #{B::FUND_AMOUNT_UBTC.to_i}μBTC is complete."
     if user["EndpointArn"]
-
+      apns_payload = { "aps" => { "alert" => message, "badge" => 1 }, 
+                                  "type" => "funds_deposited", 
+                                  "message" => {"title" => "Transfer complete", "subtitle" => message, "type" => "success"}, 
+                                  "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] }, 
+                                 }.to_json
     end
+    Notification.create(user["UserID"], "fund_event", message)
   end
 
   def self.send(payload, endpoint, message)
