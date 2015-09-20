@@ -122,7 +122,7 @@ EM.run {
     Rails.logger.info "TwitterAuthToken: #{user['TwitterAuthToken']}, TwitterAuthSecret: #{user['TwitterAuthSecret']}, AutomaticTippingEnabled: #{user['AutomaticTippingEnabled']}"
     if user['TwitterAuthToken'] && user['TwitterAuthSecret'] && user['AutomaticTippingEnabled'] == true
       Rails.logger.info "Adding: #{user["TwitterUsername"]}"
-      FavoritesPoller.add user['TwitterAuthToken'], user['TwitterAuthSecret']
+      FavoritesPoller.add user["UserID"], user['TwitterAuthToken'], user['TwitterAuthSecret']
     elsif user['AutomaticTippingEnabled']
       Rails.logger.info "User has automatic tipping disabled"
     else
