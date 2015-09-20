@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
     end
 
     # Tokens may have changed, this user's stream may need to be restarted
-    message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
+    message = { user_id: user["UserID"], oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
     Redis.current.publish("new_users", message)
     Rails.logger.info "User: #{user.to_yaml}"
 

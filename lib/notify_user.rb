@@ -45,7 +45,7 @@ class NotifyUser
   def self.notify_sender(fromUser, toUser, favorite)
     message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
     
-    if user["EndpointArns"]
+    if fromUser["EndpointArns"]
       fromUser["EndpointArns"].each do |endpoint|
         apns_payload = { "aps" => { "alert" => message },
                                       "type" => "tip_sent",

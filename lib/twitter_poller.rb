@@ -17,11 +17,11 @@ class FavoritesPoller
     @all ||= {}
   end
 
-  def self.add oauth_token, oauth_token_secret
+  def self.add user_id, oauth_token, oauth_token_secret
     if all.has_key?(oauth_token)
       Rails.logger.info "already have #{oauth_token}, not adding"
     else
-      all[oauth_token] = FavoritesPoller.new(oauth_token, oauth_token_secret)
+      all[oauth_token] = FavoritesPoller.new(user_id, oauth_token, oauth_token_secret)
       all[oauth_token].start
     end
   end
@@ -35,9 +35,10 @@ class FavoritesPoller
     end
   end
 
-  def initialize oauth_token, oauth_token_secret
+  def initialize user_id, oauth_token, oauth_token_secret
     @oauth_token = oauth_token
     @oauth_token_secret = oauth_token_secret
+    @user_id = user_id
   end
 
   def client
@@ -50,7 +51,7 @@ class FavoritesPoller
   end
 
   def user
-    @user ||= User.find_by_twitter_token(@oauth_token)
+    @user ||= User.find(@user_id)
   end
 
   def self.sqs
@@ -143,7 +144,7 @@ EM.run {
   redis.pubsub.subscribe("new_users") { |msg|
     Rails.logger.info "[REDIS] Turning on favorites poller for user: #{msg}"
     parsed = JSON.parse(msg)
-    FavoritesPoller.add(parsed['oauth_token'], parsed['oauth_token_secret'])
+    FavoritesPoller.add(parsed['user_id'], parsed['oauth_token'], parsed['oauth_token_secret'])
   }
 
   Rails.logger.info "Subscribing to user diconnect events"
