@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   get '/auth/:provider/callback', to: 'sessions#create'
 
+  # DEPRECATED
   namespace :api, path: '/', :constraints => { :format => /(js|json)/ } do
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
@@ -17,14 +18,16 @@ Rails.application.routes.draw do
     resources :settings,            only: [:show, :index]
   end
 
+
   namespace :api, defaults: { format: 'json' } do
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
     delete 'disconnect' => 'me#disconnect'
     post 'connect' => 'me#connect'
     post '/sms'           => 'sms#download'
+    post '/autotip'        => 'me#autotip'
 
-    resource  :me,                   only: [:create, :show, :index], controller: 'me'
+    resource  :me,                  only: [:create, :show, :index], controller: 'me'
     resources :tips,                only: [:show]
     resources :transactions,        only: [:show]
     resources :charges,             only: [:create]
