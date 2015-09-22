@@ -61,6 +61,6 @@ EM.run {
   redis.pubsub.subscribe("fund_event") { |msg|
     parsed = JSON.parse(msg)
     Rails.logger.info "Parsed redis message: #{parsed}"
-    pf.process_message(parsed)
+    pf.fund_user(parsed)
   }
 }
