@@ -87,7 +87,9 @@ class ProcessTipWorker
       receipt_handle = message[:receipt_handle]
       json = message[:message]
       logger.info "process_messages: #{json}"
-
+      # Let's delete this message right away in case something goes wrong
+      delete(receipt_handle)
+      
       fromUser = User.find_by_twitter_id(json["FromTwitterID"])
       toUser = User.find_by_twitter_id(json["ToTwitterID"])
 
@@ -95,7 +97,6 @@ class ProcessTipWorker
       tweet = tweetObject(fromUser, json["TweetID"])
       unless tweet
         NotifyUser.problem_tipping_user(fromUser)
-        delete(receipt_handle)
         next
       end
 
@@ -131,7 +132,7 @@ class ProcessTipWorker
         # Send failure notifications, delete the sqs receipt so we don't keep retrying
         NotifyUser.problem_tipping_user(fromUser)
       end
-      delete(receipt_handle)
+      
     end
   end
 
