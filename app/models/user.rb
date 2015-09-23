@@ -179,14 +179,19 @@ class User
     new_user_id = SecureRandom.uuid
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress, ":created_at": Time.now.to_i }
     attributes = attributes.merge(additional_attributes)
-    User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
+    
+    user = User.update(new_user_id, UPDATE_NEW_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
+    NotifyAdmin.new_user(user["TwitterUsername"])
+    user
   end
 
   def self.create_stub_user(additional_attributes={})
     new_user_id = SecureRandom.uuid
     attributes = {":token": SecureRandom.urlsafe_base64(30), ":bitcoin_address": B.getNewUserAddress, ":created_at": Time.now.to_i }
     attributes = attributes.merge(additional_attributes)
-    User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
+    user = User.update(new_user_id, UPDATE_STUB_USER_EXPRESSION, attributes, RESERVED_ATTRIBUTES)
+    NotifyAdmin.new_stub_user(user["TwitterUsername"])
+    user
   end
 
   def self.update_balance_by_address(address)

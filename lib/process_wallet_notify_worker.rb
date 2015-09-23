@@ -14,13 +14,13 @@ require_relative "./sqs_queues"
 require_relative "../app/models/user"
 
 
-def notify_admins(tx)
+def notify_new_tx(tx)
   NotifyAdmin.wallet_notify(tx)
   AdminMailer.wallet_notify(tx).deliver_now
 end
 
-def sns
-  @sns ||= Aws::SNS::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+def notify_tx(tx)
+  NotifyAdmin.wallet_notify(tx)
 end
 
 
@@ -37,7 +37,9 @@ EM.run {
     Rails.logger.info transaction.to_yaml
     tx = Transaction.create(transaction)
     if tx["confirmations"] == 0
-      notify_admins(tx)
+      notify_new_tx(tx)
+    else
+      notify_tx(tx)
     end
     transaction["details"].each do |detail|
       user = User.update_balance_by_address(detail["address"])

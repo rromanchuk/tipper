@@ -13,7 +13,6 @@ class SessionsController < ApplicationController
     user = User.find_by_twitter_id(twitter_id)
     unless user
       user = User.create_user(attributes_to_update)
-      NotifyAdmin.new_user(user["TwitterUsername"])
     else
       Rails.logger.info "Found user:"
       Rails.logger.info user.to_yaml
