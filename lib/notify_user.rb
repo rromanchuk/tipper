@@ -6,10 +6,10 @@ class NotifyUser
     user["EndpointArns"].each do |endpoint|
       Rails.logger.info "Sending test apn to #{endpoint}"
       apns_payload = { "aps" => { "alert" => message },
-                                    "type" => "tip_received",
-                                    "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
-                                    "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
-                                    "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
+                                  "type" => "tip_received",
+                                  "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
+                                  "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
+                                }.to_json
         send(apns_payload, endpoint, message)
     end
   end
