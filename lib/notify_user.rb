@@ -8,7 +8,7 @@ class NotifyUser
       apns_payload = { "aps" => { "alert" => message },
                                     "type" => "tip_received",
                                     "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
-                                    "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
+                                    "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
                                     "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
         send(apns_payload, endpoint, message)
     end
