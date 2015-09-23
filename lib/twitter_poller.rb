@@ -141,7 +141,7 @@ EM.run {
     AutoFavoriter.new(parsed["UserID"]).start
   }
 
-  redis.pubsub.subscribe("new_users") { |msg|
+  redis.pubsub.subscribe("connect_user") { |msg|
     Rails.logger.info "[REDIS] Turning on favorites poller for user: #{msg}"
     parsed = JSON.parse(msg)
     FavoritesPoller.add(parsed['user_id'], parsed['oauth_token'], parsed['oauth_token_secret'])

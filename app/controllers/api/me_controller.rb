@@ -18,7 +18,7 @@ module Api
       fetch_favorites
       message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
       User.turn_on_automatic_tipping(user)
-      Redis.current.publish("new_users", message)
+      Redis.current.publish("connect_user", message)
       render json: {}
     end
 
