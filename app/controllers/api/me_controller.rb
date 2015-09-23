@@ -3,7 +3,6 @@ module Api
   class MeController < Api::BaseController
     skip_before_filter :require_user!, only: [:create, :register]
 
-    
     def tips
 
     end
@@ -17,10 +16,9 @@ module Api
 
     def connect
       fetch_favorites
-      send_onboarding_tips_from_us
       message = { oauth_token: user["TwitterAuthToken"], oauth_token_secret: user["TwitterAuthSecret"] }.to_json
       User.turn_on_automatic_tipping(user)
-      Redis.current.publish("new_users", message)
+      Redis.current.publish("connect_user", message)
       render json: {}
     end
 
@@ -48,6 +46,11 @@ module Api
 
 
       render json: user
+    end
+
+    def autotip
+      send_onboarding_tips_from_us
+      render json: {'me': Me.new(current_user) }
     end
 
     def show
