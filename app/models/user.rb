@@ -41,6 +41,9 @@ class User
                                 "TwitterUserID = :twitter_user_id, " +
                                 "TwitterUsername = :twitter_username"
 
+  REMOVE_EXPIRED_ARNS = "DELETE " +
+                        "EndpointArns :endpoint_arns"
+
   RESERVED_ATTRIBUTES = {"#T": "token"}
 
   def initialize(user_from_dynamo={})
@@ -152,6 +155,20 @@ class User
         },
       },
     ).items.first
+  end
+
+  def self.delete_endpoint_arns(user_id, arns=[])
+    resp = db.update_item(
+        # required
+        table_name: User::TABLE_NAME,
+        # required
+        key: {
+          "UserID" => user_id,
+        },
+        update_expression: REMOVE_EXPIRED_ARNS,
+        expression_attribute_values: {":endpoint_arns": arns.to_set  },
+        return_values: "ALL_NEW")
+    resp.attributes
   end
 
   # Flag setters

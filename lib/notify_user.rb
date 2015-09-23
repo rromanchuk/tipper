@@ -10,7 +10,7 @@ class NotifyUser
                                   "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
                                   "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
                                 }.to_json
-        send(apns_payload, endpoint, message)
+      send(user["UserID"], apns_payload, endpoint, message)
     end
   end
 
@@ -19,7 +19,7 @@ class NotifyUser
     if user["EndpointArns"]
       user["EndpointArns"].each do |endpoint|
         apns_payload = { "aps" => { "alert" => message } }.to_json
-        send(apns_payload, endpoint, message)
+        send(user["UserID"], apns_payload, endpoint, message)
       end
     end
 
@@ -33,7 +33,7 @@ class NotifyUser
         apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?" },
                       "user" => { "TwitterUserID" => user["TwitterUserID"] },
                       "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
-        send(apns_payload, endpoint, message)
+        send(user["UserID"], apns_payload, endpoint, message)
       end
     end
 
@@ -49,7 +49,7 @@ class NotifyUser
                                     "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
                                     "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
                                     "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-        send(apns_payload, endpoint, message)
+        send(toUser["UserID"], apns_payload, endpoint, message)
       end
     end
     
@@ -67,7 +67,7 @@ class NotifyUser
                                       "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
                                       "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
 
-        send(apns_payload, endpoint, message)
+        send(fromUser["UserID"], apns_payload, endpoint, message)
       end
     end
     
@@ -83,7 +83,7 @@ class NotifyUser
                                     "message" => {"title" => "Transfer complete", "subtitle" => message, "type" => "success"}, 
                                     "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] }, 
                                    }.to_json
-        send(apns_payload, endpoint, message)
+        send(user["UserID"], apns_payload, endpoint, message)
       end
     end
     Notification.create(user["UserID"], "fund_event", message)
@@ -95,18 +95,14 @@ class NotifyUser
       user["EndpointArns"].each do |endpoint|
         message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
         apns_payload = { "aps" => { "alert" => message }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
-        resp = sns.publish(
-          target_arn: endpoint,
-          message_structure: "json",
-          message: {"default" => message, "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
-        )
+        send(user["UserID"], apns_payload, endpoint, message)
       end
     end
 
     Notification.create(user["UserID"], "withdrawal_event", message)
   end
 
-  def self.send(payload, endpoint, message)
+  def self.send(user_id, payload, endpoint, message)
     begin 
       resp = sns.publish(
         target_arn: endpoint,
@@ -116,6 +112,7 @@ class NotifyUser
     rescue Aws::SNS::Errors::EndpointDisabled
       Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
       # TODO: remove user's endpoint from dynamo, it's invalid
+      User.delete_endpoint_arns(user_id, [endpoint])
     rescue Aws::SNS::Errors::InvalidParameter => e
       Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
       Bugsnag.notify(e, {:severity => "error"})
