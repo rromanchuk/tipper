@@ -113,6 +113,7 @@ class NotifyUser
       Rails.logger.error "Aws::SNS::Errors::EndpointDisabled"
       # TODO: remove user's endpoint from dynamo, it's invalid
       User.delete_endpoint_arns(user_id, [endpoint])
+      sns.delete_endpoint({ endpoint_arn: endpoint })
     rescue Aws::SNS::Errors::InvalidParameter => e
       Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
       Bugsnag.notify(e, {:severity => "error"})
