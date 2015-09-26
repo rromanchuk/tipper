@@ -40,12 +40,18 @@ exports.handler = function(event, context) {
                 "txid" : { "S" : tx["hash"]}
             },
             "ReturnValues": "ALL_NEW",
-            "UpdateExpression" : "SET #confirmations =:confirmations",
-            "ExpressionAttributeNames" : {"#confirmations" : "confirmations"},
+            "UpdateExpression" : "SET #confirmations = :confirmations, #inputs = :inputs, #outputs = :outputs",
+            "ExpressionAttributeNames" : {"#confirmations" : "confirmations", "#inputs" : "inputs", "#outputs"},
             "ExpressionAttributeValues" : {
             ":confirmations" : {
                 "N" : tx["confirmations"].toString()
                 }
+            },
+            ":inputs" : {
+                "L" : tx["inputs"]
+            },
+            ":outputs" : {
+                "L" : tx["outputs"]
             }
         }, function(err, data){
             if (err) console.log(err, err.stack); // an error occurred
