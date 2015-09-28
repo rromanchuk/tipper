@@ -32,7 +32,7 @@ module Api
     private
 
     def raise_card_error(error)
-      Bugsnag.notify(error, {:severity => "error"})
+      Rollbar.error(error)
       render :json => {:error => error.message}, :status => :internal_server_error
     end
 

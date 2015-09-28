@@ -34,7 +34,7 @@ class ProcessWithdrawBalanceWorker
       logger.error "Aws::SNS::Errors::EndpointDisabled"
     rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
     end
   end
 
@@ -63,7 +63,7 @@ class ProcessWithdrawBalanceWorker
       messages
     rescue Aws::SQS::Errors::ServiceError => e
       # rescues all errors returned by Amazon Simple Queue Service
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
     end
   end
 

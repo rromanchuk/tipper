@@ -57,10 +57,10 @@ class ProcessTipWorker
     begin
       restClientForUser(fromUser).status(tweetId)
     rescue Twitter::Error::Unauthorized => e
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
       nil
     rescue Twitter::Error::Forbidden => e
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
       nil
     end
   end
@@ -77,7 +77,7 @@ class ProcessTipWorker
       messages
     rescue Aws::SQS::Errors::ServiceError => e
     # rescues all errors returned by Amazon Simple Queue Service
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
     end
   end
 

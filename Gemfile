@@ -35,7 +35,7 @@ gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby'
 gem "slim-rails"
 gem "twitter"
 gem "satoshi-unit"
-gem "bugsnag"
+gem 'rollbar'
 gem 'newrelic_rpm'
 gem 'eventmachine'
 gem 'money'

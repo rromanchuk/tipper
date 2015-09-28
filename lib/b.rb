@@ -93,7 +93,7 @@ class B
     tx = client.sendrawtransaction(signedTx["hex"])
 
     rescue => e
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
       tx = nil
     end
 
@@ -152,7 +152,7 @@ class B
     # Broadcast transaction on the network
     tx = client.sendrawtransaction(signedTx["hex"])
     rescue => e
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
       tx = nil
     end
 
@@ -218,7 +218,7 @@ class B
       # Broadcast transaction on the network
       tx = client.sendrawtransaction(signedTx["hex"])
     rescue => e
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
       tx = nil
     end
     tx

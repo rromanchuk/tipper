@@ -30,7 +30,7 @@ class ProcessFundWorker
       # TODO: remove user's endpoint from dynamo, it's invalid
     rescue Aws::SNS::Errors::InvalidParameter => e
       logger.error "Aws::SNS::Errors::InvalidParameter"
-      Bugsnag.notify(e, {:severity => "error"})
+      Rollbar.error(e)
     end
   end
 
