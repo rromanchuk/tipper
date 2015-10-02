@@ -19,4 +19,12 @@ module EmberModel
     Hash[values]
   end
 
+  def self.db
+    @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+
+  def db
+    EmberModel.db
+  end
+
 end

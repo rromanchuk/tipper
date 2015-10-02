@@ -82,6 +82,7 @@ class Tip
 
     User.update_balance(fromUser)
     User.update_balance(toUser)
+    TweetJson.create(tweet)
     resp.attributes
   end
 

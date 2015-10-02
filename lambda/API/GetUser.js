@@ -4,7 +4,7 @@ var marshal = require('dynamodb-marshaler');
 
 exports.handler = function(event, context) {
     console.log('Received event:', JSON.stringify(event, null, 2));
-    var userId = event.id
+    var userId = event.userId
     var readparams = {
       Key: {
         UserID: {S: userId}
@@ -12,14 +12,15 @@ exports.handler = function(event, context) {
       TableName: 'TipperUsers'
     };
 
-    get()
+    get(function(item) {
+    	context.done(null, JSON.parse(item))
+    });
     
-    function get() {
+    function get(cb) {
     	dynamodb.getItem(readparams, function(err, data) {
 	        if (err) { return console.log(err); }
-	        console.log(": " + data.Item);
 	        var item = marshal.unmarshalJson(data.Item)
-	        context.succeed(item);  // Echo back the first key value
+	        cb(item);  // Echo back the first key value
         });    
     }
 };
