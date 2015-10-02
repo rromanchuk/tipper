@@ -1,16 +1,15 @@
-console.log('Loading function');
-var http = require('http');
 var https = require('https');
 var AWS = require('aws-sdk');
 var dynamodb = new AWS.DynamoDB();
-var marshal = require('dynamodb-marshaler');
+var docClient = new AWS.DynamoDB.DocumentClient();
+
 
 exports.handler = function(event, context) {
     console.log('Received event:', JSON.stringify(event, null, 2));
     var txid = event.txid
     var readparams = {
       Key: {
-        txid: {S: txid}
+        txid: txid
       },
       TableName: 'TipperBitcoinTransactions'
     };
@@ -34,34 +33,26 @@ exports.handler = function(event, context) {
     });
     
     function updateTransaction(tx) {
-        dynamodb.updateItem({  
+        console.log(tx)
+        docClient.update({  
             "TableName" : "TipperBitcoinTransactions",
             "Key" : {
-                "txid" : { "S" : tx["hash"]}
+                "txid" :  tx["hash"]
             },
             "ReturnValues": "ALL_NEW",
             "UpdateExpression" : "SET #confirmations = :confirmations, #inputs = :inputs, #outputs = :outputs",
-            "ExpressionAttributeNames" : {"#confirmations" : "confirmations", "#inputs" : "inputs", "#outputs"},
+            "ExpressionAttributeNames" : {"#confirmations" : "confirmations", "#inputs": "inputs", "#outputs": "outputs"},
             "ExpressionAttributeValues" : {
-            ":confirmations" : {
-                "N" : tx["confirmations"].toString()
-                }
-            },
-            ":inputs" : {
-                "L" : tx["inputs"]
-            },
-            ":outputs" : {
-                "L" : tx["outputs"]
+                ":confirmations" : tx["confirmations"].toString(),
+                ":inputs" : tx["inputs"],
+                ":outputs" : tx["outputs"]
             }
         }, function(err, data){
             if (err) console.log(err, err.stack); // an error occurred
-            else     console.log(JSON.stringify(data));           // successful response
             console.log(JSON.stringify(data.Attributes));
-            dynamodb.getItem(readparams, function(err, data) {
+            docClient.get(readparams, function(err, data) {
                 if (err) { return console.log(err); }
-                console.log(": " + data.Item);
-                var item = marshal.unmarshalJson(data.Item)
-                context.succeed(item);  // Echo back the first key value
+                context.done(null, data.Item)
             });             
         });
     }

@@ -1,27 +1,19 @@
 var AWS = require('aws-sdk');
 var dynamodb = new AWS.DynamoDB();
-var marshal = require('dynamodb-marshaler');
+var docClient = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = function(event, context) {
     console.log('Received event:', JSON.stringify(event, null, 2));
-    var settingsId = event.versionId
+    var versionId = event.versionId
     var readparams = {
       Key: {
-        Version: {S: settingsId}
+        Version: versionId
       },
       TableName: 'TipperSettings'
     };
-
-    get(function(item) {
-    	context.done(null, JSON.parse(item))
-    });
-    
-    
-    function get(cb) {
-    	dynamodb.getItem(readparams, function(err, data) {
-	        if (err) { return console.log(err); }
-	        var item = marshal.unmarshalJson(data.Item)
-	        cb(item)
-        });    
-    }
+        
+	docClient.get(readparams, function(err, data) {
+        if (err) { return console.log(err); }
+        context.done(null, data.Item)
+    });    
 };

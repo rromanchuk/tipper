@@ -21,7 +21,6 @@ class Favorite
       update_expression: Tip::UPDATE_EXPRESSION,
       expression_attribute_values: {":provider": "twitter",
                                     ":tweet_id": tweet.id.to_s,
-                                    ":tweet_json": tweet.to_json,
                                     ":created_at": tweet.created_at.to_i,
                                     ":from_twitter_username": currentUser["TwitterUsername"],
                                     ":from_twitter_profile_image":  currentUser["ProfileImage"] ? currentUser["ProfileImage"] : User::DEFAULT_PHOTO,
