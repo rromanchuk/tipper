@@ -33,10 +33,10 @@ module UserAuthenticatable
     update_balance
     user
   rescue ActionController::InvalidAuthenticityToken => e
-    Bugsnag.notify(e, {:severity => "error"})
+    Rollbar.error(e)
     false
   rescue ActionController::ParameterMissing => e
-    Bugsnag.notify(e, {:severity => "error"})
+    Rollbar.error(e)
     false
   end
 
