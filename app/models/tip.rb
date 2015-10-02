@@ -7,7 +7,6 @@ class Tip
   UPDATE_EXPRESSION = "SET " +
                               "Provider = :provider, " +
                               "TweetID = :tweet_id, " +
-                              "TweetJSON = :tweet_json, " +
                               "CreatedAt = :created_at, " +
                               "FromTwitterUsername = :from_twitter_username, " +
                               "FromTwitterProfileImage = :from_twitter_profile_image, " +
@@ -66,7 +65,6 @@ class Tip
       update_expression: update_expression,
       expression_attribute_values: {":provider": "twitter",
                                     ":tweet_id": tweet.id.to_s,
-                                    ":tweet_json": tweet.to_json,
                                     ":created_at": tweet.created_at.to_i,
                                     ":from_twitter_username": fromUser["TwitterUsername"],
                                     ":from_twitter_profile_image": fromUser["ProfileImage"] ? fromUser["ProfileImage"] : User::DEFAULT_PHOTO,
@@ -82,7 +80,6 @@ class Tip
 
     User.update_balance(fromUser)
     User.update_balance(toUser)
-    TweetJson.create(tweet)
     resp.attributes
   end
 
