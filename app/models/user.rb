@@ -244,7 +244,7 @@ class User
   def self.update_user_with_twitter(user, is_stub=false)
     begin
       client = is_stub ? User.client_for_app : User.client_for_user(user)
-      twitter_user = client.user(screenname: user["TwitterUsername"], include_entities: false)
+      twitter_user = client.user(user["TwitterUsername"], include_entities: false)
       puts twitter_user.profile_image_url_https.to_s
       attributes = {":profile_image": twitter_user.profile_image_url_https.to_s, ":twitter_username": twitter_user.screen_name}
       User.update(user["UserID"], "SET ProfileImage = :profile_image, TwitterUsername = :twitter_username", attributes)
