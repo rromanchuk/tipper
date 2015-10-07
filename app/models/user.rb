@@ -39,6 +39,7 @@ class User
                                 "CreatedAt = :created_at, " +
                                 "BitcoinAddress = :bitcoin_address, " +
                                 "TwitterUserID = :twitter_user_id, " +
+                                "ProfileImage = :profile_image, " +
                                 "TwitterUsername = :twitter_username"
 
   REMOVE_EXPIRED_ARNS = "DELETE " +
