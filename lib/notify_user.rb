@@ -53,7 +53,7 @@ class NotifyUser
       end
     end
     
-    Notification.create(toUser["UserID"], "user_received_tip", message)
+    Notification.create(toUser["UserID"], "user_received_tip", message, favorite)
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
@@ -67,7 +67,7 @@ class NotifyUser
                                       "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
                                       "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
 
-        send(fromUser["UserID"], apns_payload, endpoint, message)
+        send(fromUser["UserID"], apns_payload, endpoint, message, favorite)
       end
     end
     

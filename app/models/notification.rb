@@ -8,9 +8,11 @@ class Notification
                       "NotificationText = :text, " +
                       "NotificationType = :notification_type, " +
                       "CreatedAt        = :created_at, " +
-                      "UserID           = :user_id"
+                      "UserID           = :user_id, " +
+                      "TipID            = :tip_id, " +
+                      "TipFromUserID    = :tip_from_user_id"
 
-  def self.create(user_id, type, text)
+  def self.create(user_id, type, text, favorite={})
     resp = db.update_item(
         # required
         table_name: Notification::TABLE_NAME,
@@ -19,7 +21,7 @@ class Notification
           "ObjectID" => SecureRandom.uuid
         },
         update_expression: UPDATE_EXPRESSION,
-        expression_attribute_values: {":text": text, ":notification_type": type, ":created_at": Time.now.to_i, ":user_id": user_id},
+        expression_attribute_values: {":text": text, ":notification_type": type, ":created_at": Time.now.to_i, ":user_id": user_id, ":tip_id": favorite["ObjectID"], ":tip_from_user_id": favorite["FromUserID"]},
         return_values: "ALL_NEW")
 
     resp.attributes
