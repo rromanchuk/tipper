@@ -67,11 +67,11 @@ class NotifyUser
                                       "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
                                       "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
 
-        send(fromUser["UserID"], apns_payload, endpoint, message, favorite)
+        send(fromUser["UserID"], apns_payload, endpoint, message)
       end
     end
     
-    Notification.create(fromUser["UserID"], "user_sent_tip", message)
+    Notification.create(fromUser["UserID"], "user_sent_tip", message, favorite)
   end
 
   def self.notify_fund_event(user)
