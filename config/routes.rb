@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   
   get '/tip/:tip_id'    => 'index#index', as: 'tip'
   get '/privacy'        => 'index#index'
+  get '/about'          => 'index#index'
   get '/login'          => 'index#index'
   post '/logout'        => 'index#index'
   get '/me'             => 'index#index'
