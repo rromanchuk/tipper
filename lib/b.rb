@@ -46,7 +46,12 @@ class B
   end
 
   def self.unspent(address)
-    client.listunspent(0, 99999, [address])
+    begin
+      client.listunspent(0, 99999, [address])
+    rescue => e
+      Rollbar.error(e)
+      0
+    end
   end
 
   def self.withdraw(fromAddress, toAddress)
