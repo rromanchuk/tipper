@@ -5,7 +5,7 @@ class TipperBot
     begin
       tipper_bot_client.update(message)
     rescue Twitter::Error::Unauthorized => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       nil
     end
   end
@@ -15,7 +15,7 @@ class TipperBot
     begin
       tipper_bot_client.update(message)
     rescue Twitter::Error::Unauthorized => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       nil
     end
   end
@@ -25,7 +25,7 @@ class TipperBot
     begin
       tipper_bot_client.update(message)
     rescue Twitter::Error::Unauthorized => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       nil
     end
   end

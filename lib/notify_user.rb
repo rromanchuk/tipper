@@ -116,7 +116,7 @@ class NotifyUser
       sns.delete_endpoint({ endpoint_arn: endpoint })
     rescue Aws::SNS::Errors::InvalidParameter => e
       Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
-      Rollbar.error(e)
+      Rollbar.info(e)
     end
   end
 

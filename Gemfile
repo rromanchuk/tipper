@@ -44,6 +44,7 @@ gem 'foreman'
 gem 'remote_syslog_logger'
 gem "aws-ses", :require => 'aws/ses'
 gem 'premailer-rails'
+gem "lograge"
 
 
 gem 'phony'
