@@ -189,6 +189,10 @@ class User
     self.update(user["UserID"], "SET TippedFromUsAt = :tipped_from_us_at", {":tipped_from_us_at": Time.now.to_i})
   end
 
+  def self.set_btc_address(user)
+    user["BitcoinAddress"] ? user["BitcoinAddress"] : self.update(user["UserID"], "SET BitcoinAddress = :bitcoin_address", {":bitcoin_address": B.getNewUserAddress})
+  end
+
   def self.find_tipper_bot
     User.find(TIPPER_BOT_USER_ID)
   end
