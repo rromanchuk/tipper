@@ -3,7 +3,8 @@ module Api
     skip_before_filter :require_user!
 
     def create
-      render json: {bitcoin_address: B.getNewUserAddress}
+      address = B.getNewUserAddress
+      render json: {bitcoin_address: address, "BitcoinAddress": address}
     end
 
   end# SettingsController
