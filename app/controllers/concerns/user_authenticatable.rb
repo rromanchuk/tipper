@@ -9,20 +9,28 @@ module UserAuthenticatable
   protected
 
   def update_balance
-    Rails.logger.info "update_balance: #{bitcoin_address}"
-    # if bitcoin_address
-    #   Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
-    #   update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
-    #   update_values = {":bitcoin_balance_btc": balance[:btc], ":updated_at": Time.now.to_i, ":is_active": "X"}
-    #   User.update(user_id, update_expression, update_values)
-    # end
+    # Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
+
+    # update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
+    # update_values = {":bitcoin_balance_btc": balance[:btc], ":updated_at": Time.now.to_i, ":is_active": "X"}
+
+    # resp = db.update_item(
+    #   # required
+    #   table_name: User::TABLE_NAME,
+    #   # required
+    #   key: {
+    #     "UserID" => user_id,
+    #   },
+    #   update_expression: update_expression,
+    #   expression_attribute_values: update_values,
+    #  )
   end
 
   def authenticate_user_from_token
-    Rails.logger.info "authenticate_user_from_token: #{login_params}"
+    Rails.logger.info "LOGIN PARAMS: #{login_params}"
     Rails.logger.info "authenticate_user_from_token #{user["token"]} != #{auth_token} OR #{user["TwitterAuthToken"]} != #{auth_token}"
     raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token && user["TwitterAuthToken"] != auth_token
-    #update_balance
+    update_balance
     user
   rescue ActionController::InvalidAuthenticityToken => e
     Rollbar.error(e)
@@ -58,27 +66,24 @@ module UserAuthenticatable
     @balance ||= B.balance(bitcoin_address)
   end
 
+  def user
+    @user ||= User.find_by_twitter_id(twitter_id)
+  end
+
   def twitter_id
     login_params.require(:twitter_id)
   end
 
   def bitcoin_address
-    Rails.logger.info "bitcoin_address getter: #{current_user["BitcoinAddress"]}"
-    if current_user["BitcoinAddress"]
-      current_user["BitcoinAddress"]
-    else 
-      Rails.logger.info "bitcoin_address was nil, setting...."
-      @current_user = User.set_btc_address(current_user)
-      current_user["BitcoinAddress"]
-    end
+    user["BitcoinAddress"]
   end
 
   def cognito_identity
-    current_user["CognitoIdentity"]
+    user["CognitoIdentity"]
   end
 
   def user_id
-    current_user["UserID"]
+    user["UserID"]
   end
 
   def auth_token
@@ -87,12 +92,6 @@ module UserAuthenticatable
 
   def db
     @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
-  end
-
-  private
-
-  def user
-    User.find_by_twitter_id(twitter_id)
   end
 
 end
