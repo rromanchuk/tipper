@@ -64,9 +64,11 @@ module UserAuthenticatable
   end
 
   def bitcoin_address
+    Rails.logger.info "bitcoin_address getter: #{current_user["BitcoinAddress"]}"
     if current_user["BitcoinAddress"]
       current_user["BitcoinAddress"]
     else 
+      Rails.logger.info "bitcoin_address was nil, setting...."
       @current_user = User.set_btc_address(current_user)
       current_user["BitcoinAddress"]
     end

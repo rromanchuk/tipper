@@ -190,7 +190,9 @@ class User
   end
 
   def self.set_btc_address(user)
-    self.update(user["UserID"], "SET BitcoinAddress = :bitcoin_address", {":bitcoin_address": B.getNewUserAddress})
+    user = self.update(user["UserID"], "SET BitcoinAddress = :bitcoin_address", {":bitcoin_address": B.getNewUserAddress})
+    Rails.logger.info "set_btc_address #{user["BitcoinAddress"]}"
+    user
   end
 
   def self.find_tipper_bot
