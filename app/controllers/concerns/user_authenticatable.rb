@@ -9,6 +9,7 @@ module UserAuthenticatable
   protected
 
   def update_balance
+    Rails.logger.info "update_balance: #{bitcoin_address}"
     if bitcoin_address
       Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
       update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
@@ -18,7 +19,8 @@ module UserAuthenticatable
   end
 
   def authenticate_user_from_token
-    Rails.logger.info "LOGIN PARAMS: #{login_params}"
+    user = User.find_by_twitter_id(twitter_id)
+    Rails.logger.info "authenticate_user_from_token: #{login_params}"
     Rails.logger.info "authenticate_user_from_token #{user["token"]} != #{auth_token} OR #{user["TwitterAuthToken"]} != #{auth_token}"
     raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token && user["TwitterAuthToken"] != auth_token
     update_balance
@@ -57,29 +59,25 @@ module UserAuthenticatable
     @balance ||= B.balance(bitcoin_address)
   end
 
-  def user
-    @user ||= User.find_by_twitter_id(twitter_id)
-  end
-
   def twitter_id
     login_params.require(:twitter_id)
   end
 
   def bitcoin_address
-    if user["BitcoinAddress"]
-      user["BitcoinAddress"]
+    if current_user["BitcoinAddress"]
+      current_user["BitcoinAddress"]
     else 
-      @user = User.set_btc_address(user)
-      user["BitcoinAddress"]
+      @current_user = User.set_btc_address(current_user)
+      current_user["BitcoinAddress"]
     end
   end
 
   def cognito_identity
-    user["CognitoIdentity"]
+    current_user["CognitoIdentity"]
   end
 
   def user_id
-    user["UserID"]
+    current_user["UserID"]
   end
 
   def auth_token
