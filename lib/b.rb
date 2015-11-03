@@ -49,7 +49,7 @@ class B
     begin
       client.listunspent(0, 99999, [address])
     rescue => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       0
     end
   end
@@ -98,7 +98,7 @@ class B
     tx = client.sendrawtransaction(signedTx["hex"])
 
     rescue => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       tx = nil
     end
 
@@ -157,7 +157,7 @@ class B
     # Broadcast transaction on the network
     tx = client.sendrawtransaction(signedTx["hex"])
     rescue => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       tx = nil
     end
 
@@ -223,7 +223,7 @@ class B
       # Broadcast transaction on the network
       tx = client.sendrawtransaction(signedTx["hex"])
     rescue => e
-      Rollbar.error(e)
+      Rollbar.warning(e)
       tx = nil
     end
     tx
