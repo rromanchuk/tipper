@@ -9,7 +9,7 @@ module UserAuthenticatable
   protected
 
   def update_balance
-    # Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
+    Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
 
     # update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
     # update_values = {":bitcoin_balance_btc": balance[:btc], ":updated_at": Time.now.to_i, ":is_active": "X"}
@@ -75,7 +75,14 @@ module UserAuthenticatable
   end
 
   def bitcoin_address
-    user["BitcoinAddress"]
+    Rails.logger.info "bitcoin_address getter: #{current_user["BitcoinAddress"]}"
+    if current_user["BitcoinAddress"]
+      current_user["BitcoinAddress"]
+    else 
+      Rails.logger.info "bitcoin_address was nil, setting...."
+      @current_user = User.set_btc_address(current_user)
+      current_user["BitcoinAddress"]
+    end
   end
 
   def cognito_identity
