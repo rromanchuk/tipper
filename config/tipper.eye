@@ -4,14 +4,14 @@ Eye.application "tipper" do
 
   stdall "log/trash.log"
 
-  process :puma do
-    pid_file "tmp/pids/puma.pid"
-    stdall "log/puma.log"
-    daemonize true
-    start_command "bundle exec puma -C config/puma.rb"
-    restart_command "kill -USR1 {PID}"
-    stop_signals [:TERM, 5.seconds, :KILL]
-  end
+  # process :puma do
+  #   pid_file "tmp/pids/puma.pid"
+  #   stdall "log/puma.log"
+  #   daemonize true
+  #   start_command "bundle exec puma -C config/puma.rb"
+  #   restart_command "kill -USR1 {PID}"
+  #   stop_signals [:TERM, 5.seconds, :KILL]
+  # end
 
   # process "favorite_stream_new" do
   #   pid_file "tmp/pids/favorite_stream_new.pid"
