@@ -88,4 +88,6 @@ Rails.application.configure do
   :secret_access_key => cred.secret_access_key
 
   config.action_mailer.delivery_method = :ses
+  config.lograge.enabled = true
+
 end
