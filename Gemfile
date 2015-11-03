@@ -46,7 +46,7 @@ gem "aws-ses", :require => 'aws/ses'
 gem 'premailer-rails'
 gem "lograge"
 
-
+gem "passenger"
 gem 'phony'
 gem 'twilio-ruby'
 
@@ -64,7 +64,7 @@ gem 'omniauth-twitter'
 group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
-  gem 'capistrano3-puma', github: "seuros/capistrano-puma"
+  gem 'capistrano-passenger'
   gem 'letter_opener_web'
 end
 
