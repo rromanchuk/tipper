@@ -35,10 +35,15 @@ class B
   end
 
   def self.balance(address)
-    amounts_array = unspent(address).map {|a| a["amount"] }
-    balance = amounts_array.inject(:+)
-    s = Satoshi.new(balance)
-    {satoshi: s.to_i, mbtc: s.to_mbtc, btc: s.to_btc}
+    unspent_outputs = unspent(address)
+    if unspent_outputs
+      amounts_array = unspent_outputs.map {|a| a["amount"] }
+      balance = amounts_array.inject(:+)
+      s = Satoshi.new(balance)
+      {satoshi: s.to_i, mbtc: s.to_mbtc, btc: s.to_btc}
+    else
+      {satoshi: 0, mbtc: 0, btc: 0}
+    end
   end
 
   def self.getNewUserAddress
@@ -50,7 +55,7 @@ class B
       client.listunspent(0, 99999, [address])
     rescue => e
       Rollbar.warning(e)
-      0
+      nil
     end
   end
 
