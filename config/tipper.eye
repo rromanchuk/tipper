@@ -8,7 +8,7 @@ Eye.application "tipper" do
     pid_file "tmp/pids/puma.pid"
     stdall "log/puma.log"
     daemonize true
-    start_command "bundle exec puma -C config/puma.rb"
+    start_command "rbenv exec bundle exec puma -C config/puma.rb"
     restart_command "kill -USR1 {PID}"
     stop_signals [:TERM, 5.seconds, :KILL]
   end
