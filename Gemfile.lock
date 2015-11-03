@@ -13,6 +13,14 @@ GIT
       rest-client
 
 GIT
+  remote: git://github.com/seuros/capistrano-puma.git
+  revision: e17f3b767ea46b4f79fb0ae01445edded17a66a4
+  specs:
+    capistrano3-puma (1.2.2)
+      capistrano (~> 3.0)
+      puma (>= 2.6)
+
+GIT
   remote: https://github.com/stripe/stripe-ruby
   revision: 492b24894d3dd3f7714da076f075f8554d98edc2
   specs:
@@ -357,6 +365,7 @@ DEPENDENCIES
   byebug
   capistrano-rails
   capistrano-rbenv
+  capistrano3-puma!
   coffee-rails (>= 4.1.0)
   dotenv
   em-hiredis
