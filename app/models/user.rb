@@ -190,7 +190,7 @@ class User
   end
 
   def self.set_btc_address(user)
-    user["BitcoinAddress"] ? user["BitcoinAddress"] : self.update(user["UserID"], "SET BitcoinAddress = :bitcoin_address", {":bitcoin_address": B.getNewUserAddress})
+    self.update(user["UserID"], "SET BitcoinAddress = :bitcoin_address", {":bitcoin_address": B.getNewUserAddress})
   end
 
   def self.find_tipper_bot

@@ -66,7 +66,12 @@ module UserAuthenticatable
   end
 
   def bitcoin_address
-    user["BitcoinAddress"]
+    if user["BitcoinAddress"]
+      user["BitcoinAddress"]
+    else 
+      @user = User.set_btc_address(user)
+      user["BitcoinAddress"]
+    end
   end
 
   def cognito_identity
