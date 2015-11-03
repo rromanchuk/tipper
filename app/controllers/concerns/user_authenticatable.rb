@@ -52,7 +52,7 @@ module UserAuthenticatable
   end
 
   def balance
-    @balance ||= bitcoin_address ? B.balance(bitcoin_address) : 0
+    @balance ||= B.balance(bitcoin_address)
   end
 
   def user
