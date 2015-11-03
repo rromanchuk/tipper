@@ -10,12 +10,6 @@ set :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 set :deploy_to, "/home/ec2-user/apps/tipper"
 
-set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
-set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
-set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
-set :puma_access_log, "#{release_path}/log/puma.error.log"
-set :puma_error_log,  "#{release_path}/log/puma.access.log"
-
 # Default value for :format is :pretty
 # set :format, :pretty
 
@@ -42,19 +36,66 @@ set :default_env, { 'EYE_HOME' => "#{shared_path}" }
 # Default value for keep_releases is 5
 # set :keep_releases, 5
 
-namespace :deploy do
-  desc 'Restart application'
-  task :restart do
+# namespace :deploy do
+#   desc 'Restart application'
+#   task :restart do
+#     on roles(:app) do
+#       execute :leye, "--eyefile #{File.join(current_path, 'Eyefile')} restart all"
+#       invoke 'puma:restart'
+#     end
+#   end
+
+#   after :publishing, :restart
+
+#   before :restart, :update_eye do
+#     on roles(:app) do
+#       execute :leye, "--eyefile #{File.join(current_path, 'Eyefile')} load"
+#     end
+#   end
+# end
+
+namespace :puma do
+  desc 'Create Directories for Puma Pids and Socket'
+  task :make_dirs do
     on roles(:app) do
-      execute :leye, "--eyefile #{File.join(current_path, 'Eyefile')} restart all"
+      execute "mkdir #{shared_path}/tmp/sockets -p"
+      execute "mkdir #{shared_path}/tmp/pids -p"
     end
   end
 
-  after :publishing, :restart
+  before :start, :make_dirs
+end
 
-  before :restart, :update_eye do
+namespace :deploy do
+  desc "Make sure local git is in sync with remote."
+  task :check_revision do
     on roles(:app) do
+      unless `git rev-parse HEAD` == `git rev-parse origin/master`
+        puts "WARNING: HEAD is not the same as origin/master"
+        puts "Run `git push` to sync changes."
+        exit
+      end
+    end
+  end
+
+  desc 'Initial Deploy'
+  task :initial do
+    on roles(:app) do
+      before 'deploy:restart', 'puma:start'
+      invoke 'deploy'
+    end
+  end
+
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      invoke 'puma:restart'
       execute :leye, "--eyefile #{File.join(current_path, 'Eyefile')} load"
     end
   end
+
+  before :starting,     :check_revision
+  after  :finishing,    :compile_assets
+  after  :finishing,    :cleanup
+  after  :finishing,    :restart
 end
