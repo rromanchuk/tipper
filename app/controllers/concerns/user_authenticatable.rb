@@ -10,6 +10,7 @@ module UserAuthenticatable
 
   def update_balance
     Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
+    
     update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
     update_values = {":bitcoin_balance_btc": balance[:btc], ":updated_at": Time.now.to_i, ":is_active": "X"}
     User.update(user["UserID"], update_expression, update_values)
@@ -64,9 +65,7 @@ module UserAuthenticatable
   end
 
   def bitcoin_address
-    user["BitcoinAddress"] ||= begin
-      User.set_btc_address(user)
-    end
+    user["BitcoinAddress"]
   end
 
   def cognito_identity
