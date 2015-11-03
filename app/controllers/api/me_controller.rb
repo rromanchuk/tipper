@@ -9,7 +9,7 @@ module Api
 
     def disconnect
       message = { oauth_token: current_user["TwitterAuthToken"], oauth_token_secret: current_user["TwitterAuthSecret"] }.to_json
-      User.turn_off_automatic_tipping(user)
+      User.turn_off_automatic_tipping(current_user)
       Redis.current.publish("disconnect_user", message)
       render json: {}
     end

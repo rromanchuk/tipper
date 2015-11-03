@@ -19,7 +19,6 @@ module UserAuthenticatable
   end
 
   def authenticate_user_from_token
-    user = User.find_by_twitter_id(twitter_id)
     Rails.logger.info "authenticate_user_from_token: #{login_params}"
     Rails.logger.info "authenticate_user_from_token #{user["token"]} != #{auth_token} OR #{user["TwitterAuthToken"]} != #{auth_token}"
     raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token && user["TwitterAuthToken"] != auth_token
@@ -88,6 +87,12 @@ module UserAuthenticatable
 
   def db
     @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
+  end
+
+  private
+
+  def user
+    User.find_by_twitter_id(twitter_id)
   end
 
 end
