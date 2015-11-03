@@ -9,6 +9,7 @@
   bind "unix:///home/ec2-user/apps/tipper/shared/tmp/sockets/puma.sock"
   pidfile "/home/ec2-user/apps/tipper/current/tmp/pids/puma.pid"
   state_path "/home/ec2-user/apps/tipper/current/tmp/pids/puma.state"
+  environment 'production'
 # else
 #   workers 1
 #   port 9888
@@ -18,6 +19,6 @@ threads 1, 1
 
 #environment ENV['RAILS_ENV'] || 'development'
 
-#prune_bundler
+prune_bundler
 
 
