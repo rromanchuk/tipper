@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   
   get '/auth/:provider/callback', to: 'sessions#create'
 
+  # DEPRECATED
   namespace :api, defaults: { format: 'json' } do
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'
@@ -22,26 +23,27 @@ Rails.application.routes.draw do
     resources :settings,            only: [:show, :index]
   end
 
-  namespace :api, path: nil, defaults: { format: 'json' } do
-    get '/me/refresh' => 'me#show'
-    post 'register' => 'me#register'
-    delete 'disconnect' => 'me#disconnect'
-    post 'connect' => 'me#connect'
-    post '/sms'           => 'sms#download'
-    post '/autotip'        => 'me#autotip'
+  constraints :subdomain => 'api' do
+    namespace :api, defaults: { format: 'json' } do
+      get '/me/refresh' => 'me#show'
+      post 'register' => 'me#register'
+      delete 'disconnect' => 'me#disconnect'
+      post 'connect' => 'me#connect'
+      post '/sms'           => 'sms#download'
+      post '/autotip'        => 'me#autotip'
 
-    resource  :me,                  only: [:create, :show, :index], controller: 'me'
-    resources :tips,                only: [:show]
-    resources :transactions,        only: [:show]
-    resources :charges,             only: [:create]
-    resources :cognito,             only: [:create]
-    resources :address,             only: [:create]
-    resources :users,               only: [:show] do
-      resources :tips, only: [:show]
-    end 
-    resources :settings,            only: [:show, :index]
+      resource  :me,                  only: [:create, :show, :index], controller: 'me'
+      resources :tips,                only: [:show]
+      resources :transactions,        only: [:show]
+      resources :charges,             only: [:create]
+      resources :cognito,             only: [:create]
+      resources :address,             only: [:create]
+      resources :users,               only: [:show] do
+        resources :tips, only: [:show]
+      end 
+      resources :settings,            only: [:show, :index]
+    end
   end
-
 
   namespace :admin, path: '/', constraints: { subdomain: /wwwadmin.*/ } do
     resources :users,  only: [:index, :show]
