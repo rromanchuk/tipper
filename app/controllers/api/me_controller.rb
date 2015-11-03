@@ -1,5 +1,7 @@
 
 module Api
+
+  # DEPRECATED 
   class MeController < Api::BaseController
     skip_before_filter :require_user!, only: [:create, :register]
 

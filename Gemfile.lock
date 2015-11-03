@@ -14,7 +14,7 @@ GIT
 
 GIT
   remote: https://github.com/stripe/stripe-ruby
-  revision: 492b24894d3dd3f7714da076f075f8554d98edc2
+  revision: 5769eb7c1ee78b716b3b9c46d5e3763d07ce6faf
   specs:
     stripe (1.31.0)
       json (~> 1.8.1)
@@ -63,12 +63,12 @@ GEM
     autoprefixer-rails (6.0.3)
       execjs
       json
-    aws-sdk (2.1.34)
-      aws-sdk-resources (= 2.1.34)
-    aws-sdk-core (2.1.34)
+    aws-sdk (2.1.35)
+      aws-sdk-resources (= 2.1.35)
+    aws-sdk-core (2.1.35)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.1.34)
-      aws-sdk-core (= 2.1.34)
+    aws-sdk-resources (2.1.35)
+      aws-sdk-core (= 2.1.35)
     aws-ses (0.6.0)
       builder
       mail (> 2.2.5)

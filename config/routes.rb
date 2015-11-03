@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   
   get '/auth/:provider/callback', to: 'sessions#create'
 
-  # DEPRECATED
   namespace :api, defaults: { format: 'json' } do
     get '/me/refresh' => 'me#show'
     post 'register' => 'me#register'

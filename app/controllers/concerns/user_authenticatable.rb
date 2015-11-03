@@ -8,29 +8,10 @@ module UserAuthenticatable
 
   protected
 
-  def update_balance
-    Rails.logger.info "balance is #{balance} bitcoinaddress is #{bitcoin_address}"
-
-    # update_expression = "SET BitcoinBalanceBTC = :bitcoin_balance_btc, UpdatedAt = :updated_at, IsActive = :is_active"
-    # update_values = {":bitcoin_balance_btc": balance[:btc], ":updated_at": Time.now.to_i, ":is_active": "X"}
-
-    # resp = db.update_item(
-    #   # required
-    #   table_name: User::TABLE_NAME,
-    #   # required
-    #   key: {
-    #     "UserID" => user_id,
-    #   },
-    #   update_expression: update_expression,
-    #   expression_attribute_values: update_values,
-    #  )
-  end
-
   def authenticate_user_from_token
     Rails.logger.info "LOGIN PARAMS: #{login_params}"
     Rails.logger.info "authenticate_user_from_token #{user["token"]} != #{auth_token} OR #{user["TwitterAuthToken"]} != #{auth_token}"
     raise ActionController::InvalidAuthenticityToken if user["token"] != auth_token && user["TwitterAuthToken"] != auth_token
-    update_balance
     user
   rescue ActionController::InvalidAuthenticityToken => e
     Rollbar.error(e)
