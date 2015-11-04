@@ -43,10 +43,6 @@ module UserAuthenticatable
     end
   end
 
-  def balance
-    @balance ||= B.balance(bitcoin_address)
-  end
-
   def user
     @user ||= User.find_by_twitter_id(twitter_id)
   end
