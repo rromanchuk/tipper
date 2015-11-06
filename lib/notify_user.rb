@@ -3,15 +3,14 @@ class NotifyUser
   def self.send_debug_apn_to_me
     message = "This is a test push notification"
     user = User.find("1e6b27ea-3570-4bd5-854e-af7dc5e1bed8")
-      Rails.logger.info "Sending test apn to #{endpoint}"
-      apns_payload = { "aps" => { "alert" => message },
-                                  "type" => "tip_received",
-                                  "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
-                                  "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
-                                }.to_json
+    Rails.logger.info "Sending test apn to #{endpoint}"
+    apns_payload = { "aps" => { "alert" => message },
+                                "type" => "tip_received",
+                                "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
+                                "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
+                              }.to_json
       
-      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
-    end
+    send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
   end
 
   def self.auth_token_expired(user)
