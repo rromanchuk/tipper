@@ -41,7 +41,7 @@ class NotifyUser
   end
 
   def self.notify_receiver(fromUser, toUser, favorite)
-    message =  "You just received #{B::TIP_AMOUNT_UBTC.to_i}μBTC from #{fromUser["TwitterUsername"]}."
+    message =  "You just received 10¢ (#{B::TIP_AMOUNT_UBTC.to_i}μBTC) from #{fromUser["TwitterUsername"]}."
     if toUser["EndpointArns"]
       toUser["EndpointArns"].each do |endpoint|
         apns_payload = { "aps" => { "alert" => message },
@@ -57,7 +57,7 @@ class NotifyUser
   end
 
   def self.notify_sender(fromUser, toUser, favorite)
-    message = "You just sent #{B::TIP_AMOUNT_UBTC.to_i}μBTC to #{toUser["TwitterUsername"]}."
+    message = "You just sent 10¢ (#{B::TIP_AMOUNT_UBTC.to_i}μBTC) to #{toUser["TwitterUsername"]}."
     
     if fromUser["EndpointArns"]
       fromUser["EndpointArns"].each do |endpoint|
