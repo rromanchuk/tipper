@@ -7,10 +7,10 @@ class B
   NEW_USER_ACCOUNT = "tipper_users"
 
   # http://bitcoindenominations.org/
-  TIP_AMOUNT = 0.0005  # 12/cents
+  TIP_AMOUNT = 0.0003  # 12/cents
   FEE_AMOUNT = 0.00001
   STANDARD_FEE_AMOUNT = 0.0001
-  FUND_AMOUNT = 0.02
+  FUND_AMOUNT = 0.0135
 
   MTC_FRACTION = 0.00100000
   UTC_FRACTION = 0.00000100

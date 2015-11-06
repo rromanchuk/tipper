@@ -1,5 +1,5 @@
 class Address
-  TABLE_NAME = "TipperAddress"
+  TABLE_NAME = "TipperBitcoinAddress"
 
   def self.db
     @dynamodb ||= Aws::DynamoDB::Client.new(region: 'us-east-1', credentials: Aws::SharedCredentials.new)
