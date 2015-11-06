@@ -3,24 +3,22 @@ class NotifyUser
   def self.send_debug_apn_to_me
     message = "This is a test push notification"
     user = User.find("1e6b27ea-3570-4bd5-854e-af7dc5e1bed8")
-    user["EndpointArns"].each do |endpoint|
       Rails.logger.info "Sending test apn to #{endpoint}"
       apns_payload = { "aps" => { "alert" => message },
                                   "type" => "tip_received",
                                   "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
                                   "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
                                 }.to_json
-      send(user["UserID"], apns_payload, endpoint, message)
+      
+      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
   end
 
   def self.auth_token_expired(user)
     message = "Opps, we can't process your twitter stream until you login again."
     if user["EndpointArns"]
-      user["EndpointArns"].each do |endpoint|
         apns_payload = { "aps" => { "alert" => message } }.to_json
-        send(user["UserID"], apns_payload, endpoint, message)
-      end
+        send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
 
     Notification.create(user["UserID"], "problem", message)
@@ -29,12 +27,10 @@ class NotifyUser
   def self.problem_tipping_user(user)
     message = "Opps, we weren't able to send the tip. Low balance?"
     if user["EndpointArns"]
-      user["EndpointArns"].each do |endpoint|
-        apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?" },
-                      "user" => { "TwitterUserID" => user["TwitterUserID"] },
-                      "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
-        send(user["UserID"], apns_payload, endpoint, message)
-      end
+      apns_payload = { "aps" => { "alert" => "Opps, we weren't able to send the tip. Low balance?" },
+                    "user" => { "TwitterUserID" => user["TwitterUserID"] },
+                    "message" => {"title" => "Ooops!", "subtitle" => message, "type" => "error"} }.to_json
+      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
 
     Notification.create(user["UserID"], "low_balance", message)
@@ -43,14 +39,12 @@ class NotifyUser
   def self.notify_receiver(fromUser, toUser, favorite)
     message =  "You just received 10¢ (#{B::TIP_AMOUNT_UBTC.to_i}μBTC) from #{fromUser["TwitterUsername"]}."
     if toUser["EndpointArns"]
-      toUser["EndpointArns"].each do |endpoint|
-        apns_payload = { "aps" => { "alert" => message },
-                                    "type" => "tip_received",
-                                    "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
-                                    "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
-                                    "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-        send(toUser["UserID"], apns_payload, endpoint, message)
-      end
+      apns_payload = { "aps" => { "alert" => message },
+                                  "type" => "tip_received",
+                                  "message" => {"title" => "Tip received", "subtitle" => message, "type" => "success"},
+                                  "user" => { "TwitterUserID" => toUser["TwitterUserID"], "BitcoinBalanceBTC" => toUser["BitcoinBalanceBTC"] },
+                                  "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
+      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
     
     Notification.create(toUser["UserID"], "user_received_tip", message, favorite)
@@ -60,15 +54,12 @@ class NotifyUser
     message = "You just sent 10¢ (#{B::TIP_AMOUNT_UBTC.to_i}μBTC) to #{toUser["TwitterUsername"]}."
     
     if fromUser["EndpointArns"]
-      fromUser["EndpointArns"].each do |endpoint|
-        apns_payload = { "aps" => { "alert" => message },
-                                      "type" => "tip_sent",
-                                      "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"},
-                                      "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
-                                      "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-
-        send(fromUser["UserID"], apns_payload, endpoint, message)
-      end
+      apns_payload = { "aps" => { "alert" => message },
+                                    "type" => "tip_sent",
+                                    "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"},
+                                    "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
+                                    "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
+      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
     
     Notification.create(fromUser["UserID"], "user_sent_tip", message, favorite)
@@ -77,14 +68,12 @@ class NotifyUser
   def self.notify_fund_event(user)
     message =  "Your deposit of #{B::FUND_AMOUNT_UBTC.to_i}μBTC is complete."
     if user["EndpointArns"]
-      user["EndpointArns"].each do |endpoint|
-        apns_payload = { "aps" => { "alert" => message }, 
-                                    "type" => "funds_deposited", 
-                                    "message" => {"title" => "Transfer complete", "subtitle" => message, "type" => "success"}, 
-                                    "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] }, 
+      apns_payload = { "aps" => { "alert" => message },
+                                    "type" => "funds_deposited",
+                                    "message" => {"title" => "Transfer complete", "subtitle" => message, "type" => "success"},
+                                    "user" => { "TwitterUserID" => user["TwitterUserID"], "BitcoinBalanceBTC" => user["BitcoinBalanceBTC"] },
                                    }.to_json
-        send(user["UserID"], apns_payload, endpoint, message)
-      end
+      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
     Notification.create(user["UserID"], "fund_event", message)
   end
@@ -92,14 +81,19 @@ class NotifyUser
   def self.notify_withdrawal(user)
     message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
     if user["EndpointArns"]
-      user["EndpointArns"].each do |endpoint|
-        message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
-        apns_payload = { "aps" => { "alert" => message }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
-        send(user["UserID"], apns_payload, endpoint, message)
-      end
+      message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
+      apns_payload = { "aps" => { "alert" => message }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
+      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
 
     Notification.create(user["UserID"], "withdrawal_event", message)
+  end
+
+  def self.send_to_apns(user_id, payload, endpoints, message)
+    endpoints.each do |endpoint|
+      Rails.logger.info "Going to send notification #{endpoint}"
+      send(user_id, payload, endpoint, message)
+    end
   end
 
   def self.send(user_id, payload, endpoint, message)
