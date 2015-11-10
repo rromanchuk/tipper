@@ -122,6 +122,7 @@ class ProcessTipWorker
         Transaction.create(transaction, fromUser, toUser)
 
         # Send success notifications
+        logger.info "Notifying users......"
         NotifyUser.notify_sender(fromUser, toUser, favorite)
         NotifyUser.notify_receiver(fromUser, toUser, favorite)
 

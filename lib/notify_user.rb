@@ -110,6 +110,8 @@ class NotifyUser
     rescue Aws::SNS::Errors::InvalidParameter => e
       Rails.logger.error "Aws::SNS::Errors::InvalidParameter"
       Rollbar.info(e)
+    rescue => e
+      Rollbar.error(e)
     end
   end
 
