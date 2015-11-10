@@ -1,8 +1,10 @@
 Eye.application "tipper" do
-  env "RBENV_ROOT" => "/home/ec2-user/.rbenv", "RBENV_VERSION" => "2.2.2", "RAILS_ENV" => "production"
   working_dir "/home/ec2-user/apps/tipper/current"
-  clear_bundler_env
+  env "RBENV_ROOT" => "/home/ec2-user/.rbenv", "RBENV_VERSION" => "2.2.2", "RAILS_ENV" => "production"
+  env "BUNDLE_GEMFILE" => "/home/ec2-user/apps/tipper/current/Gemfile"
   
+  clear_bundler_env
+
   stdall "log/trash.log"
 
   process :puma do
