@@ -26,7 +26,7 @@ class ProcessTipWorker
   end
 
   def tipper_bot
-    @tipper_bot ||= TipperBot.new
+    TipperBot.new
   end
 
   def logger
