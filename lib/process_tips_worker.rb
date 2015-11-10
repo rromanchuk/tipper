@@ -27,10 +27,6 @@ class ProcessTipWorker
     @queue ||= SqsQueues.new_tip
   end
 
-  def tipper_bot
-    TipperBot.new
-  end
-
   def logger
     @logger ||= begin 
       _logger = Rails.logger
@@ -102,16 +98,16 @@ class ProcessTipWorker
         next
       end
 
-      logger.info "fromUser:"
-      logger.info fromUser.to_yaml
+      #logger.info "fromUser:"
+      #logger.info fromUser.to_yaml
       unless toUser # If the user doesn't exist create a stub account
         profile_photo = tweet.user.profile_image_url.to_s ? tweet.user.profile_image_url.to_s : User::DEFAULT_PHOTO
         attributes = {":twitter_user_id": json["ToTwitterID"], ":twitter_username": tweet.user.screen_name, ":profile_image": profile_photo}
         toUser = User.create_stub_user(attributes)
       end
 
-      logger.info "toUser:"
-      logger.info toUser.to_yaml
+      #logger.info "toUser:"
+      #logger.info toUser.to_yaml
 
       # Publish the actual tip action to the bitcoind node
       txid = B.tip_user(fromUser["BitcoinAddress"], toUser["BitcoinAddress"])
@@ -129,7 +125,8 @@ class ProcessTipWorker
         NotifyUser.notify_sender(fromUser, toUser, favorite)
         NotifyUser.notify_receiver(fromUser, toUser, favorite)
 
-        tipper_bot.post_tip_on_twitter(fromUser, toUser, txid, tweet.id.to_s)
+        logger.info "Posting to twitter......"
+        TipperBot.post_tip_on_twitter(fromUser, toUser, txid, tweet.id.to_s)
       else
         Favorite.update_favorite(tweet, fromUser)
         # Send failure notifications, delete the sqs receipt so we don't keep retrying

@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "tipperbot@coinbit.tips"
+  default from: "tipperbot@trytipper.com"
   layout 'mailer'
 end
