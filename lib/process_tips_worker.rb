@@ -1,4 +1,6 @@
 
+Rails.logger.info "-------------------  MARKER A"
+
 class ProcessTipWorker
    def initialize
     logger.info "Starting event machine for ProcessTipWorker"
