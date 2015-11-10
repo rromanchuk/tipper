@@ -58,7 +58,7 @@ class NotifyUser
                                     "message" => {"title" => "Tip sent", "subtitle" => message, "type" => "success"},
                                     "user" => { "TwitterUserID" => fromUser["TwitterUserID"], "BitcoinBalanceBTC" => fromUser["BitcoinBalanceBTC"] },
                                     "favorite" => {"TweetID" => favorite["TweetID"], "FromTwitterID" => favorite["FromTwitterID"] } }.to_json
-      send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
+      send_to_apns(fromUser["UserID"], apns_payload, user["EndpointArns"], message)
     end
     
     Notification.create(fromUser["UserID"], "user_sent_tip", message, favorite)
