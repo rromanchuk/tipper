@@ -2,10 +2,14 @@ class TipperBot
 
   def post_tip_on_twitter(fromUser, toUser, txid, tweet_id)
     message = "@#{fromUser["TwitterUsername"]} just tipped @#{toUser["TwitterUsername"]} 10¢ (#{B::TIP_AMOUNT_UBTC.to_i}μBTC) for twitter.com/#{toUser["TwitterUsername"]}/status/#{tweet_id} transaction: trytipper.com/tip/#{txid}"
+    Rails.logger.info "TipperBot::post_tip_on_twitter #{message}"
     begin
       tipper_bot_client.update(message)
     rescue Twitter::Error::Unauthorized => e
       Rollbar.warning(e)
+      nil
+    rescue => e
+      Rollbar.error(e)
       nil
     end
   end
