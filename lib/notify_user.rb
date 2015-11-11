@@ -20,7 +20,7 @@ class NotifyUser
         send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
 
-    Notification.create(user["UserID"], "problem", message)
+    Notification.create_problem(user["UserID"], "problem", message)
   end
 
   def self.problem_tipping_user(user)
@@ -32,7 +32,7 @@ class NotifyUser
       send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
 
-    Notification.create(user["UserID"], "low_balance", message)
+    Notification.create_problem(user["UserID"], "low_balance", message)
   end
 
   def self.notify_receiver(fromUser, toUser, favorite)
