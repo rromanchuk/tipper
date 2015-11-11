@@ -12,6 +12,12 @@ class Notification
                       "TipID            = :tip_id, " +
                       "TipFromUserID    = :tip_from_user_id"
 
+  PROBLEM_EXPRESSION = "SET " +
+                      "NotificationText = :text, " +
+                      "NotificationType = :notification_type, " +
+                      "CreatedAt        = :created_at, " +
+                      "UserID           = :user_id " +
+
   def self.create(user_id, type, text, favorite={})
     resp = db.update_item(
         # required
@@ -35,7 +41,7 @@ class Notification
         key: {
           "ObjectID" => SecureRandom.uuid
         },
-        update_expression: UPDATE_EXPRESSION,
+        update_expression: PROBLEM_EXPRESSION,
         expression_attribute_values: {":text": text, ":notification_type": type, ":created_at": Time.now.to_i, ":user_id": user_id},
         return_values: "ALL_NEW")
 
