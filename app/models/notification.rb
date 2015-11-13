@@ -16,7 +16,7 @@ class Notification
                       "NotificationText = :text, " +
                       "NotificationType = :notification_type, " +
                       "CreatedAt        = :created_at, " +
-                      "UserID           = :user_id " +
+                      "UserID           = :user_id "
 
   def self.create(user_id, type, text, favorite={})
     resp = db.update_item(
