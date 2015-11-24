@@ -37,33 +37,7 @@ class Withdraw
                         ":confirmations": transaction["confirmations"],
                         ":to_bitcoin_address": toBitcoinAddress,
                         ":details": transaction["details"].to_json,
-                        ":twitter_id": fromUser["TwitterUserID"]}
-    # attributes = {
-    #     "TwitterUsername" => {
-    #       value: fromUser["TwitterUsername"]
-    #     },
-    #     "amount" => {
-    #       value: transaction["amount"]
-    #     },
-    #     "fee" => {
-    #       value: transaction["fee"]
-    #     },
-    #     "time" => {
-    #       value: transaction["time"]
-    #     },
-    #     "confirmations" => {
-    #       value: transaction["confirmations"]
-    #     },
-    #     "toBitcoinAddress" => {
-    #       value: toBitcoinAddress
-    #     },
-    #     "details" => {
-    #       value: transaction["details"].to_json
-    #     },
-    #     "TwitterID" => {
-    #       value: fromUser["TwitterUserID"]
-    #     }
-    #   }
+                        ":tweet_id": fromUser["TwitterUserID"]}
 
     resp = db.update_item(
       table_name: TABLE_NAME,
