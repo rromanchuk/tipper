@@ -78,9 +78,9 @@ class NotifyUser
   end
 
   def self.notify_withdrawal(user)
-    message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
+    message = "Your withdraw request of #{user["BitcoinBalanceBTC"]}BTC is complete."
     if user["EndpointArns"]
-      message = "Your withdraw request of #{fromUser["BitcoinBalanceBTC"]}BTC is complete."
+      message = "Your withdraw request of #{user["BitcoinBalanceBTC"]}BTC is complete."
       apns_payload = { "aps" => { "alert" => message }, "message" => {"title" => "Withdrawal complete", "subtitle" => message, "type" => "success"} }.to_json
       send_to_apns(user["UserID"], apns_payload, user["EndpointArns"], message)
     end
