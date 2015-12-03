@@ -4,8 +4,8 @@
 
 `bin/cap production deploy:restart`
 
-## Deploying the frontend
-`ember deploy --environment production`
+## Deploying web
+`ember deploy production`
 
 ## Process monitoring with leye (production only)
 Logs and pids  are located in capistrano shared folder
