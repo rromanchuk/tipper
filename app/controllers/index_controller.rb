@@ -1,7 +1,7 @@
 class IndexController < ApplicationController
   def index
-    check_revision
-    _index_text = index_text.gsub('CSRF-TOKEN', form_authenticity_token)
+    #check_revision
+    _index_text = get_index.gsub('CSRF-TOKEN', form_authenticity_token)
     render text: _index_text
   end
 
@@ -12,6 +12,11 @@ class IndexController < ApplicationController
     #   @current_rev = rev
     #   @index_text = Redis.current.get(current_rev)
     # end
+  end
+
+  def get_index
+    index_key = Redis.current.get("tipper:index:current")
+    Redis.current.get("tipper:index:#{index_key}")
   end
 
   # def rev
