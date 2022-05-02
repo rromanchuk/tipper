@@ -16,7 +16,7 @@ class ProcessTipWorker
   end
 
   def test_event
-    sqs.send_message(queue_url: queue, message_body: { "FromTwitterID": "***REMOVED***", "ToTwitterID": "***REMOVED***", "TweetID": "***REMOVED***" }.to_json )
+    sqs.send_message(queue_url: queue, message_body: { "FromTwitterID": "", "ToTwitterID": "", "TweetID": "" }.to_json )
   end
 
   def sqs

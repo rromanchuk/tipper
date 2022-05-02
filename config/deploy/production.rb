@@ -1,4 +1,4 @@
-server '***REMOVED***', user: 'ec2-user', roles: %w{app web}
+server '', user: 'ec2-user', roles: %w{app web}
 
 # Custom SSH Options
 # ==================

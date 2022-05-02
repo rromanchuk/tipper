@@ -8,7 +8,7 @@ class TestNotifications
 
     apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 }, "user" => "test", "message" => { "type" => "error", "title" => "Testing notifications", "subtitle" => "This is the sbutitle for the test message"} }.to_json
       resp = sns.publish(
-        topic_arn: "***REMOVED***",
+        topic_arn: "",
         message_structure: "json",
         message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
       )
@@ -22,7 +22,7 @@ class TestNotifications
 
     apns_payload = { "aps" => { "alert" => "Received a favorite from tweet stream", "badge" => 1 }, "user" => "test", "message" => { "type" => "success", "title" => "Testing notifications", "subtitle" => "This is the sbutitle for the test message"} }.to_json
       resp = sns.publish(
-        topic_arn: "***REMOVED***",
+        topic_arn: "",
         message_structure: "json",
         message: {"default" => "Received a favorite from tweet stream", "APNS_SANDBOX": apns_payload, "APNS": apns_payload }.to_json
       )

@@ -57,7 +57,7 @@ exports.handler = function(event, context) {
                   console.log("Tip not found, must be a new tip, send to SQS queue for processing")
                   var message = { "TweetID": item["id_str"], "FromTwitterID": twitterId, "ToTwitterID": item["user"]["id_str"] };
                   console.log(message);
-                  var params = {"QueueUrl": "***REMOVED***", "MessageBody": JSON.stringify(message) };
+                  var params = {"QueueUrl": "", "MessageBody": JSON.stringify(message) };
                   sqs.sendMessage(params, function(err, data) {
                      if (err) console.log(err, err.stack); // an error occurred
                      else     console.log(data);           // successful response

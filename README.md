@@ -20,11 +20,6 @@ Logs and pids  are located in capistrano shared folder
 `leye load` from current release path
 
 
-## Resources
-
-***REMOVED***- Administration
-
-
 ##### Route
 ```
 Prefix Verb   URI Pattern                             Controller#Action

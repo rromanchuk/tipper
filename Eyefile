@@ -1,5 +1,5 @@
 Eye.config do
-  logger "***REMOVED***"
+  logger ""
 end
 
 Eye.load("config/tipper.eye")
