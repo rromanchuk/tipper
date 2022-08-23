@@ -6,6 +6,7 @@ Abandoned 2015 project with [tipper-ios](https://github.com/rromanchuk/tipper-io
 ### Screenshots
 
 ![TIPPER1](/tipper-1.png)
+![TIPPER2](/tipper-2.png)
 ![TIPPER2](/tipper-3.png)
 ![TIPPER4](/tipper-4.png)
 ![TIPPER Web 1](/tipper-web1.png)
